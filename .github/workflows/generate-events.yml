@@ -2,8 +2,7 @@ name: Generate Parkrun Events
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * 1' # Every Monday at 2am UTC
+
 
 jobs:
   generate:
