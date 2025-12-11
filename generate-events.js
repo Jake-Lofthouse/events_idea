@@ -2,11 +2,11 @@ const fs = require('fs');
 const https = require('https');
 const path = require('path');
 
-const EVENTS_URL = 'https://raw.githubusercontent.com/ALD-Models/Testing/refs/heads/main/events1.json';
-const OUTPUT_DIR = './events';
-const MAX_EVENTS = 15;
+const EVENTS_URL = 'https://www.parkrunnertourist.com/events1.json';
+const OUTPUT_DIR = './explore';
+const MAX_EVENTS = 999999;
 const MAX_FILES_PER_FOLDER = 999;
-const BASE_URL = 'https://www.parkrunnertourist.co.uk/events';
+const BASE_URL = 'https://www.parkrunnertourist.com/explore';
 
 // Country bounds for parkrun URL detection
 const COUNTRIES = {
@@ -140,11 +140,6 @@ function getParkrunDomain(latitude, longitude) {
   return "www.parkrun.org.uk"; // Default fallback
 }
 
-// Stub for fetching Wikipedia description about the parkrun location.
-async function fetchWikipediaDescription(eventName) {
-  return null;
-}
-
 // Determine subfolder based on first letter of slug
 function getSubfolder(slug) {
   const firstChar = slug.charAt(0).toLowerCase();
@@ -155,73 +150,64 @@ function getSubfolder(slug) {
   return '0-9';
 }
 
+// Calculate distance between two points using Haversine formula (in km)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
 // Generate the HTML content for each event page
-async function generateHtml(event, relativePath) {
+async function generateHtml(event, relativePath, nearby) {
   const name = event.properties.eventname || 'Unknown event';
   const longName = event.properties.EventLongName || name;
   const location = event.properties.EventLocation || '';
   const coords = event.geometry.coordinates || [];
   const latitude = coords[1] || 0;
   const longitude = coords[0] || 0;
-  const encodedName = encodeURIComponent(`${name} parkrun`);
+  const encodedName = encodeURIComponent(`${longName}`);
   const checkinDate = getNextFridayDateISO();
-  const pageTitle = `Accommodation near ${name} parkrun`;
+  const pageTitle = `Accommodation near ${longName}`;
   const parkrunDomain = getParkrunDomain(latitude, longitude);
-
   let description = event.properties.EventDescription || '';
   const hasDescription = description && description.trim() !== '' && description.trim() !== 'No description available.';
-
   if (hasDescription) {
-    try {
-      const wikiDesc = await fetchWikipediaDescription(name);
-      if (wikiDesc && wikiDesc.length > 50) {
-        description = `<p>${wikiDesc}</p><p><em>Source: <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(name.replace(/\s+/g, '_'))}" target="_blank" rel="noopener noreferrer">Wikipedia</a></em></p>`;
-      } else {
-        description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
-      }
-    } catch (e) {
-      console.warn(`Failed to fetch Wikipedia description for ${name}: ${e.message}`);
-      description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
-    }
+    description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
   }
-
   // Stay22 iframe base URL with scroll locking via scrolling="no"
   const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=7dd856&venue=${encodedName}`;
-
   // Determine if it's a junior parkrun and set the appropriate URL
   const isJunior = longName.toLowerCase().includes('junior');
   const parkrunType = isJunior ? 'Junior' : '5k';
-  const mainIframeUrl = `https://parkrunnertourist.co.uk/hello?${parkrunType}&lat=${latitude}&lon=${longitude}&zoom=13`;
-
+  const mainIframeUrl = `https://parkrunnertourist.com/main?${parkrunType}&lat=${latitude}&lon=${longitude}&zoom=13`;
   // Weather iframe URL
-  const weatherIframeUrl = `https://parkrunnertourist.co.uk/weather?lat=${latitude}&lon=${longitude}`;
-
+  const weatherIframeUrl = `https://parkrunnertourist.com/weather?lat=${latitude}&lon=${longitude}`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${pageTitle}</title>
-<meta name="description" content="Find and book hotels, campsites, and cafes around ${name} parkrun." />
+<meta name="description" content="Find and book hotels, campsites and cafes around ${name} parkrun." />
 <meta name="keywords" content="parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="${location}" />
 <meta name="geo.position" content="${latitude};${longitude}" />
-<meta property="og:url" content="https://www.parkrunnertourist.co.uk" />
-<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.parkrunnertourist.com/${relativePath}" />
+<meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
-<link rel="canonical" href="${BASE_URL}/${relativePath}" />
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
   <!-- Apple Smart Banner -->
-  <meta name="apple-itunes-app" content="app-id=6743163993, app-argument=https://www.parkrunnertourist.co.uk">
-
+  <meta name="apple-itunes-app" content="app-id=6743163993, app-argument=https://www.parkrunnertourist.com">
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="https://parkrunnertourist.co.uk/favicon.ico">
-
+  <link rel="icon" type="image/x-icon" href="https://parkrunnertourist.com/favicon.ico">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-REFFZSK4XK"></script>
     <script>
@@ -230,20 +216,19 @@ async function generateHtml(event, relativePath) {
         gtag('js', new Date());
         gtag('config', 'G-REFFZSK4XK');
     </script>
-
   <style>
     * {
       box-sizing: border-box;
     }
-    
+   
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      margin: 0; 
+      margin: 0;
       padding: 0;
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       line-height: 1.6;
     }
-    
+   
     header {
       background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
       color: white;
@@ -257,7 +242,7 @@ async function generateHtml(event, relativePath) {
       position: relative;
       overflow: hidden;
     }
-    
+   
     header::before {
       content: '';
       position: absolute;
@@ -268,7 +253,7 @@ async function generateHtml(event, relativePath) {
       background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
       pointer-events: none;
     }
-    
+   
     header a {
       color: white;
       text-decoration: none;
@@ -277,17 +262,17 @@ async function generateHtml(event, relativePath) {
       z-index: 1;
       transition: transform 0.3s ease;
     }
-    
+   
     header a:hover {
       transform: translateY(-2px);
     }
-    
+   
     main {
       padding: 3rem 2rem;
       max-width: 1400px;
       margin: 0 auto;
     }
-    
+   
     h1 {
       font-size: 3rem;
       font-weight: 800;
@@ -301,7 +286,7 @@ async function generateHtml(event, relativePath) {
       padding: 2rem 0;
       line-height: 1.2;
     }
-    
+   
     .subtitle {
       font-size: 1.5rem;
       font-weight: 600;
@@ -310,7 +295,7 @@ async function generateHtml(event, relativePath) {
       margin-bottom: 3rem;
       position: relative;
     }
-    
+   
     .subtitle::after {
       content: '';
       position: absolute;
@@ -322,7 +307,7 @@ async function generateHtml(event, relativePath) {
       background: linear-gradient(135deg, #4caf50, #2e7d32);
       border-radius: 2px;
     }
-    
+   
     .description {
       background: white;
       padding: 2rem;
@@ -331,13 +316,13 @@ async function generateHtml(event, relativePath) {
       margin-bottom: 3rem;
       border: 1px solid rgba(76, 175, 80, 0.2);
     }
-    
+   
     .description p {
       margin: 0;
       color: #374151;
       font-size: 1.1rem;
     }
-    
+   
     .section-title {
       font-size: 1.5rem;
       font-weight: 600;
@@ -347,7 +332,7 @@ async function generateHtml(event, relativePath) {
       align-items: center;
       gap: 0.5rem;
     }
-    
+   
     .section-title::before {
       content: '';
       width: 4px;
@@ -355,7 +340,7 @@ async function generateHtml(event, relativePath) {
       background: linear-gradient(135deg, #4caf50, #2e7d32);
       border-radius: 2px;
     }
-    
+   
     .toggle-btn {
       padding: 0.75rem 1.5rem;
       border-radius: 0.75rem;
@@ -371,27 +356,26 @@ async function generateHtml(event, relativePath) {
       font-size: 1rem;
       box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
     }
-    
+   
     .toggle-btn:hover:not(.active) {
       background-color: #f1f8e9;
-      transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
     }
-    
+   
     .toggle-btn.active {
       background: linear-gradient(135deg, #4caf50, #2e7d32);
       color: white;
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
     }
-    
+   
     .content-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
       margin-bottom: 2rem;
     }
-    
+   
     .iframe-container {
       background: white;
       border-radius: 1rem;
@@ -401,29 +385,24 @@ async function generateHtml(event, relativePath) {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
     }
-    
-    .iframe-container:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    }
-    
+   
     iframe {
       width: 100%;
       border-radius: 0.75rem;
       border: none;
       overflow: hidden;
     }
-    
+   
     .weather-iframe {
       height: 300px;
       width: 100%;
     }
-    
+   
     /* Loading placeholder for weather iframe */
     .weather-iframe[data-src]:not([src]) {
-      background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
-                  linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
-                  linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+      background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+                  linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+                  linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
                   linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
       background-size: 20px 20px;
       background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
@@ -434,16 +413,16 @@ async function generateHtml(event, relativePath) {
       color: #666;
       font-weight: 500;
     }
-    
+   
     .weather-iframe[data-src]:not([src])::after {
       content: 'Loading weather...';
     }
-    
+   
     /* Loading placeholder for map iframe */
     .map-iframe[data-src]:not([src]) {
-      background: linear-gradient(45deg, #e8f5e8 25%, transparent 25%), 
-                  linear-gradient(-45deg, #e8f5e8 25%, transparent 25%), 
-                  linear-gradient(45deg, transparent 75%, #e8f5e8 75%), 
+      background: linear-gradient(45deg, #e8f5e8 25%, transparent 25%),
+                  linear-gradient(-45deg, #e8f5e8 25%, transparent 25%),
+                  linear-gradient(45deg, transparent 75%, #e8f5e8 75%),
                   linear-gradient(-45deg, transparent 75%, #e8f5e8 75%);
       background-size: 20px 20px;
       background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
@@ -454,16 +433,16 @@ async function generateHtml(event, relativePath) {
       color: #4caf50;
       font-weight: 500;
     }
-    
+   
     .map-iframe[data-src]:not([src])::after {
       content: 'Loading map...';
     }
-    
+   
     @keyframes loading {
       0% { background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
       100% { background-position: 20px 20px, 20px 30px, 30px 10px, 10px 20px; }
     }
-    
+   
     .parkrun-actions {
       display: flex;
       gap: 1rem;
@@ -471,7 +450,7 @@ async function generateHtml(event, relativePath) {
       flex-wrap: wrap;
       justify-content: center;
     }
-    
+   
     .action-btn {
       padding: 0.75rem 1.5rem;
       border-radius: 0.75rem;
@@ -486,13 +465,12 @@ async function generateHtml(event, relativePath) {
       font-size: 1rem;
       box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
     }
-    
+   
     .action-btn:hover {
-      transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
       background: linear-gradient(135deg, #388e3c, #1b5e20);
     }
-    
+   
     /* Modal Styles */
     .modal {
       display: none;
@@ -505,7 +483,7 @@ async function generateHtml(event, relativePath) {
       background-color: rgba(0,0,0,0.5);
       backdrop-filter: blur(5px);
     }
-    
+   
     .modal-content {
       background-color: white;
       margin: 2% auto;
@@ -517,7 +495,7 @@ async function generateHtml(event, relativePath) {
       position: relative;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    
+   
     .modal-header {
       background: linear-gradient(135deg, #4caf50, #2e7d32);
       color: white;
@@ -527,14 +505,14 @@ async function generateHtml(event, relativePath) {
       justify-content: space-between;
       align-items: center;
     }
-    
+   
     .modal-header h2 {
       font-size: 2rem;
       font-weight: 700;
       margin: 0;
       color: white;
     }
-    
+   
     .close {
       color: white;
       float: right;
@@ -543,38 +521,38 @@ async function generateHtml(event, relativePath) {
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-    
+   
     .close:hover {
       transform: scale(1.1);
     }
-    
+   
     .modal iframe {
       width: 100%;
       height: calc(100% - 100px);
       border: none;
       border-radius: 0 0 1rem 1rem;
     }
-    
+   
     .accommodation-iframe {
       height: 600px;
       overflow-x: hidden;
     }
-    
+   
     .map-iframe {
       height: 400px;
     }
-    
+   
     .hotels-section {
       grid-column: 1;
     }
-    
+   
     .right-column {
       grid-column: 2;
       display: flex;
       flex-direction: column;
       gap: 2rem;
     }
-    
+   
     /* Download footer */
     .download-footer {
       background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
@@ -591,7 +569,7 @@ async function generateHtml(event, relativePath) {
       position: relative;
       overflow: hidden;
     }
-    
+   
     .download-footer::before {
       content: '';
       position: absolute;
@@ -602,14 +580,14 @@ async function generateHtml(event, relativePath) {
       background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="45" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="45" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
       pointer-events: none;
     }
-    
+   
     .app-badges {
       display: flex;
       gap: 2rem;
       position: relative;
       z-index: 1;
     }
-    
+   
     .download-footer img {
       height: 70px;
       width: auto;
@@ -618,12 +596,12 @@ async function generateHtml(event, relativePath) {
       cursor: pointer;
       border-radius: 0.5rem;
     }
-    
+   
     .download-footer img:hover {
       transform: scale(1.1) translateY(-4px);
       filter: brightness(1.1);
     }
-    
+   
     footer {
       text-align: center;
       padding: 2rem;
@@ -631,89 +609,113 @@ async function generateHtml(event, relativePath) {
       color: #64748b;
       font-weight: 500;
     }
-    
+   
+    /* Nearby section */
+    .nearby-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-top: 3rem;
+      border: 1px solid rgba(76, 175, 80, 0.2);
+    }
+   
+    .nearby-section ul {
+      list-style-type: disc;
+      padding-left: 1.5rem;
+    }
+   
+    .nearby-section li {
+      margin-bottom: 0.5rem;
+    }
+   
+    .nearby-section a {
+      color: #4caf50;
+      text-decoration: underline;
+    }
+   
     /* Responsive Design */
     @media (max-width: 1024px) {
       .content-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
       }
-      
+     
       /* Mobile order: parkrun location, hotels, weather */
       .right-column {
         order: 1;
         grid-column: 1;
         flex-direction: column-reverse;
       }
-      
+     
       .hotels-section {
         order: 2;
         grid-column: 1;
       }
-      
+     
       .weather-iframe {
         height: 250px;
       }
-      
+     
       .accommodation-iframe,
       .map-iframe {
         height: 450px;
       }
-      
+     
       .app-badges {
         justify-content: center;
       }
     }
-    
+   
     @media (max-width: 768px) {
       main {
         padding: 2rem 1rem;
       }
-      
+     
       h1 {
         font-size: 2.5rem;
       }
-      
+     
       .subtitle {
         font-size: 1.2rem;
       }
-      
+     
       header {
         padding: 1rem;
         font-size: 1.5rem;
       }
-      
+     
       .toggle-btn {
         margin-bottom: 0.5rem;
         margin-right: 0.5rem;
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
       }
-      
+     
       .app-badges {
         flex-direction: column;
         gap: 1rem;
         align-items: center;
       }
-      
+     
       .accommodation-iframe,
       .map-iframe {
         height: 400px;
       }
-      
+     
       .weather-iframe {
         height: 200px;
       }
-      
+     
       .modal-header h2 {
         font-size: 1.5rem;
       }
-      
+     
       .close {
         font-size: 2rem;
       }
     }
-    
+   
     /* Hide Buy Me a Coffee widget on mobile and tablets */
     @media (max-width: 1024px) {
       [data-name="BMC-Widget"] {
@@ -723,25 +725,22 @@ async function generateHtml(event, relativePath) {
   </style>
 </head>
 <body>
-
 <header>
-  <a href="https://www.parkrunnertourist.co.uk" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
+  <a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
   <div></div>
 </header>
-
 <main>
   <div class="subtitle">Accommodation near ${longName} </div>
-  
+ 
   <div class="parkrun-actions">
     <a href="#" class="action-btn" onclick="openModal('courseModal', '${name}')">Course Map</a>
     <a href="#" class="action-btn" onclick="openModal('volunteerModal', '${name}')">Volunteer Roster</a>
     <a href="https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}" target="_blank" class="action-btn">Directions</a>
   </div>
-  
+ 
   ${hasDescription ? `<div class="description">
     ${description}
   </div>` : ''}
-
   <div class="content-grid">
     <div class="hotels-section">
       <div class="iframe-container">
@@ -756,21 +755,25 @@ async function generateHtml(event, relativePath) {
         </iframe>
       </div>
     </div>
-
     <div class="right-column">
       <div class="iframe-container">
         <h2 class="section-title">parkrun Location</h2>
         <iframe class="map-iframe" data-src="${mainIframeUrl}" title="parkrun Map"></iframe>
       </div>
-      
+     
       <div class="iframe-container">
         <h2 class="section-title">Weather This Week</h2>
         <iframe class="weather-iframe" data-src="${weatherIframeUrl}" title="Weather forecast for ${name}"></iframe>
       </div>
     </div>
   </div>
+  <div class="nearby-section">
+    <h2 class="section-title">Nearby parkruns</h2>
+    <ul>
+      ${nearby.map(n => `<li><a href="${BASE_URL}/${n.actualSubfolder}/${n.slug}/" target="_blank" rel="noopener noreferrer">${n.name} (${Math.round(n.dist)} km)</a></li>`).join('')}
+    </ul>
+  </div>
 </main>
-
 <!-- Course Modal -->
 <div id="courseModal" class="modal">
   <div class="modal-content">
@@ -781,7 +784,6 @@ async function generateHtml(event, relativePath) {
     <iframe id="courseIframe" src="" title="Course Map"></iframe>
   </div>
 </div>
-
 <!-- Volunteer Modal -->
 <div id="volunteerModal" class="modal">
   <div class="modal-content">
@@ -792,7 +794,6 @@ async function generateHtml(event, relativePath) {
     <iframe id="volunteerIframe" src="" title="Volunteer Roster"></iframe>
   </div>
 </div>
-
 <div class="download-footer">
   Download The App
   <div class="app-badges">
@@ -804,14 +805,11 @@ async function generateHtml(event, relativePath) {
     </a>
   </div>
 </div>
-
 <footer>
   &copy; ${new Date().getFullYear()} parkrunner tourist
 </footer>
-
 <!-- Buy Me a Coffee Widget - Hidden on mobile and tablets -->
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
-
 <script>
   function switchView(mode) {
     const iframe = document.getElementById('stay22Frame');
@@ -820,12 +818,12 @@ async function generateHtml(event, relativePath) {
     document.getElementById('btn-listview').classList.toggle('active', mode === 'listview');
     document.getElementById('btn-map').classList.toggle('active', mode === 'map');
   }
-  
+ 
   // Modal functions
   function openModal(modalId, eventName) {
     const modal = document.getElementById(modalId);
     const eventSlug = eventName.toLowerCase().replace(/\\s+/g, '');
-    
+   
     if (modalId === 'courseModal') {
       const courseIframe = document.getElementById('courseIframe');
       courseIframe.src = \`https://${parkrunDomain}/\${eventSlug}/course/\`;
@@ -833,16 +831,16 @@ async function generateHtml(event, relativePath) {
       const volunteerIframe = document.getElementById('volunteerIframe');
       volunteerIframe.src = \`https://${parkrunDomain}/\${eventSlug}/futureroster/\`;
     }
-    
+   
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
   }
-  
+ 
   function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
-    
+   
     // Clear iframe src to stop loading
     if (modalId === 'courseModal') {
       document.getElementById('courseIframe').src = '';
@@ -850,24 +848,24 @@ async function generateHtml(event, relativePath) {
       document.getElementById('volunteerIframe').src = '';
     }
   }
-  
+ 
   // Close modal when clicking outside
   window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
       closeModal(event.target.id);
     }
   }
-  
+ 
   // Load weather and map iframes only for real users (not crawlers/bots)
   document.addEventListener('DOMContentLoaded', function() {
     // Check if this is likely a crawler/bot
     const userAgent = navigator.userAgent.toLowerCase();
     const isBot = /bot|crawler|spider|crawling|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegram|slackbot|discord|googlebot|bingbot|yahoo|duckduckbot|baiduspider|yandexbot|applebot|ia_archiver|curl|wget|python-requests|scrapy|selenium|phantomjs|headless/i.test(userAgent);
-    
+   
     if (!isBot && 'IntersectionObserver' in window) {
       // Use Intersection Observer to load iframes when they come into view
       const lazyIframes = document.querySelectorAll('iframe[data-src]');
-      
+     
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && !entry.target.src) {
@@ -878,7 +876,7 @@ async function generateHtml(event, relativePath) {
       }, {
         rootMargin: '50px' // Load when within 50px of viewport
       });
-      
+     
       lazyIframes.forEach(iframe => {
         observer.observe(iframe);
       });
@@ -893,7 +891,7 @@ async function generateHtml(event, relativePath) {
         });
       }, 1000);
     }
-    
+   
     // Add loading states for other iframes
     const iframes = document.querySelectorAll('iframe:not([data-src])');
     iframes.forEach(iframe => {
@@ -906,23 +904,25 @@ async function generateHtml(event, relativePath) {
     });
   });
 </script>
-
 </body>
 </html>`;
 }
 
-// Sitemap XML generator with subfolder support
+// Sitemap XML generator with subfolder support (no .html in URLs)
 function generateSitemap(eventPaths) {
   const today = new Date().toISOString().slice(0, 10);
-  const urlset = eventPaths.map(eventPath => 
-    `<url>
-      <loc>${BASE_URL}/${eventPath}</loc>
-      <lastmod>${today}</lastmod>
-      <changefreq>monthly</changefreq>
-      <priority>0.7</priority>
-    </url>`
-  ).join('\n');
-
+  const urlset = eventPaths
+    .map(eventPath => {
+      // Remove .html and ensure it ends with a trailing slash
+      const cleanPath = eventPath.replace(/\.html$/, '');
+      return `<url>
+        <loc>${BASE_URL}/${cleanPath}</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+      </url>`;
+    })
+    .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urlset}
@@ -945,7 +945,6 @@ function cleanupOldStructure() {
       for (const item of items) {
         const itemPath = path.join(OUTPUT_DIR, item);
         const stat = fs.statSync(itemPath);
-        
         if (stat.isFile() && item.endsWith('.html')) {
           fs.unlinkSync(itemPath);
           console.log(`Removed old file: ${itemPath}`);
@@ -959,11 +958,9 @@ function cleanupOldStructure() {
 
 function cleanupRemovedEvents(validSlugs) {
   const subfolders = fs.readdirSync(OUTPUT_DIR);
-  
   for (const folder of subfolders) {
     const folderPath = path.join(OUTPUT_DIR, folder);
     const stats = fs.statSync(folderPath);
-
     if (stats.isDirectory()) {
       const files = fs.readdirSync(folderPath);
       for (const file of files) {
@@ -980,12 +977,10 @@ function cleanupRemovedEvents(validSlugs) {
   }
 }
 
-
 async function main() {
   try {
     console.log('Fetching events JSON...');
     const data = await fetchJson(EVENTS_URL);
-
     let events;
     if (Array.isArray(data)) {
       events = data;
@@ -996,46 +991,35 @@ async function main() {
     } else {
       throw new Error('Unexpected JSON structure');
     }
-
     const selectedEvents = events.slice(0, MAX_EVENTS);
     const eventPaths = [];
-    const folderCounts = {};
-
     // Ensure main output directory exists
     ensureDirectoryExists(OUTPUT_DIR);
-    
     // Clean up old structure
     cleanupOldStructure();
-
     // Sort events by name to ensure consistent folder distribution
     selectedEvents.sort((a, b) => {
       const nameA = (a.properties.eventname || '').toLowerCase();
       const nameB = (b.properties.eventname || '').toLowerCase();
       return nameA.localeCompare(nameB);
     });
-
     // Create a set of valid slugs
-const validSlugs = new Set(
-  selectedEvents.map(e => slugify(e.properties.eventname))
-);
-
-// Remove any HTMLs from disk that don't match
-cleanupRemovedEvents(validSlugs);
-
-
+    const validSlugs = new Set(
+      selectedEvents.map(e => slugify(e.properties.eventname))
+    );
+    // Remove any HTMLs from disk that don't match
+    cleanupRemovedEvents(validSlugs);
+    // First pass: assign subfolders and collect event details
+    const eventDetails = [];
+    const folderCounts = {};
     for (const event of selectedEvents) {
       const slug = slugify(event.properties.eventname);
       const subfolder = getSubfolder(slug);
-      
-      // Initialize folder count if not exists
       if (!folderCounts[subfolder]) {
         folderCounts[subfolder] = 0;
       }
-      
-      // Check if we need to create a new subfolder due to file limit
       let actualSubfolder = subfolder;
       if (folderCounts[subfolder] >= MAX_FILES_PER_FOLDER) {
-        // Find next available subfolder with suffix
         let suffix = 2;
         while (folderCounts[`${subfolder}${suffix}`] >= MAX_FILES_PER_FOLDER) {
           suffix++;
@@ -1045,33 +1029,60 @@ cleanupRemovedEvents(validSlugs);
           folderCounts[actualSubfolder] = 0;
         }
       }
-      
+      const latitude = event.geometry.coordinates[1] || 0;
+      const longitude = event.geometry.coordinates[0] || 0;
+      const name = event.properties.EventLongName || event.properties.eventname;
+      eventDetails.push({ slug, actualSubfolder, latitude, longitude, name });
+      folderCounts[actualSubfolder]++;
+    }
+    // Compute nearby events for each
+    for (let i = 0; i < eventDetails.length; i++) {
+      const current = eventDetails[i];
+      const distances = eventDetails
+        .map((other, j) => {
+          if (i === j) return null;
+          const dist = calculateDistance(
+            current.latitude,
+            current.longitude,
+            other.latitude,
+            other.longitude
+          );
+          return { ...other, dist };
+        })
+        .filter(d => d !== null)
+        .sort((a, b) => a.dist - b.dist)
+        .slice(0, 5);
+      eventDetails[i].nearby = distances;
+    }
+    // Second pass: generate HTML files
+    for (let i = 0; i < selectedEvents.length; i++) {
+      const event = selectedEvents[i];
+      const details = eventDetails[i];
+      const slug = details.slug;
+      const actualSubfolder = details.actualSubfolder;
       const subfolderPath = path.join(OUTPUT_DIR, actualSubfolder);
       ensureDirectoryExists(subfolderPath);
-      
       const filename = path.join(subfolderPath, `${slug}.html`);
-      const relativePath = `${actualSubfolder}/${slug}.html`;
-      
+      const relativePath = `${actualSubfolder}/${slug}/`;
       eventPaths.push(relativePath);
-      folderCounts[actualSubfolder]++;
-      
-      const htmlContent = await generateHtml(event, relativePath);
+      const htmlContent = await generateHtml(event, relativePath, details.nearby);
       fs.writeFileSync(filename, htmlContent, 'utf-8');
-      console.log(`Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`);
+      console.log(
+        `Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`
+      );
     }
-
     // Save sitemap.xml in root directory
     const sitemapContent = generateSitemap(eventPaths);
     fs.writeFileSync('./sitemap.events.xml', sitemapContent, 'utf-8');
     console.log('Generated sitemap.xml in root folder.');
-
     // Log folder distribution
     console.log('\nFolder distribution:');
     Object.entries(folderCounts).forEach(([folder, count]) => {
-      console.log(`  ${folder}: ${count} files`);
+      console.log(` ${folder}: ${count} files`);
     });
-
-    console.log(`\nSuccessfully generated ${selectedEvents.length} event HTML files across ${Object.keys(folderCounts).length} folders.`);
+    console.log(
+      `\nSuccessfully generated ${selectedEvents.length} event HTML files across ${Object.keys(folderCounts).length} folders.`
+    );
   } catch (err) {
     console.error('Error:', err);
   }
