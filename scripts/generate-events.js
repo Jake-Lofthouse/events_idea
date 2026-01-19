@@ -180,7 +180,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
   const longitude = coords[0] || 0;
   const encodedName = encodeURIComponent(`${longName}`);
   const checkinDate = getNextFridayDateISO();
-  const pageTitle = `${longName} - Hotels, Accommodation & Tourist Guide`;
+  const pageTitle = `Accommodation near ${longName} | Hotels, Weather, Course Map & More | parkrunner tourist`;
   const { url: parkrunDomain, code: countryCode } = getParkrunInfo(latitude, longitude);
   let description = event.properties.EventDescription || '';
   const hasDescription = description && description.trim() !== '' && description.trim() !== 'No description available.';
@@ -225,34 +225,26 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
   const mainIframeUrl = `https://parkrunnertourist.com/main?${parkrunType}&lat=${latitude}&lon=${longitude}&zoom=13`;
   // Weather iframe URL
   const weatherIframeUrl = `https://parkrunnertourist.com/weather?lat=${latitude}&lon=${longitude}`;
-  
-  // Improved meta description
-  const metaDescription = `Plan your visit to ${longName} parkrun. Find nearby hotels and accommodation, check the weather forecast, view the course map, volunteer roster, and discover nearby parkrun events for the perfect parkrun tourism experience.`;
-  
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${pageTitle}</title>
-<meta name="description" content="${metaDescription}" />
-<meta name="keywords" content="${longName.toLowerCase()}, parkrun, parkrun accommodation, hotels near ${name.toLowerCase()}, ${location.toLowerCase()}, parkrun tourist, weather forecast, course map, volunteer roster, nearby parkruns, ${nearbyKeywords}" />
+<meta name="description" content="Discover the best accommodation near ${longName}. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
+<meta name="keywords" content="parkrun accommodation, hotels near ${name.toLowerCase()} parkrun, ${longName.toLowerCase()} hotels, parkrun tourist, nearby parkruns, ${nearbyKeywords}, parkrun weather, parkrun course map" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="${location}" />
 <meta name="geo.position" content="${latitude};${longitude}" />
 <meta property="og:title" content="${pageTitle}" />
-<meta property="og:description" content="${metaDescription}" />
+<meta property="og:description" content="Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/${relativePath}" />
-<meta property="og:type" content="website" />
-<meta property="og:image" content="https://www.parkrunnertourist.com/og-image.jpg" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="${pageTitle}" />
-<meta name="twitter:description" content="${metaDescription}" />
+<meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
 <link rel="canonical" href="https://www.parkrunnertourist.com/${relativePath}" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Apple Smart Banner -->
   <meta name="apple-itunes-app" content="app-id=6743163993, app-argument=https://www.parkrunnertourist.com">
   <!-- Favicon -->
@@ -323,8 +315,8 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     }
    
     h1 {
-      font-size: 3.5rem;
-      font-weight: 900;
+      font-size: 3rem;
+      font-weight: 800;
       margin-bottom: 1rem;
       background: linear-gradient(135deg, #2e7d32, #4caf50);
       -webkit-background-clip: text;
@@ -334,17 +326,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       position: relative;
       padding: 2rem 0;
       line-height: 1.2;
-      letter-spacing: -0.02em;
-    }
-   
-    /* Mobile order for iframes */
-    @media (max-width: 1024px) {
-      #weather-section { order: 1; }
-      #location-section { order: 2; }
-      #hotels-section { order: 3; }
-      #nearby-section { order: 4; }
-      #cancel-tile { order: 5; }
-      #further-tile { order: 6; }
     }
    
     .subtitle {
@@ -745,4 +726,531 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     .download-footer img {
       height: 70px;
       width: auto;
-      background: none
+      background: none;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+      border-radius: 0.5rem;
+    }
+   
+    .download-footer img:hover {
+      transform: scale(1.1) translateY(-4px);
+      filter: brightness(1.1);
+    }
+   
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #f8fafc;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    footer .last-update {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+   
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .left-column, .right-column {
+        grid-column: 1;
+      }
+
+      #weather-section { order: 1; }
+      #location-section { order: 2; }
+      #hotels-section { order: 3; }
+      #nearby-section { order: 4; }
+      #cancel-tile { order: 5; }
+      #further-tile { order: 6; }
+     
+      .weather-iframe {
+        height: 250px;
+      }
+     
+      .accommodation-iframe,
+      .map-iframe {
+        height: 450px;
+      }
+     
+      .app-badges {
+        justify-content: center;
+      }
+    }
+   
+    @media (max-width: 768px) {
+      main {
+        padding: 2rem 1rem;
+      }
+     
+      h1 {
+        font-size: 2.5rem;
+      }
+     
+      .subtitle {
+        font-size: 1.2rem;
+      }
+     
+      header {
+        padding: 1rem;
+        font-size: 1.5rem;
+      }
+     
+      .toggle-btn {
+        margin-bottom: 0.5rem;
+        margin-right: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+     
+      .app-badges {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+      }
+     
+      .accommodation-iframe,
+      .map-iframe {
+        height: 400px;
+      }
+     
+      .weather-iframe {
+        height: 200px;
+      }
+     
+      .modal-header h2 {
+        font-size: 1.5rem;
+      }
+     
+      .close {
+        font-size: 2rem;
+      }
+    }
+   
+    /* Hide Buy Me a Coffee widget on mobile and tablets */
+    @media (max-width: 1024px) {
+      [data-name="BMC-Widget"] {
+        display: none !important;
+      }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "${pageTitle}",
+    "description": "Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
+    "keywords": "parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}, nearby parkruns, ${nearbyKeywords}",
+    "author": {
+      "@type": "Person",
+      "name": "Jake Lofthouse"
+    },
+    "url": "https://www.parkrunnertourist.com/${relativePath}"
+  }
+  </script>
+</head>
+<body>
+<header>
+  <a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
+  <div></div>
+</header>
+<div id="cancel-banner" class="cancel-banner"></div>
+<main>
+  <h1>Accommodation near ${longName}</h1>
+ 
+  <div class="parkrun-actions">
+    <a href="#" class="action-btn" onclick="openModal('courseModal', '${name}')">Course Map</a>
+    <a href="#" class="action-btn" onclick="openModal('volunteerModal', '${name}')">Volunteer Roster</a>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}" target="_blank" class="action-btn">Directions</a>
+  </div>
+ 
+  ${hasDescription ? `<div class="description">
+    ${description}
+  </div>` : ''}
+  <div class="content-grid">
+    <div class="left-column">
+      <div id="hotels-section" class="iframe-container">
+        <h2 class="section-title">Hotel Prices</h2>
+        <div>
+          <button class="toggle-btn active" onclick="switchView('listview')" id="btn-listview">List View</button>
+          <button class="toggle-btn" onclick="switchView('map')" id="btn-map">Map View</button>
+        </div>
+        <iframe id="stay22Frame" class="accommodation-iframe" scrolling="no"
+          src="${stay22BaseUrl}&viewmode=listview&listviewexpand=true"
+          title="Stay22 accommodation listing">
+        </iframe>
+      </div>
+      <div id="cancel-tile" class="iframe-container cancel-tile">
+        <h2 class="section-title">Event Status</h2>
+        <p id="cancel-message"></p>
+        <div id="cancel-update" class="last-update"></div>
+      </div>
+      <div id="further-tile" class="iframe-container further-tile">
+        <h2 class="section-title">Future Cancellations</h2>
+        <ul id="further-list"></ul>
+        <div id="further-update" class="last-update"></div>
+      </div>
+    </div>
+    <div class="right-column">
+      <div id="location-section" class="iframe-container">
+        <h2 class="section-title">parkrun Location</h2>
+        <iframe class="map-iframe" data-src="${mainIframeUrl}" title="parkrun Map"></iframe>
+      </div>
+      <div id="weather-section" class="iframe-container">
+        <h2 class="section-title">Weather This Week</h2>
+        <iframe class="weather-iframe" data-src="${weatherIframeUrl}" title="Weather forecast for ${name}"></iframe>
+      </div>
+      ${nearbyHtml}
+    </div>
+  </div>
+</main>
+<!-- Course Modal -->
+<div id="courseModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Course Map</h2>
+      <span class="close" onclick="closeModal('courseModal')">&times;</span>
+    </div>
+    <iframe id="courseIframe" src="" title="Course Map"></iframe>
+  </div>
+</div>
+<!-- Volunteer Modal -->
+<div id="volunteerModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Volunteer Roster</h2>
+      <span class="close" onclick="closeModal('volunteerModal')">&times;</span>
+    </div>
+    <iframe id="volunteerIframe" src="" title="Volunteer Roster"></iframe>
+  </div>
+</div>
+<div class="download-footer">
+  Download The App
+  <div class="app-badges">
+    <a href="https://apps.apple.com/gb/app/parkrunner-tourist/id6743163993" target="_blank" rel="noopener noreferrer">
+      <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" />
+    </a>
+    <a href="https://play.google.com/store/apps/details?id=appinventor.ai_jlofty8.parkrunner_tourist" target="_blank" rel="noopener noreferrer">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" />
+    </a>
+  </div>
+</div>
+<footer>
+  &copy; ${new Date().getFullYear()} parkrunner tourist
+</footer>
+<!-- Buy Me a Coffee Widget - Hidden on mobile and tablets -->
+<script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+<script>
+  function switchView(mode) {
+    const iframe = document.getElementById('stay22Frame');
+    const baseUrl = "${stay22BaseUrl}";
+    iframe.src = baseUrl + "&viewmode=" + mode + "&listviewexpand=" + (mode === 'listview');
+    document.getElementById('btn-listview').classList.toggle('active', mode === 'listview');
+    document.getElementById('btn-map').classList.toggle('active', mode === 'map');
+  }
+ 
+  // Modal functions
+  function openModal(modalId, eventName) {
+    const modal = document.getElementById(modalId);
+    const eventSlug = eventName.toLowerCase().replace(/\\s+/g, '');
+   
+    if (modalId === 'courseModal') {
+      const courseIframe = document.getElementById('courseIframe');
+      courseIframe.src = \`https://${parkrunDomain}/\${eventSlug}/course/\`;
+    } else if (modalId === 'volunteerModal') {
+      const volunteerIframe = document.getElementById('volunteerIframe');
+      volunteerIframe.src = \`https://${parkrunDomain}/\${eventSlug}/futureroster/\`;
+    }
+   
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+ 
+  function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+   
+    // Clear iframe src to stop loading
+    if (modalId === 'courseModal') {
+      document.getElementById('courseIframe').src = '';
+    } else if (modalId === 'volunteerModal') {
+      document.getElementById('volunteerIframe').src = '';
+    }
+  }
+ 
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+      closeModal(event.target.id);
+    }
+  }
+ 
+  // Load weather and map iframes only for real users (not crawlers/bots)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if this is likely a crawler/bot
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isBot = /bot|crawler|spider|crawling|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegram|slackbot|discord|googlebot|bingbot|yahoo|duckduckbot|baiduspider|yandexbot|applebot|ia_archiver|curl|wget|python-requests|scrapy|selenium|phantomjs|headless/i.test(userAgent);
+   
+    if (!isBot && 'IntersectionObserver' in window) {
+      // Use Intersection Observer to load iframes when they come into view
+      const lazyIframes = document.querySelectorAll('iframe[data-src]');
+     
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !entry.target.src) {
+            entry.target.src = entry.target.dataset.src;
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '50px' // Load when within 50px of viewport
+      });
+     
+      lazyIframes.forEach(iframe => {
+        observer.observe(iframe);
+      });
+    } else if (!isBot) {
+      // Fallback for browsers without Intersection Observer
+      setTimeout(() => {
+        const lazyIframes = document.querySelectorAll('iframe[data-src]');
+        lazyIframes.forEach(iframe => {
+          if (!iframe.src) {
+            iframe.src = iframe.dataset.src;
+          }
+        });
+      }, 1000);
+    }
+   
+    // Add loading states for other iframes
+    const iframes = document.querySelectorAll('iframe:not([data-src])');
+    iframes.forEach(iframe => {
+      const container = iframe.closest('.iframe-container');
+      iframe.addEventListener('load', function() {
+        if (container) {
+          container.style.background = 'white';
+        }
+      });
+    });
+
+    // Fetch cancellations dynamically
+    async function fetchCancellations() {
+      try {
+        const [upcoming, further, lastUpdate] = await Promise.all([
+          fetch('https://www.parkrunnertourist.com/cancellations/upcoming.json').then(res => res.json()),
+          fetch('https://www.parkrunnertourist.com/cancellations/further.json').then(res => res.json()),
+          fetch('https://www.parkrunnertourist.com/cancellations/lastupdate.json').then(res => res.json())
+        ]);
+
+        const eventName = '${longName}';
+        const upcomingCancel = upcoming.find(c => c.name === eventName);
+        const furtherCancels = further.filter(c => c.name === eventName);
+
+        const cancelBanner = document.getElementById('cancel-banner');
+        const cancelTile = document.getElementById('cancel-tile');
+        const cancelMessage = document.getElementById('cancel-message');
+        const cancelUpdate = document.getElementById('cancel-update');
+        const furtherTile = document.getElementById('further-tile');
+        const furtherList = document.getElementById('further-list');
+        const furtherUpdate = document.getElementById('further-update');
+
+        const updateTime = lastUpdate.updated_utc ? new Date(lastUpdate.updated_utc).toLocaleString() : 'Unknown';
+
+        cancelTile.style.display = 'block';
+        cancelUpdate.textContent = 'Last updated: ' + updateTime;
+
+        if (upcomingCancel) {
+          cancelBanner.textContent = 'This event is cancelled on ' + upcomingCancel.date + ': ' + upcomingCancel.reason;
+          cancelBanner.style.display = 'block';
+          cancelTile.classList.add('cancel-red');
+          cancelMessage.innerHTML = '<span class="status-icon red">⚠</span> Cancelled: ' + upcomingCancel.reason + ' on ' + upcomingCancel.date;
+        } else {
+          cancelTile.classList.add('cancel-green');
+          cancelMessage.innerHTML = '<span class="status-icon green">✓</span> Event is running as scheduled';
+        }
+
+        if (furtherCancels.length > 0) {
+          furtherTile.style.display = 'block';
+          furtherUpdate.textContent = 'Last updated: ' + updateTime;
+          furtherList.innerHTML = furtherCancels.map(c => '<li><span class="status-icon yellow">⚠</span> ' + c.reason + ' on ' + c.date + '</li>').join('');
+        } else {
+          furtherTile.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error fetching cancellations:', error);
+      }
+    }
+
+    fetchCancellations();
+  });
+</script>
+</body>
+</html>`;
+}
+// Sitemap XML generator with subfolder support (no .html in URLs)
+function generateSitemap(eventPaths) {
+  const today = new Date().toISOString().slice(0, 10);
+  const urlset = eventPaths
+    .map(eventPath => {
+      // Remove .html and ensure no trailing slash
+      const cleanPath = eventPath.replace(/\.html$/, '').replace(/\/$/, '');
+      return `<url>
+        <loc>${BASE_URL}/${cleanPath}</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+      </url>`;
+    })
+    .join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlset}
+</urlset>`;
+}
+// Create directory structure recursively
+function ensureDirectoryExists(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+}
+// Clean up old files and folders
+function cleanupOldStructure() {
+  try {
+    // Remove old HTML files directly in events folder
+    if (fs.existsSync(OUTPUT_DIR)) {
+      const items = fs.readdirSync(OUTPUT_DIR);
+      for (const item of items) {
+        const itemPath = path.join(OUTPUT_DIR, item);
+        const stat = fs.statSync(itemPath);
+        if (stat.isFile() && item.endsWith('.html')) {
+          fs.unlinkSync(itemPath);
+          console.log(`Removed old file: ${itemPath}`);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('Warning: Could not clean up old structure:', error.message);
+  }
+}
+function cleanupRemovedEvents(validSlugs) {
+  const subfolders = fs.readdirSync(OUTPUT_DIR);
+  for (const folder of subfolders) {
+    const folderPath = path.join(OUTPUT_DIR, folder);
+    const stats = fs.statSync(folderPath);
+    if (stats.isDirectory()) {
+      const files = fs.readdirSync(folderPath);
+      for (const file of files) {
+        if (file.endsWith('.html')) {
+          const slug = path.basename(file, '.html');
+          if (!validSlugs.has(slug)) {
+            const fullPath = path.join(folderPath, file);
+            fs.unlinkSync(fullPath);
+            console.log(`Deleted old HTML: ${fullPath}`);
+          }
+        }
+      }
+    }
+  }
+}
+async function main() {
+  try {
+    console.log('Fetching events JSON...');
+    const data = await fetchJson(EVENTS_URL);
+    let events;
+    if (Array.isArray(data)) {
+      events = data;
+    } else if (Array.isArray(data.features)) {
+      events = data.features;
+    } else if (data.events && Array.isArray(data.events.features)) {
+      events = data.events.features;
+    } else {
+      throw new Error('Unexpected JSON structure');
+    }
+    const selectedEvents = events.slice(0, MAX_EVENTS);
+    const eventPaths = [];
+    const folderCounts = {};
+    // Ensure main output directory exists
+    ensureDirectoryExists(OUTPUT_DIR);
+    // Clean up old structure
+    cleanupOldStructure();
+    // Sort events by name to ensure consistent folder distribution
+    selectedEvents.sort((a, b) => {
+      const nameA = (a.properties.eventname || '').toLowerCase();
+      const nameB = (b.properties.eventname || '').toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+    // Create a set of valid slugs
+    const validSlugs = new Set(
+      selectedEvents.map(e => slugify(e.properties.eventname))
+    );
+    // Remove any HTMLs from disk that don't match
+    cleanupRemovedEvents(validSlugs);
+    // First pass: assign subfolders and build maps
+    const slugToSubfolder = {};
+    const allEventsInfo = [];
+    for (const event of selectedEvents) {
+      const slug = slugify(event.properties.eventname);
+      const subfolder = getSubfolder(slug);
+      let actualSubfolder = subfolder;
+      if (!folderCounts[subfolder]) {
+        folderCounts[subfolder] = 0;
+      }
+      if (folderCounts[subfolder] >= MAX_FILES_PER_FOLDER) {
+        let suffix = 2;
+        while (true) {
+          const cand = `${subfolder}${suffix}`;
+          if (!folderCounts[cand]) {
+            folderCounts[cand] = 0;
+          }
+          if (folderCounts[cand] < MAX_FILES_PER_FOLDER) {
+            actualSubfolder = cand;
+            break;
+          }
+          suffix++;
+        }
+      }
+      folderCounts[actualSubfolder]++;
+      slugToSubfolder[slug] = actualSubfolder;
+      const lat = event.geometry.coordinates[1] || 0;
+      const lon = event.geometry.coordinates[0] || 0;
+      const longName = event.properties.EventLongName || event.properties.eventname;
+      const { code: country } = getParkrunInfo(lat, lon);
+      allEventsInfo.push({ slug, lat, lon, longName, country });
+      const relativePath = `${actualSubfolder}/${slug}`;
+      eventPaths.push(relativePath);
+    }
+    // Second pass: generate and write HTML files
+    for (const event of selectedEvents) {
+      const slug = slugify(event.properties.eventname);
+      const actualSubfolder = slugToSubfolder[slug];
+      const subfolderPath = path.join(OUTPUT_DIR, actualSubfolder);
+      ensureDirectoryExists(subfolderPath);
+      const filename = path.join(subfolderPath, `${slug}.html`);
+      const relativePath = `${actualSubfolder}/${slug}`;
+      const htmlContent = await generateHtml(event, relativePath, allEventsInfo, slugToSubfolder);
+      fs.writeFileSync(filename, htmlContent, 'utf-8');
+      console.log(
+        `Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`
+      );
+    }
+    // Save sitemap.xml in root directory
+    const sitemapContent = generateSitemap(eventPaths);
+    fs.writeFileSync('./sitemap.events.xml', sitemapContent, 'utf-8');
+    console.log('Generated sitemap.xml in root folder.');
+    // Log folder distribution
+    console.log('\nFolder distribution:');
+    Object.entries(folderCounts).forEach(([folder, count]) => {
+      console.log(` ${folder}: ${count} files`);
+    });
+    console.log(
+      `\nSuccessfully generated ${selectedEvents.length} event HTML files across ${Object.keys(folderCounts).length} folders.`
+    );
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}
+main();
