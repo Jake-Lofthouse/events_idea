@@ -180,7 +180,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
   const longitude = coords[0] || 0;
   const encodedName = encodeURIComponent(`${longName}`);
   const checkinDate = getNextFridayDateISO();
-  const pageTitle = `Accommodation near ${longName} parkrun | Hotels, Weather, Course Map & More | parkrunner tourist`;
+  const pageTitle = `Accommodation near ${longName} | Hotels, Weather, Course Map & More | parkrunner tourist`;
   const { url: parkrunDomain, code: countryCode } = getParkrunInfo(latitude, longitude);
   let description = event.properties.EventDescription || '';
   const hasDescription = description && description.trim() !== '' && description.trim() !== 'No description available.';
@@ -231,13 +231,13 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${pageTitle}</title>
-<meta name="description" content="Discover the best accommodation near ${longName} parkrun. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
-<meta name="keywords" content="parkrun accommodation, hotels near ${name.toLowerCase()} parkrun, ${longName.toLowerCase()} parkrun hotels, parkrun tourist, nearby parkruns, ${nearbyKeywords}, parkrun weather, parkrun course map" />
+<meta name="description" content="Discover the best accommodation near ${longName}. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
+<meta name="keywords" content="parkrun accommodation, hotels near ${name.toLowerCase()} parkrun, ${longName.toLowerCase()} hotels, parkrun tourist, nearby parkruns, ${nearbyKeywords}, parkrun weather, parkrun course map" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="${location}" />
 <meta name="geo.position" content="${latitude};${longitude}" />
 <meta property="og:title" content="${pageTitle}" />
-<meta property="og:description" content="Find and book hotels, campsites and cafes around ${longName} parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
+<meta property="og:description" content="Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/${relativePath}" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
@@ -315,26 +315,30 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     }
    
     h1 {
-      font-size: 3rem;
-      font-weight: 800;
+      font-size: 2.25rem;
+      font-weight: 700;
       margin-bottom: 1rem;
-      background: linear-gradient(135deg, #2e7d32, #4caf50);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #1f2937;
       text-align: center;
       position: relative;
-      padding: 2rem 0;
+      padding: 1rem 0;
       line-height: 1.2;
     }
    
     .subtitle {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #4caf50;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #4b5563;
       text-align: center;
       margin-bottom: 3rem;
       position: relative;
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .subtitle {
+        display: block;
+      }
     }
    
     .subtitle::after {
@@ -788,11 +792,11 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       }
      
       h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
       }
      
       .subtitle {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
       }
      
       header {
@@ -843,7 +847,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "${pageTitle}",
-    "description": "Find and book hotels, campsites and cafes around ${longName} parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
+    "description": "Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
     "keywords": "parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}, nearby parkruns, ${nearbyKeywords}",
     "author": {
       "@type": "Person",
@@ -860,7 +864,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 </header>
 <div id="cancel-banner" class="cancel-banner"></div>
 <main>
-  <h1>Accommodation near ${longName} parkrun</h1>
+  <h1>Accommodation near ${longName}</h1>
   <div class="subtitle">Find hotels, weather, maps and more</div>
  
   <div class="parkrun-actions">
@@ -1078,6 +1082,8 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
           furtherTile.style.display = 'block';
           furtherUpdate.textContent = 'Last updated: ' + updateTime;
           furtherList.innerHTML = furtherCancels.map(c => '<li><span class="status-icon yellow">⚠</span> ' + c.reason + ' on ' + c.date + '</li>').join('');
+        } else {
+          furtherTile.style.display = 'none';
         }
       } catch (error) {
         console.error('Error fetching cancellations:', error);
