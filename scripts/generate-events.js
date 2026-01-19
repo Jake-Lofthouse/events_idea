@@ -2,9 +2,6 @@ const fs = require('fs');
 const https = require('https');
 const path = require('path');
 const EVENTS_URL = 'https://www.parkrunnertourist.com/events1.json';
-const UPCOMING_CANCELLATIONS_URL = 'https://www.parkrunnertourist.com/cancellations/upcoming.json';
-const FURTHER_CANCELLATIONS_URL = 'https://www.parkrunnertourist.com/cancellations/further.json';
-const LAST_UPDATE_URL = 'https://www.parkrunnertourist.com/cancellations/lastupdate.json';
 const OUTPUT_DIR = './explore';
 const MAX_EVENTS = 6;
 const MAX_FILES_PER_FOLDER = 999;
@@ -172,17 +169,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
-// Format date from YYYY-MM-DD or DD/MM/YYYY to readable
-function formatDate(dateStr) {
-  if (dateStr.includes('/')) {
-    const [day, month, year] = dateStr.split('/');
-    return `${day}/${month}/${year}`;
-  }
-  const [year, month, day] = dateStr.split('-');
-  return `${day}/${month}/${year}`;
-}
 // Generate the HTML content for each event page
-async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder, upcomingCancellations, furtherCancellations, lastUpdate) {
+async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder) {
   const name = event.properties.eventname || 'Unknown event';
   const longName = event.properties.EventLongName || name;
   const location = event.properties.EventLocation || '';
@@ -228,28 +216,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
     </div>
   ` : '';
   const nearbyKeywords = nearby.map(n => n.longName.toLowerCase()).join(', ');
-  // Check cancellations
-  const upcomingCancel = upcomingCancellations.find(c => c.name === longName);
-  const furtherCancels = furtherCancellations.filter(c => c.name === longName);
-  let cancelBanner = '';
-  let upcomingTile = '';
-  let furtherTile = '';
-  if (upcomingCancel) {
-    cancelBanner = `<div class="cancel-banner">This event is cancelled on ${formatDate(upcomingCancel.date)}: ${upcomingCancel.reason}</div>`;
-    upcomingTile = `<div class="iframe-container cancel-red">
-      <h2 class="section-title">Event Cancelled</h2>
-      <p>${upcomingCancel.reason} on ${formatDate(upcomingCancel.date)}</p>
-    </div>`;
-  }
-  if (furtherCancels.length > 0) {
-    furtherTile = `<div class="iframe-container cancel-yellow">
-      <h2 class="section-title">Future Cancellations</h2>
-      <ul>
-        ${furtherCancels.map(c => `<li>${c.reason} on ${formatDate(c.date)}</li>`).join('')}
-      </ul>
-    </div>`;
-  }
-  const lastUpdateStr = lastUpdate.updated_utc ? new Date(lastUpdate.updated_utc).toLocaleString() : 'Unknown';
   // Stay22 iframe base URL with scroll locking via scrolling="no"
   const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=7dd856&venue=${encodedName}`;
   // Determine if it's a junior parkrun and set the appropriate URL
@@ -456,13 +422,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
       padding: 1rem;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
       border: 1px solid rgba(76, 175, 80, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
-    }
-   
-    .iframe-container:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
    
     iframe {
@@ -678,6 +638,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
       padding: 1rem;
       font-weight: bold;
       margin-bottom: 2rem;
+      display: none;
     }
 
     .cancel-red {
@@ -704,6 +665,33 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
 
     .cancel-yellow .section-title::before {
       background: #eab308;
+    }
+
+    .cancel-green {
+      border: 1px solid #22c55e;
+      background: #dcfce7;
+    }
+
+    .cancel-green .section-title {
+      color: #22c55e;
+    }
+
+    .cancel-green .section-title::before {
+      background: #22c55e;
+    }
+
+    .cancel-tile {
+      display: none;
+    }
+
+    .further-tile {
+      display: none;
+    }
+
+    .last-update {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.5rem;
     }
    
     /* Download footer */
@@ -863,7 +851,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
   <a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
   <div></div>
 </header>
-${cancelBanner}
+<div id="cancel-banner" class="cancel-banner"></div>
 <main>
   <div class="subtitle">Accommodation near ${longName} </div>
  
@@ -900,8 +888,16 @@ ${cancelBanner}
         <h2 class="section-title">Weather This Week</h2>
         <iframe class="weather-iframe" data-src="${weatherIframeUrl}" title="Weather forecast for ${name}"></iframe>
       </div>
-      ${upcomingTile}
-      ${furtherTile}
+      <div id="cancel-tile" class="iframe-container cancel-tile">
+        <h2 class="section-title">Event Status</h2>
+        <p id="cancel-message"></p>
+        <div id="cancel-update" class="last-update"></div>
+      </div>
+      <div id="further-tile" class="iframe-container further-tile">
+        <h2 class="section-title">Future Cancellations</h2>
+        <ul id="further-list"></ul>
+        <div id="further-update" class="last-update"></div>
+      </div>
       ${nearbyHtml}
     </div>
   </div>
@@ -939,7 +935,6 @@ ${cancelBanner}
 </div>
 <footer>
   &copy; ${new Date().getFullYear()} parkrunner tourist
-  <div class="last-update">Cancellations last updated: ${lastUpdateStr}</div>
 </footer>
 <!-- Buy Me a Coffee Widget - Hidden on mobile and tablets -->
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
@@ -1035,6 +1030,54 @@ ${cancelBanner}
         }
       });
     });
+
+    // Fetch cancellations dynamically
+    async function fetchCancellations() {
+      try {
+        const [upcoming, further, lastUpdate] = await Promise.all([
+          fetch('https://www.parkrunnertourist.com/cancellations/upcoming.json').then(res => res.json()),
+          fetch('https://www.parkrunnertourist.com/cancellations/further.json').then(res => res.json()),
+          fetch('https://www.parkrunnertourist.com/cancellations/lastupdate.json').then(res => res.json())
+        ]);
+
+        const eventName = '${longName}';
+        const upcomingCancel = upcoming.find(c => c.name === eventName);
+        const furtherCancels = further.filter(c => c.name === eventName);
+
+        const cancelBanner = document.getElementById('cancel-banner');
+        const cancelTile = document.getElementById('cancel-tile');
+        const cancelMessage = document.getElementById('cancel-message');
+        const cancelUpdate = document.getElementById('cancel-update');
+        const furtherTile = document.getElementById('further-tile');
+        const furtherList = document.getElementById('further-list');
+
+        const updateTime = lastUpdate.updated_utc ? new Date(lastUpdate.updated_utc).toLocaleString() : 'Unknown';
+
+        cancelTile.style.display = 'block';
+        cancelUpdate.textContent = \`Last updated: \${updateTime}\`;
+
+        if (upcomingCancel) {
+          cancelBanner.textContent = \`This event is cancelled on \${upcomingCancel.date}: \${upcomingCancel.reason}\`;
+          cancelBanner.style.display = 'block';
+          cancelTile.classList.add('cancel-red');
+          cancelMessage.textContent = \`\${upcomingCancel.reason} on \${upcomingCancel.date}\`;
+        } else {
+          cancelTile.classList.add('cancel-green');
+          cancelMessage.textContent = 'Event is running as scheduled ✓';
+        }
+
+        if (furtherCancels.length > 0) {
+          furtherTile.style.display = 'block';
+          furtherTile.classList.add('cancel-yellow');
+          furtherList.innerHTML = furtherCancels.map(c => `<li>\${c.reason} on \${c.date}</li>`).join('');
+          document.getElementById('further-update').textContent = \`Last updated: \${updateTime}\`;
+        }
+      } catch (error) {
+        console.error('Error fetching cancellations:', error);
+      }
+    }
+
+    fetchCancellations();
   });
 </script>
 </body>
@@ -1119,12 +1162,6 @@ async function main() {
     } else {
       throw new Error('Unexpected JSON structure');
     }
-    console.log('Fetching cancellations...');
-    const [upcomingCancellations, furtherCancellations, lastUpdate] = await Promise.all([
-      fetchJson(UPCOMING_CANCELLATIONS_URL),
-      fetchJson(FURTHER_CANCELLATIONS_URL),
-      fetchJson(LAST_UPDATE_URL)
-    ]);
     const selectedEvents = events.slice(0, MAX_EVENTS);
     const eventPaths = [];
     const folderCounts = {};
@@ -1185,7 +1222,7 @@ async function main() {
       ensureDirectoryExists(subfolderPath);
       const filename = path.join(subfolderPath, `${slug}.html`);
       const relativePath = `${actualSubfolder}/${slug}`;
-      const htmlContent = await generateHtml(event, relativePath, allEventsInfo, slugToSubfolder, upcomingCancellations, furtherCancellations, lastUpdate);
+      const htmlContent = await generateHtml(event, relativePath, allEventsInfo, slugToSubfolder);
       fs.writeFileSync(filename, htmlContent, 'utf-8');
       console.log(
         `Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`
