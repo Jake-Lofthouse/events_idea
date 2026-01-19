@@ -356,8 +356,11 @@
       height: 400px;
     }
    
-    .hotels-section {
+    .left-column {
       grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
     }
    
     .right-column {
@@ -415,51 +418,41 @@
       display: none;
     }
 
-    .cancel-red {
-      border: 1px solid #ef4444;
-      background: #fee2e2;
+    .status-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 16px;
+      margin-right: 8px;
     }
 
-    .cancel-red .section-title {
-      color: #ef4444;
-    }
-
-    .cancel-red .section-title::before {
-      background: #ef4444;
-    }
-
-    .cancel-yellow {
-      border: 1px solid #eab308;
-      background: #fef9c3;
-    }
-
-    .cancel-yellow .section-title {
-      color: #eab308;
-    }
-
-    .cancel-yellow .section-title::before {
-      background: #eab308;
-    }
-
-    .cancel-green {
-      border: 1px solid #22c55e;
-      background: #dcfce7;
-    }
-
-    .cancel-green .section-title {
-      color: #22c55e;
-    }
-
-    .cancel-green .section-title::before {
+    .green {
       background: #22c55e;
+      color: white;
     }
 
-    .cancel-tile {
-      display: none;
+    .yellow {
+      background: #eab308;
+      color: white;
     }
 
-    .further-tile {
-      display: none;
+    .red {
+      background: #ef4444;
+      color: white;
+    }
+
+    .cancel-tile p {
+      display: flex;
+      align-items: center;
+    }
+
+    .further-tile li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
     }
 
     .last-update {
@@ -536,18 +529,17 @@
         grid-template-columns: 1fr;
         gap: 1.5rem;
       }
-     
-      /* Mobile order: parkrun location, hotels, weather */
-      .right-column {
-        order: 1;
-        grid-column: 1;
-        flex-direction: column-reverse;
-      }
-     
-      .hotels-section {
-        order: 2;
+
+      .left-column, .right-column {
         grid-column: 1;
       }
+
+      #weather-section { order: 1; }
+      #location-section { order: 2; }
+      #hotels-section { order: 3; }
+      #nearby-section { order: 4; }
+      #cancel-tile { order: 5; }
+      #further-tile { order: 6; }
      
       .weather-iframe {
         height: 250px;
@@ -619,6 +611,20 @@
       }
     }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Accommodation near Bushy parkrun parkrun | Hotels, Weather, Course Map & More | parkrunner tourist",
+    "description": "Find and book hotels, campsites and cafes around Bushy parkrun parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
+    "keywords": "parkrun, accommodation, hotels, stay, tourist, bushy, nearby parkruns, richmond parkrun, wimbledon common parkrun, banstead woods parkrun, bramhall parkrun",
+    "author": {
+      "@type": "Person",
+      "name": "Jake Lofthouse"
+    },
+    "url": "https://www.parkrunnertourist.com/B/bushy"
+  }
+  </script>
 </head>
 <body>
 <header>
@@ -627,7 +633,8 @@
 </header>
 <div id="cancel-banner" class="cancel-banner"></div>
 <main>
-  <div class="subtitle">Accommodation near Bushy parkrun </div>
+  <h1>Accommodation near Bushy parkrun parkrun</h1>
+  <div class="subtitle">Find hotels, weather, maps and more</div>
  
   <div class="parkrun-actions">
     <a href="#" class="action-btn" onclick="openModal('courseModal', 'bushy')">Course Map</a>
@@ -637,8 +644,8 @@
  
   
   <div class="content-grid">
-    <div class="hotels-section">
-      <div class="iframe-container">
+    <div class="left-column">
+      <div id="hotels-section" class="iframe-container">
         <h2 class="section-title">Hotel Prices</h2>
         <div>
           <button class="toggle-btn active" onclick="switchView('listview')" id="btn-listview">List View</button>
@@ -648,17 +655,6 @@
           src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.410992&lng=-0.335791&checkin=2026-01-23&maincolor=7dd856&venue=Bushy%20parkrun&viewmode=listview&listviewexpand=true"
           title="Stay22 accommodation listing">
         </iframe>
-      </div>
-    </div>
-    <div class="right-column">
-      <div class="iframe-container">
-        <h2 class="section-title">parkrun Location</h2>
-        <iframe class="map-iframe" data-src="https://parkrunnertourist.com/main?5k&lat=51.410992&lon=-0.335791&zoom=13" title="parkrun Map"></iframe>
-      </div>
-     
-      <div class="iframe-container">
-        <h2 class="section-title">Weather This Week</h2>
-        <iframe class="weather-iframe" data-src="https://parkrunnertourist.com/weather?lat=51.410992&lon=-0.335791" title="Weather forecast for bushy"></iframe>
       </div>
       <div id="cancel-tile" class="iframe-container cancel-tile">
         <h2 class="section-title">Event Status</h2>
@@ -670,8 +666,18 @@
         <ul id="further-list"></ul>
         <div id="further-update" class="last-update"></div>
       </div>
+    </div>
+    <div class="right-column">
+      <div id="location-section" class="iframe-container">
+        <h2 class="section-title">parkrun Location</h2>
+        <iframe class="map-iframe" data-src="https://parkrunnertourist.com/main?5k&lat=51.410992&lon=-0.335791&zoom=13" title="parkrun Map"></iframe>
+      </div>
+      <div id="weather-section" class="iframe-container">
+        <h2 class="section-title">Weather This Week</h2>
+        <iframe class="weather-iframe" data-src="https://parkrunnertourist.com/weather?lat=51.410992&lon=-0.335791" title="Weather forecast for bushy"></iframe>
+      </div>
       
-    <div class="iframe-container">
+    <div id="nearby-section" class="iframe-container">
       <h2 class="section-title">Nearby parkruns</h2>
       <ul class="nearby-list">
         <li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/R/richmond" target="_blank">Richmond parkrun</a> <span class="distance">(5.4 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/W/wimbledon" target="_blank">Wimbledon Common parkrun</a> <span class="distance">(8.0 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/B/banstead" target="_blank">Banstead Woods parkrun</a> <span class="distance">(15.6 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/B/bramhall" target="_blank">Bramhall parkrun</a> <span class="distance">(251.0 km)</span></li>
@@ -733,10 +739,10 @@
    
     if (modalId === 'courseModal') {
       const courseIframe = document.getElementById('courseIframe');
-      courseIframe.src = `https://www.parkrun.org.uk/${eventSlug}/course/`;
+      courseIframe.src = `https://null/${eventSlug}/course/`;
     } else if (modalId === 'volunteerModal') {
       const volunteerIframe = document.getElementById('volunteerIframe');
-      volunteerIframe.src = `https://www.parkrun.org.uk/${eventSlug}/futureroster/`;
+      volunteerIframe.src = `https://null/${eventSlug}/futureroster/`;
     }
    
     modal.style.display = 'block';
@@ -840,17 +846,16 @@
           cancelBanner.textContent = 'This event is cancelled on ' + upcomingCancel.date + ': ' + upcomingCancel.reason;
           cancelBanner.style.display = 'block';
           cancelTile.classList.add('cancel-red');
-          cancelMessage.textContent = upcomingCancel.reason + ' on ' + upcomingCancel.date;
+          cancelMessage.innerHTML = '<span class="status-icon red">⚠</span> Cancelled: ' + upcomingCancel.reason + ' on ' + upcomingCancel.date;
         } else {
           cancelTile.classList.add('cancel-green');
-          cancelMessage.textContent = 'Event is running as scheduled ✓';
+          cancelMessage.innerHTML = '<span class="status-icon green">✓</span> Event is running as scheduled';
         }
 
         if (furtherCancels.length > 0) {
           furtherTile.style.display = 'block';
-          furtherTile.classList.add('cancel-yellow');
-          furtherList.innerHTML = furtherCancels.map(c => '<li>' + c.reason + ' on ' + c.date + '</li>').join('');
           furtherUpdate.textContent = 'Last updated: ' + updateTime;
+          furtherList.innerHTML = furtherCancels.map(c => '<li><span class="status-icon yellow">⚠</span> ' + c.reason + ' on ' + c.date + '</li>').join('');
         }
       } catch (error) {
         console.error('Error fetching cancellations:', error);
