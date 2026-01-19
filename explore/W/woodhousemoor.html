@@ -196,13 +196,7 @@
       padding: 1rem;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
       border: 1px solid rgba(76, 175, 80, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
-    }
-   
-    .iframe-container:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
    
     iframe {
@@ -418,6 +412,7 @@
       padding: 1rem;
       font-weight: bold;
       margin-bottom: 2rem;
+      display: none;
     }
 
     .cancel-red {
@@ -444,6 +439,33 @@
 
     .cancel-yellow .section-title::before {
       background: #eab308;
+    }
+
+    .cancel-green {
+      border: 1px solid #22c55e;
+      background: #dcfce7;
+    }
+
+    .cancel-green .section-title {
+      color: #22c55e;
+    }
+
+    .cancel-green .section-title::before {
+      background: #22c55e;
+    }
+
+    .cancel-tile {
+      display: none;
+    }
+
+    .further-tile {
+      display: none;
+    }
+
+    .last-update {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.5rem;
     }
    
     /* Download footer */
@@ -603,7 +625,7 @@
   <a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
   <div></div>
 </header>
-
+<div id="cancel-banner" class="cancel-banner"></div>
 <main>
   <div class="subtitle">Accommodation near Woodhouse Moor parkrun </div>
  
@@ -638,8 +660,16 @@
         <h2 class="section-title">Weather This Week</h2>
         <iframe class="weather-iframe" data-src="https://parkrunnertourist.com/weather?lat=53.808582&lon=-1.560059" title="Weather forecast for woodhousemoor"></iframe>
       </div>
-      
-      
+      <div id="cancel-tile" class="iframe-container cancel-tile">
+        <h2 class="section-title">Event Status</h2>
+        <p id="cancel-message"></p>
+        <div id="cancel-update" class="last-update"></div>
+      </div>
+      <div id="further-tile" class="iframe-container further-tile">
+        <h2 class="section-title">Future Cancellations</h2>
+        <ul id="further-list"></ul>
+        <div id="further-update" class="last-update"></div>
+      </div>
       
     <div class="iframe-container">
       <h2 class="section-title">Nearby parkruns</h2>
@@ -684,7 +714,6 @@
 </div>
 <footer>
   &copy; 2026 parkrunner tourist
-  <div class="last-update">Cancellations last updated: 1/19/2026, 6:47:07 PM</div>
 </footer>
 <!-- Buy Me a Coffee Widget - Hidden on mobile and tablets -->
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
@@ -780,6 +809,55 @@
         }
       });
     });
+
+    // Fetch cancellations dynamically
+    async function fetchCancellations() {
+      try {
+        const [upcoming, further, lastUpdate] = await Promise.all([
+          fetch('https://www.parkrunnertourist.com/cancellations/upcoming.json').then(res => res.json()),
+          fetch('https://www.parkrunnertourist.com/cancellations/further.json').then(res => res.json()),
+          fetch('https://www.parkrunnertourist.com/cancellations/lastupdate.json').then(res => res.json())
+        ]);
+
+        const eventName = 'Woodhouse Moor parkrun';
+        const upcomingCancel = upcoming.find(c => c.name === eventName);
+        const furtherCancels = further.filter(c => c.name === eventName);
+
+        const cancelBanner = document.getElementById('cancel-banner');
+        const cancelTile = document.getElementById('cancel-tile');
+        const cancelMessage = document.getElementById('cancel-message');
+        const cancelUpdate = document.getElementById('cancel-update');
+        const furtherTile = document.getElementById('further-tile');
+        const furtherList = document.getElementById('further-list');
+        const furtherUpdate = document.getElementById('further-update');
+
+        const updateTime = lastUpdate.updated_utc ? new Date(lastUpdate.updated_utc).toLocaleString() : 'Unknown';
+
+        cancelTile.style.display = 'block';
+        cancelUpdate.textContent = 'Last updated: ' + updateTime;
+
+        if (upcomingCancel) {
+          cancelBanner.textContent = 'This event is cancelled on ' + upcomingCancel.date + ': ' + upcomingCancel.reason;
+          cancelBanner.style.display = 'block';
+          cancelTile.classList.add('cancel-red');
+          cancelMessage.textContent = upcomingCancel.reason + ' on ' + upcomingCancel.date;
+        } else {
+          cancelTile.classList.add('cancel-green');
+          cancelMessage.textContent = 'Event is running as scheduled ✓';
+        }
+
+        if (furtherCancels.length > 0) {
+          furtherTile.style.display = 'block';
+          furtherTile.classList.add('cancel-yellow');
+          furtherList.innerHTML = furtherCancels.map(c => '<li>' + c.reason + ' on ' + c.date + '</li>').join('');
+          furtherUpdate.textContent = 'Last updated: ' + updateTime;
+        }
+      } catch (error) {
+        console.error('Error fetching cancellations:', error);
+      }
+    }
+
+    fetchCancellations();
   });
 </script>
 </body>
