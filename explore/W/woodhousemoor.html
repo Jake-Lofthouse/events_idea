@@ -88,30 +88,26 @@
     }
    
     h1 {
-      font-size: 2.25rem;
-      font-weight: 700;
+      font-size: 3rem;
+      font-weight: 800;
       margin-bottom: 1rem;
-      color: #1f2937;
+      background: linear-gradient(135deg, #2e7d32, #4caf50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       text-align: center;
       position: relative;
-      padding: 1rem 0;
+      padding: 2rem 0;
       line-height: 1.2;
     }
    
     .subtitle {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: #4b5563;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #4caf50;
       text-align: center;
       margin-bottom: 3rem;
       position: relative;
-      display: none;
-    }
-
-    @media (min-width: 1024px) {
-      .subtitle {
-        display: block;
-      }
     }
    
     .subtitle::after {
@@ -565,11 +561,11 @@
       }
      
       h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
       }
      
       .subtitle {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
       }
      
       header {
@@ -638,7 +634,6 @@
 <div id="cancel-banner" class="cancel-banner"></div>
 <main>
   <h1>Accommodation near Woodhouse Moor parkrun</h1>
-  <div class="subtitle">Find hotels, weather, maps and more</div>
  
   <div class="parkrun-actions">
     <a href="#" class="action-btn" onclick="openModal('courseModal', 'woodhousemoor')">Course Map</a>
