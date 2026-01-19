@@ -3,7 +3,7 @@ const https = require('https');
 const path = require('path');
 const EVENTS_URL = 'https://www.parkrunnertourist.com/events1.json';
 const OUTPUT_DIR = './explore';
-const MAX_EVENTS = 999999;
+const MAX_EVENTS = 6;
 const MAX_FILES_PER_FOLDER = 999;
 const BASE_URL = 'https://www.parkrunnertourist.com/explore';
 // Country bounds for parkrun URL detection
