@@ -1050,17 +1050,18 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
         const cancelUpdate = document.getElementById('cancel-update');
         const furtherTile = document.getElementById('further-tile');
         const furtherList = document.getElementById('further-list');
+        const furtherUpdate = document.getElementById('further-update');
 
         const updateTime = lastUpdate.updated_utc ? new Date(lastUpdate.updated_utc).toLocaleString() : 'Unknown';
 
         cancelTile.style.display = 'block';
-        cancelUpdate.textContent = \`Last updated: \${updateTime}\`;
+        cancelUpdate.textContent = 'Last updated: ' + updateTime;
 
         if (upcomingCancel) {
-          cancelBanner.textContent = \`This event is cancelled on \${upcomingCancel.date}: \${upcomingCancel.reason}\`;
+          cancelBanner.textContent = 'This event is cancelled on ' + upcomingCancel.date + ': ' + upcomingCancel.reason;
           cancelBanner.style.display = 'block';
           cancelTile.classList.add('cancel-red');
-          cancelMessage.textContent = \`\${upcomingCancel.reason} on \${upcomingCancel.date}\`;
+          cancelMessage.textContent = upcomingCancel.reason + ' on ' + upcomingCancel.date;
         } else {
           cancelTile.classList.add('cancel-green');
           cancelMessage.textContent = 'Event is running as scheduled ✓';
@@ -1069,8 +1070,8 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
         if (furtherCancels.length > 0) {
           furtherTile.style.display = 'block';
           furtherTile.classList.add('cancel-yellow');
-          furtherList.innerHTML = furtherCancels.map(c => `<li>\${c.reason} on \${c.date}</li>`).join('');
-          document.getElementById('further-update').textContent = \`Last updated: \${updateTime}\`;
+          furtherList.innerHTML = furtherCancels.map(c => '<li>' + c.reason + ' on ' + c.date + '</li>').join('');
+          furtherUpdate.textContent = 'Last updated: ' + updateTime;
         }
       } catch (error) {
         console.error('Error fetching cancellations:', error);
