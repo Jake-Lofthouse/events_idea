@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Accommodation near Richmond parkrun parkrun | Hotels, Weather, Course Map & More | parkrunner tourist</title>
-<meta name="description" content="Discover the best accommodation near Richmond parkrun parkrun. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
-<meta name="keywords" content="parkrun accommodation, hotels near richmond parkrun, richmond parkrun parkrun hotels, parkrun tourist, nearby parkruns, wimbledon common parkrun, bushy parkrun, banstead woods parkrun, bramhall parkrun, parkrun weather, parkrun course map" />
+<title>Accommodation near Richmond parkrun | Hotels, Weather, Course Map & More | parkrunner tourist</title>
+<meta name="description" content="Discover the best accommodation near Richmond parkrun. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
+<meta name="keywords" content="parkrun accommodation, hotels near richmond parkrun, richmond parkrun hotels, parkrun tourist, nearby parkruns, wimbledon common parkrun, bushy parkrun, banstead woods parkrun, bramhall parkrun, parkrun weather, parkrun course map" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="Richmond Park, Richmond upon Thames" />
 <meta name="geo.position" content="51.451962;-0.292886" />
-<meta property="og:title" content="Accommodation near Richmond parkrun parkrun | Hotels, Weather, Course Map & More | parkrunner tourist" />
-<meta property="og:description" content="Find and book hotels, campsites and cafes around Richmond parkrun parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
+<meta property="og:title" content="Accommodation near Richmond parkrun | Hotels, Weather, Course Map & More | parkrunner tourist" />
+<meta property="og:description" content="Find and book hotels, campsites and cafes around Richmond parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/R/richmond" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
@@ -88,26 +88,30 @@
     }
    
     h1 {
-      font-size: 3rem;
-      font-weight: 800;
+      font-size: 2.25rem;
+      font-weight: 700;
       margin-bottom: 1rem;
-      background: linear-gradient(135deg, #2e7d32, #4caf50);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #1f2937;
       text-align: center;
       position: relative;
-      padding: 2rem 0;
+      padding: 1rem 0;
       line-height: 1.2;
     }
    
     .subtitle {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #4caf50;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #4b5563;
       text-align: center;
       margin-bottom: 3rem;
       position: relative;
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .subtitle {
+        display: block;
+      }
     }
    
     .subtitle::after {
@@ -561,11 +565,11 @@
       }
      
       h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
       }
      
       .subtitle {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
       }
      
       header {
@@ -615,8 +619,8 @@
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Accommodation near Richmond parkrun parkrun | Hotels, Weather, Course Map & More | parkrunner tourist",
-    "description": "Find and book hotels, campsites and cafes around Richmond parkrun parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
+    "name": "Accommodation near Richmond parkrun | Hotels, Weather, Course Map & More | parkrunner tourist",
+    "description": "Find and book hotels, campsites and cafes around Richmond parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
     "keywords": "parkrun, accommodation, hotels, stay, tourist, richmond, nearby parkruns, wimbledon common parkrun, bushy parkrun, banstead woods parkrun, bramhall parkrun",
     "author": {
       "@type": "Person",
@@ -633,7 +637,7 @@
 </header>
 <div id="cancel-banner" class="cancel-banner"></div>
 <main>
-  <h1>Accommodation near Richmond parkrun parkrun</h1>
+  <h1>Accommodation near Richmond parkrun</h1>
   <div class="subtitle">Find hotels, weather, maps and more</div>
  
   <div class="parkrun-actions">
@@ -856,6 +860,8 @@
           furtherTile.style.display = 'block';
           furtherUpdate.textContent = 'Last updated: ' + updateTime;
           furtherList.innerHTML = furtherCancels.map(c => '<li><span class="status-icon yellow">⚠</span> ' + c.reason + ' on ' + c.date + '</li>').join('');
+        } else {
+          furtherTile.style.display = 'none';
         }
       } catch (error) {
         console.error('Error fetching cancellations:', error);
