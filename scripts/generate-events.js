@@ -2,8 +2,11 @@ const fs = require('fs');
 const https = require('https');
 const path = require('path');
 const EVENTS_URL = 'https://www.parkrunnertourist.com/events1.json';
+const UPCOMING_CANCELLATIONS_URL = 'https://www.parkrunnertourist.com/cancellations/upcoming.json';
+const FURTHER_CANCELLATIONS_URL = 'https://www.parkrunnertourist.com/cancellations/further.json';
+const LAST_UPDATE_URL = 'https://www.parkrunnertourist.com/cancellations/lastupdate.json';
 const OUTPUT_DIR = './explore';
-const MAX_EVENTS = 5;
+const MAX_EVENTS = 6;
 const MAX_FILES_PER_FOLDER = 999;
 const BASE_URL = 'https://www.parkrunnertourist.com/explore';
 // Country bounds for parkrun URL detection
@@ -169,8 +172,17 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
+// Format date from YYYY-MM-DD or DD/MM/YYYY to readable
+function formatDate(dateStr) {
+  if (dateStr.includes('/')) {
+    const [day, month, year] = dateStr.split('/');
+    return `${day}/${month}/${year}`;
+  }
+  const [year, month, day] = dateStr.split('-');
+  return `${day}/${month}/${year}`;
+}
 // Generate the HTML content for each event page
-async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder) {
+async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder, upcomingCancellations, furtherCancellations, lastUpdate) {
   const name = event.properties.eventname || 'Unknown event';
   const longName = event.properties.EventLongName || name;
   const location = event.properties.EventLocation || '';
@@ -179,7 +191,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
   const longitude = coords[0] || 0;
   const encodedName = encodeURIComponent(`${longName}`);
   const checkinDate = getNextFridayDateISO();
-  const pageTitle = `Accommodation near ${longName} parkrun | parkrunner tourist`;
+  const pageTitle = `Accommodation near ${longName} parkrun | Hotels, Weather, Course Map & More | parkrunner tourist`;
   const parkrunDomain = getParkrunDomain(latitude, longitude);
   let description = event.properties.EventDescription || '';
   const hasDescription = description && description.trim() !== '' && description.trim() !== 'No description available.';
@@ -211,11 +223,33 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     <div class="iframe-container">
       <h2 class="section-title">Nearby parkruns</h2>
       <ul class="nearby-list">
-        ${nearby.map(n => `<li><a href="${BASE_URL}/${slugToSubfolder[n.slug]}/${n.slug}/" target="_blank">${n.longName} (${n.dist.toFixed(1)} km)</a></li>`).join('')}
+        ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolder[n.slug]}/${n.slug}" target="_blank">${n.longName}</a> <span class="distance">(${n.dist.toFixed(1)} km)</span></li>`).join('')}
       </ul>
     </div>
   ` : '';
   const nearbyKeywords = nearby.map(n => n.longName.toLowerCase()).join(', ');
+  // Check cancellations
+  const upcomingCancel = upcomingCancellations.find(c => c.name === longName);
+  const furtherCancels = furtherCancellations.filter(c => c.name === longName);
+  let cancelBanner = '';
+  let upcomingTile = '';
+  let furtherTile = '';
+  if (upcomingCancel) {
+    cancelBanner = `<div class="cancel-banner">This event is cancelled on ${formatDate(upcomingCancel.date)}: ${upcomingCancel.reason}</div>`;
+    upcomingTile = `<div class="iframe-container cancel-red">
+      <h2 class="section-title">Event Cancelled</h2>
+      <p>${upcomingCancel.reason} on ${formatDate(upcomingCancel.date)}</p>
+    </div>`;
+  }
+  if (furtherCancels.length > 0) {
+    furtherTile = `<div class="iframe-container cancel-yellow">
+      <h2 class="section-title">Future Cancellations</h2>
+      <ul>
+        ${furtherCancels.map(c => `<li>${c.reason} on ${formatDate(c.date)}</li>`).join('')}
+      </ul>
+    </div>`;
+  }
+  const lastUpdateStr = lastUpdate.updated_utc ? new Date(lastUpdate.updated_utc).toLocaleString() : 'Unknown';
   // Stay22 iframe base URL with scroll locking via scrolling="no"
   const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=7dd856&venue=${encodedName}`;
   // Determine if it's a junior parkrun and set the appropriate URL
@@ -230,11 +264,13 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${pageTitle}</title>
-<meta name="description" content="Find and book hotels, campsites and cafes around ${longName} parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
-<meta name="keywords" content="parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}, nearby parkruns, ${nearbyKeywords}" />
+<meta name="description" content="Discover the best accommodation near ${longName} parkrun. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
+<meta name="keywords" content="parkrun accommodation, hotels near ${name.toLowerCase()} parkrun, ${longName.toLowerCase()} parkrun hotels, parkrun tourist, nearby parkruns, ${nearbyKeywords}, parkrun weather, parkrun course map" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="${location}" />
 <meta name="geo.position" content="${latitude};${longitude}" />
+<meta property="og:title" content="${pageTitle}" />
+<meta property="og:description" content="Find and book hotels, campsites and cafes around ${longName} parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/${relativePath}" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
@@ -397,7 +433,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
    
     .toggle-btn:hover:not(.active) {
       background-color: #f1f8e9;
-      transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
     }
    
@@ -604,8 +639,19 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       margin: 0;
     }
    
-    .nearby-list li {
-      margin-bottom: 0.75rem;
+    .nearby-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background: #f8fafc;
+      transition: background 0.3s;
+    }
+
+    .nearby-item:hover {
+      background: #e2e8f0;
     }
    
     .nearby-list a {
@@ -617,6 +663,47 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
    
     .nearby-list a:hover {
       color: #2e7d32;
+    }
+
+    .distance {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+   
+    /* Cancellation styles */
+    .cancel-banner {
+      background: #ef4444;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .cancel-red {
+      border: 1px solid #ef4444;
+      background: #fee2e2;
+    }
+
+    .cancel-red .section-title {
+      color: #ef4444;
+    }
+
+    .cancel-red .section-title::before {
+      background: #ef4444;
+    }
+
+    .cancel-yellow {
+      border: 1px solid #eab308;
+      background: #fef9c3;
+    }
+
+    .cancel-yellow .section-title {
+      color: #eab308;
+    }
+
+    .cancel-yellow .section-title::before {
+      background: #eab308;
     }
    
     /* Download footer */
@@ -674,6 +761,11 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       background: #f8fafc;
       color: #64748b;
       font-weight: 500;
+    }
+
+    footer .last-update {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
     }
    
     /* Responsive Design */
@@ -771,6 +863,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
   <a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
   <div></div>
 </header>
+${cancelBanner}
 <main>
   <div class="subtitle">Accommodation near ${longName} </div>
  
@@ -807,6 +900,8 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
         <h2 class="section-title">Weather This Week</h2>
         <iframe class="weather-iframe" data-src="${weatherIframeUrl}" title="Weather forecast for ${name}"></iframe>
       </div>
+      ${upcomingTile}
+      ${furtherTile}
       ${nearbyHtml}
     </div>
   </div>
@@ -844,6 +939,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 </div>
 <footer>
   &copy; ${new Date().getFullYear()} parkrunner tourist
+  <div class="last-update">Cancellations last updated: ${lastUpdateStr}</div>
 </footer>
 <!-- Buy Me a Coffee Widget - Hidden on mobile and tablets -->
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
@@ -949,8 +1045,8 @@ function generateSitemap(eventPaths) {
   const today = new Date().toISOString().slice(0, 10);
   const urlset = eventPaths
     .map(eventPath => {
-      // Remove .html and ensure it ends with a trailing slash
-      const cleanPath = eventPath.replace(/\.html$/, '');
+      // Remove .html and ensure no trailing slash
+      const cleanPath = eventPath.replace(/\.html$/, '').replace(/\/$/, '');
       return `<url>
         <loc>${BASE_URL}/${cleanPath}</loc>
         <lastmod>${today}</lastmod>
@@ -1023,6 +1119,12 @@ async function main() {
     } else {
       throw new Error('Unexpected JSON structure');
     }
+    console.log('Fetching cancellations...');
+    const [upcomingCancellations, furtherCancellations, lastUpdate] = await Promise.all([
+      fetchJson(UPCOMING_CANCELLATIONS_URL),
+      fetchJson(FURTHER_CANCELLATIONS_URL),
+      fetchJson(LAST_UPDATE_URL)
+    ]);
     const selectedEvents = events.slice(0, MAX_EVENTS);
     const eventPaths = [];
     const folderCounts = {};
@@ -1072,7 +1174,7 @@ async function main() {
       const lon = event.geometry.coordinates[0] || 0;
       const longName = event.properties.EventLongName || event.properties.eventname;
       allEventsInfo.push({ slug, lat, lon, longName });
-      const relativePath = `${actualSubfolder}/${slug}/`;
+      const relativePath = `${actualSubfolder}/${slug}`;
       eventPaths.push(relativePath);
     }
     // Second pass: generate and write HTML files
@@ -1082,8 +1184,8 @@ async function main() {
       const subfolderPath = path.join(OUTPUT_DIR, actualSubfolder);
       ensureDirectoryExists(subfolderPath);
       const filename = path.join(subfolderPath, `${slug}.html`);
-      const relativePath = `${actualSubfolder}/${slug}/`;
-      const htmlContent = await generateHtml(event, relativePath, allEventsInfo, slugToSubfolder);
+      const relativePath = `${actualSubfolder}/${slug}`;
+      const htmlContent = await generateHtml(event, relativePath, allEventsInfo, slugToSubfolder, upcomingCancellations, furtherCancellations, lastUpdate);
       fs.writeFileSync(filename, htmlContent, 'utf-8');
       console.log(
         `Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`
