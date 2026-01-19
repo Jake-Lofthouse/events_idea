@@ -121,17 +121,18 @@ function getNextFridayDateISO() {
   today.setDate(today.getDate() + daysUntilFriday);
   return today.toISOString().slice(0, 10);
 }
-// Determine parkrun domain based on coordinates
-function getParkrunDomain(latitude, longitude) {
-  for (const country of Object.values(COUNTRIES)) {
-    if (country.url && country.bounds) {
+// Determine parkrun domain and country code based on coordinates
+function getParkrunInfo(latitude, longitude) {
+  for (const code in COUNTRIES) {
+    const country = COUNTRIES[code];
+    if (country.bounds) {
       const [minLng, minLat, maxLng, maxLat] = country.bounds;
       if (longitude >= minLng && longitude <= maxLng && latitude >= minLat && latitude <= maxLat) {
-        return country.url;
+        return { url: country.url, code };
       }
     }
   }
-  return "www.parkrun.org.uk"; // Default fallback
+  return { url: "www.parkrun.org.uk", code: "97" }; // Default fallback
 }
 // Fetch Wikipedia description about the parkrun location.
 async function fetchWikipediaDescription(eventName) {
@@ -180,7 +181,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
   const encodedName = encodeURIComponent(`${longName}`);
   const checkinDate = getNextFridayDateISO();
   const pageTitle = `Accommodation near ${longName} parkrun | Hotels, Weather, Course Map & More | parkrunner tourist`;
-  const parkrunDomain = getParkrunDomain(latitude, longitude);
+  const { url: parkrunDomain, code: countryCode } = getParkrunInfo(latitude, longitude);
   let description = event.properties.EventDescription || '';
   const hasDescription = description && description.trim() !== '' && description.trim() !== 'No description available.';
   let wikiDesc = null;
@@ -197,10 +198,10 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
     }
   }
-  // Calculate nearby events
+  // Calculate nearby events in same country
   const currentSlug = slugify(name);
   const nearby = allEventsInfo
-    .filter(e => e.slug !== currentSlug)
+    .filter(e => e.slug !== currentSlug && e.country === countryCode)
     .map(e => {
       const dist = calculateDistance(latitude, longitude, e.lat, e.lon);
       return { ...e, dist };
@@ -208,7 +209,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     .sort((a, b) => a.dist - b.dist)
     .slice(0, 4);
   const nearbyHtml = nearby.length > 0 ? `
-    <div class="iframe-container">
+    <div id="nearby-section" class="iframe-container">
       <h2 class="section-title">Nearby parkruns</h2>
       <ul class="nearby-list">
         ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolder[n.slug]}/${n.slug}" target="_blank">${n.longName}</a> <span class="distance">(${n.dist.toFixed(1)} km)</span></li>`).join('')}
@@ -582,8 +583,11 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       height: 400px;
     }
    
-    .hotels-section {
+    .left-column {
       grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
     }
    
     .right-column {
@@ -641,51 +645,41 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       display: none;
     }
 
-    .cancel-red {
-      border: 1px solid #ef4444;
-      background: #fee2e2;
+    .status-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 16px;
+      margin-right: 8px;
     }
 
-    .cancel-red .section-title {
-      color: #ef4444;
-    }
-
-    .cancel-red .section-title::before {
-      background: #ef4444;
-    }
-
-    .cancel-yellow {
-      border: 1px solid #eab308;
-      background: #fef9c3;
-    }
-
-    .cancel-yellow .section-title {
-      color: #eab308;
-    }
-
-    .cancel-yellow .section-title::before {
-      background: #eab308;
-    }
-
-    .cancel-green {
-      border: 1px solid #22c55e;
-      background: #dcfce7;
-    }
-
-    .cancel-green .section-title {
-      color: #22c55e;
-    }
-
-    .cancel-green .section-title::before {
+    .green {
       background: #22c55e;
+      color: white;
     }
 
-    .cancel-tile {
-      display: none;
+    .yellow {
+      background: #eab308;
+      color: white;
     }
 
-    .further-tile {
-      display: none;
+    .red {
+      background: #ef4444;
+      color: white;
+    }
+
+    .cancel-tile p {
+      display: flex;
+      align-items: center;
+    }
+
+    .further-tile li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
     }
 
     .last-update {
@@ -762,18 +756,17 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
         grid-template-columns: 1fr;
         gap: 1.5rem;
       }
-     
-      /* Mobile order: parkrun location, hotels, weather */
-      .right-column {
-        order: 1;
-        grid-column: 1;
-        flex-direction: column-reverse;
-      }
-     
-      .hotels-section {
-        order: 2;
+
+      .left-column, .right-column {
         grid-column: 1;
       }
+
+      #weather-section { order: 1; }
+      #location-section { order: 2; }
+      #hotels-section { order: 3; }
+      #nearby-section { order: 4; }
+      #cancel-tile { order: 5; }
+      #further-tile { order: 6; }
      
       .weather-iframe {
         height: 250px;
@@ -845,6 +838,20 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       }
     }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "${pageTitle}",
+    "description": "Find and book hotels, campsites and cafes around ${longName} parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
+    "keywords": "parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}, nearby parkruns, ${nearbyKeywords}",
+    "author": {
+      "@type": "Person",
+      "name": "Jake Lofthouse"
+    },
+    "url": "https://www.parkrunnertourist.com/${relativePath}"
+  }
+  </script>
 </head>
 <body>
 <header>
@@ -853,7 +860,8 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 </header>
 <div id="cancel-banner" class="cancel-banner"></div>
 <main>
-  <div class="subtitle">Accommodation near ${longName} </div>
+  <h1>Accommodation near ${longName} parkrun</h1>
+  <div class="subtitle">Find hotels, weather, maps and more</div>
  
   <div class="parkrun-actions">
     <a href="#" class="action-btn" onclick="openModal('courseModal', '${name}')">Course Map</a>
@@ -865,8 +873,8 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     ${description}
   </div>` : ''}
   <div class="content-grid">
-    <div class="hotels-section">
-      <div class="iframe-container">
+    <div class="left-column">
+      <div id="hotels-section" class="iframe-container">
         <h2 class="section-title">Hotel Prices</h2>
         <div>
           <button class="toggle-btn active" onclick="switchView('listview')" id="btn-listview">List View</button>
@@ -877,17 +885,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
           title="Stay22 accommodation listing">
         </iframe>
       </div>
-    </div>
-    <div class="right-column">
-      <div class="iframe-container">
-        <h2 class="section-title">parkrun Location</h2>
-        <iframe class="map-iframe" data-src="${mainIframeUrl}" title="parkrun Map"></iframe>
-      </div>
-     
-      <div class="iframe-container">
-        <h2 class="section-title">Weather This Week</h2>
-        <iframe class="weather-iframe" data-src="${weatherIframeUrl}" title="Weather forecast for ${name}"></iframe>
-      </div>
       <div id="cancel-tile" class="iframe-container cancel-tile">
         <h2 class="section-title">Event Status</h2>
         <p id="cancel-message"></p>
@@ -897,6 +894,16 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
         <h2 class="section-title">Future Cancellations</h2>
         <ul id="further-list"></ul>
         <div id="further-update" class="last-update"></div>
+      </div>
+    </div>
+    <div class="right-column">
+      <div id="location-section" class="iframe-container">
+        <h2 class="section-title">parkrun Location</h2>
+        <iframe class="map-iframe" data-src="${mainIframeUrl}" title="parkrun Map"></iframe>
+      </div>
+      <div id="weather-section" class="iframe-container">
+        <h2 class="section-title">Weather This Week</h2>
+        <iframe class="weather-iframe" data-src="${weatherIframeUrl}" title="Weather forecast for ${name}"></iframe>
       </div>
       ${nearbyHtml}
     </div>
@@ -1061,17 +1068,16 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
           cancelBanner.textContent = 'This event is cancelled on ' + upcomingCancel.date + ': ' + upcomingCancel.reason;
           cancelBanner.style.display = 'block';
           cancelTile.classList.add('cancel-red');
-          cancelMessage.textContent = upcomingCancel.reason + ' on ' + upcomingCancel.date;
+          cancelMessage.innerHTML = '<span class="status-icon red">⚠</span> Cancelled: ' + upcomingCancel.reason + ' on ' + upcomingCancel.date;
         } else {
           cancelTile.classList.add('cancel-green');
-          cancelMessage.textContent = 'Event is running as scheduled ✓';
+          cancelMessage.innerHTML = '<span class="status-icon green">✓</span> Event is running as scheduled';
         }
 
         if (furtherCancels.length > 0) {
           furtherTile.style.display = 'block';
-          furtherTile.classList.add('cancel-yellow');
-          furtherList.innerHTML = furtherCancels.map(c => '<li>' + c.reason + ' on ' + c.date + '</li>').join('');
           furtherUpdate.textContent = 'Last updated: ' + updateTime;
+          furtherList.innerHTML = furtherCancels.map(c => '<li><span class="status-icon yellow">⚠</span> ' + c.reason + ' on ' + c.date + '</li>').join('');
         }
       } catch (error) {
         console.error('Error fetching cancellations:', error);
@@ -1211,7 +1217,8 @@ async function main() {
       const lat = event.geometry.coordinates[1] || 0;
       const lon = event.geometry.coordinates[0] || 0;
       const longName = event.properties.EventLongName || event.properties.eventname;
-      allEventsInfo.push({ slug, lat, lon, longName });
+      const { code: country } = getParkrunInfo(lat, lon);
+      allEventsInfo.push({ slug, lat, lon, longName, country });
       const relativePath = `${actualSubfolder}/${slug}`;
       eventPaths.push(relativePath);
     }
