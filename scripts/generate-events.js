@@ -3,7 +3,7 @@ const https = require('https');
 const path = require('path');
 const EVENTS_URL = 'https://www.parkrunnertourist.com/events1.json';
 const OUTPUT_DIR = './explore';
-const MAX_EVENTS = 999999;
+const MAX_EVENTS = 5;
 const MAX_FILES_PER_FOLDER = 999;
 const BASE_URL = 'https://www.parkrunnertourist.com/explore';
 // Country bounds for parkrun URL detection
@@ -190,11 +190,11 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       if (wikiDesc && wikiDesc.length > 50) {
         description = `<p>${wikiDesc}</p><p><em>Source: <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(name.replace(/\s+/g, '_'))}" target="_blank" rel="noopener noreferrer">Wikipedia</a></em></p>`;
       } else {
-        description = `<p>${description.replace(/</g, '&lt;').replace(/>g, '&gt;')}</p>`;
+        description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
       }
     } catch (e) {
       console.warn(`Failed to fetch Wikipedia description for ${name}: ${e.message}`);
-      description = `<p>${description.replace(/</g, '&lt;').replace(/>g, '&gt;')}</p>`;
+      description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
     }
   }
   // Calculate nearby events
