@@ -3,17 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Accommodation near Woodhouse Moor parkrun parkrun | parkrunner tourist</title>
-<meta name="description" content="Find and book hotels, campsites and cafes around Woodhouse Moor parkrun parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
-<meta name="keywords" content="parkrun, accommodation, hotels, stay, tourist, woodhousemoor, nearby parkruns, richmond parkrun, wimbledon common parkrun, bushy parkrun, banstead woods parkrun" />
+<title>Accommodation near Woodhouse Moor parkrun parkrun | Hotels, Weather, Course Map & More | parkrunner tourist</title>
+<meta name="description" content="Discover the best accommodation near Woodhouse Moor parkrun parkrun. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
+<meta name="keywords" content="parkrun accommodation, hotels near woodhousemoor parkrun, woodhouse moor parkrun parkrun hotels, parkrun tourist, nearby parkruns, bramhall parkrun, richmond parkrun, wimbledon common parkrun, bushy parkrun, parkrun weather, parkrun course map" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="Woodhouse Moor, Leeds" />
 <meta name="geo.position" content="53.808582;-1.560059" />
-<meta property="og:url" content="https://www.parkrunnertourist.com/W/woodhousemoor/" />
+<meta property="og:title" content="Accommodation near Woodhouse Moor parkrun parkrun | Hotels, Weather, Course Map & More | parkrunner tourist" />
+<meta property="og:description" content="Find and book hotels, campsites and cafes around Woodhouse Moor parkrun parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
+<meta property="og:url" content="https://www.parkrunnertourist.com/W/woodhousemoor" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
-<link rel="canonical" href="https://www.parkrunnertourist.com/W/woodhousemoor/" />
+<link rel="canonical" href="https://www.parkrunnertourist.com/W/woodhousemoor" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Apple Smart Banner -->
@@ -171,7 +173,6 @@
    
     .toggle-btn:hover:not(.active) {
       background-color: #f1f8e9;
-      transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
     }
    
@@ -378,8 +379,19 @@
       margin: 0;
     }
    
-    .nearby-list li {
-      margin-bottom: 0.75rem;
+    .nearby-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background: #f8fafc;
+      transition: background 0.3s;
+    }
+
+    .nearby-item:hover {
+      background: #e2e8f0;
     }
    
     .nearby-list a {
@@ -391,6 +403,47 @@
    
     .nearby-list a:hover {
       color: #2e7d32;
+    }
+
+    .distance {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+   
+    /* Cancellation styles */
+    .cancel-banner {
+      background: #ef4444;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .cancel-red {
+      border: 1px solid #ef4444;
+      background: #fee2e2;
+    }
+
+    .cancel-red .section-title {
+      color: #ef4444;
+    }
+
+    .cancel-red .section-title::before {
+      background: #ef4444;
+    }
+
+    .cancel-yellow {
+      border: 1px solid #eab308;
+      background: #fef9c3;
+    }
+
+    .cancel-yellow .section-title {
+      color: #eab308;
+    }
+
+    .cancel-yellow .section-title::before {
+      background: #eab308;
     }
    
     /* Download footer */
@@ -448,6 +501,11 @@
       background: #f8fafc;
       color: #64748b;
       font-weight: 500;
+    }
+
+    footer .last-update {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
     }
    
     /* Responsive Design */
@@ -545,6 +603,7 @@
   <a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
   <div></div>
 </header>
+
 <main>
   <div class="subtitle">Accommodation near Woodhouse Moor parkrun </div>
  
@@ -580,10 +639,12 @@
         <iframe class="weather-iframe" data-src="https://parkrunnertourist.com/weather?lat=53.808582&lon=-1.560059" title="Weather forecast for woodhousemoor"></iframe>
       </div>
       
+      
+      
     <div class="iframe-container">
       <h2 class="section-title">Nearby parkruns</h2>
       <ul class="nearby-list">
-        <li><a href="https://www.parkrunnertourist.com/explore/R/richmond/" target="_blank">Richmond parkrun (275.6 km)</a></li><li><a href="https://www.parkrunnertourist.com/explore/W/wimbledon/" target="_blank">Wimbledon Common parkrun (278.0 km)</a></li><li><a href="https://www.parkrunnertourist.com/explore/B/bushy/" target="_blank">Bushy parkrun (279.1 km)</a></li><li><a href="https://www.parkrunnertourist.com/explore/B/banstead/" target="_blank">Banstead Woods parkrun (293.2 km)</a></li>
+        <li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/B/bramhall" target="_blank">Bramhall parkrun</a> <span class="distance">(62.5 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/R/richmond" target="_blank">Richmond parkrun</a> <span class="distance">(275.6 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/W/wimbledon" target="_blank">Wimbledon Common parkrun</a> <span class="distance">(278.0 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/B/bushy" target="_blank">Bushy parkrun</a> <span class="distance">(279.1 km)</span></li>
       </ul>
     </div>
   
@@ -623,6 +684,7 @@
 </div>
 <footer>
   &copy; 2026 parkrunner tourist
+  <div class="last-update">Cancellations last updated: 1/19/2026, 6:47:07 PM</div>
 </footer>
 <!-- Buy Me a Coffee Widget - Hidden on mobile and tablets -->
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
