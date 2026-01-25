@@ -4,8 +4,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate:
+  generate-sitemap:
     runs-on: ubuntu-latest
+    name: Generate Sitemap
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Generate sitemap only
+        run: node scripts/generate-sitemap.js
+
+      - name: Commit sitemap
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.events.xml
+          git commit -m "Update sitemap" || echo "No sitemap changes"
+          git push
+
+  generate-pages:
+    runs-on: ubuntu-latest
+    name: Generate Event Pages
+    needs: generate-sitemap
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -24,6 +51,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add explore/ sitemap.events.xml
-          git commit -m "Auto-update events and sitemap" || echo "No changes to commit"
+          git add explore/
+          git commit -m "Auto-update event pages" || echo "No changes to commit"
           git push
