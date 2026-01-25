@@ -341,19 +341,19 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     h1 {
       font-size: 5rem;
       font-weight: 800;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       background: linear-gradient(135deg, #2e7d32, #4caf50);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-align: center;
       position: relative;
-      padding: 2rem 0;
+      padding: 2rem 0 1rem 0;
       line-height: 1.2;
     }
    
     .subtitle {
-      font-size: 1.5rem;
+      font-size: 2rem;
       font-weight: 600;
       color: #4caf50;
       text-align: center;
@@ -810,7 +810,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       }
      
       .subtitle {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
       }
      
       header {
@@ -1175,6 +1175,18 @@ async function main() {
     } else {
       throw new Error('Unexpected JSON structure');
     }
+    
+    // Build ALL events info first (for nearby calculations)
+    const allEventsInfoComplete = [];
+    for (const event of events) {
+      const slug = slugify(event.properties.eventname);
+      const lat = event.geometry.coordinates[1] || 0;
+      const lon = event.geometry.coordinates[0] || 0;
+      const longName = event.properties.EventLongName || event.properties.eventname;
+      const { code: country } = getParkrunInfo(lat, lon);
+      allEventsInfoComplete.push({ slug, lat, lon, longName, country });
+    }
+    
     const selectedEvents = events.slice(0, MAX_EVENTS);
     const eventPaths = [];
     const folderCounts = {};
@@ -1229,7 +1241,7 @@ async function main() {
       ensureDirectoryExists(subfolderPath);
       const filename = path.join(subfolderPath, `${slug}.html`);
       const relativePath = `${actualSubfolder}/${slug}`;
-      const htmlContent = await generateHtml(event, relativePath, allEventsInfo, slugToSubfolder);
+      const htmlContent = await generateHtml(event, relativePath, allEventsInfoComplete, slugToSubfolder);
       fs.writeFileSync(filename, htmlContent, 'utf-8');
       console.log(
         `Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`
