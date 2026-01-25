@@ -200,10 +200,17 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
   }
   // Calculate nearby events in same country - PROPERLY FIXED SORTING
   const currentSlug = slugify(name);
+  const isCurrentJunior = longName.toLowerCase().includes('junior');
   
   // First, add distances to ALL events in the same country
+  // Filter to only show same type (junior with junior, 5k with 5k)
   const eventsWithDistances = allEventsInfo
-    .filter(e => e.slug !== currentSlug && e.country === countryCode)
+    .filter(e => {
+      const eIsJunior = e.longName.toLowerCase().includes('junior');
+      return e.slug !== currentSlug && 
+             e.country === countryCode && 
+             eIsJunior === isCurrentJunior; // Only show same type
+    })
     .map(e => {
       const dist = calculateDistance(latitude, longitude, e.lat, e.lon);
       return { ...e, dist };
@@ -215,9 +222,9 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     .slice(0, 4);
   const nearbyHtml = nearby.length > 0 ? `
     <div id="nearby-section" class="iframe-container">
-      <h2 class="section-title">Nearby parkruns</h2>
+      <h2 class="section-title">Nearby ${isCurrentJunior ? 'junior parkruns' : 'parkruns'}</h2>
       <ul class="nearby-list">
-        ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolder[n.slug]}/${n.slug}" target="_blank">${n.longName}</a> <span class="distance">(${n.dist.toFixed(1)} km)</span></li>`).join('')}
+        ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolder[n.slug] || getSubfolder(n.slug)}/${n.slug}" target="_blank">${n.longName}</a> <span class="distance">(${n.dist.toFixed(1)} km)</span></li>`).join('')}
       </ul>
     </div>
   ` : '';
@@ -273,7 +280,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     }
    
     header {
-      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      background: linear-gradient(135deg, ${isJunior ? '#7b2cbf 0%, #5a189a 100%' : '#2e7d32 0%, #1b5e20 100%'});
       color: white;
       padding: 1.5rem 2rem;
       font-weight: 600;
@@ -281,7 +288,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 20px rgba(46, 125, 50, 0.3);
+      box-shadow: 0 4px 20px rgba(${isJunior ? '123, 44, 191' : '46, 125, 50'}, 0.3);
       position: relative;
       overflow: hidden;
     }
@@ -328,7 +335,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 
     .header-map-btn:hover {
       background: white;
-      color: #2e7d32;
+      color: ${isJunior ? '#7b2cbf' : '#2e7d32'};
       transform: translateY(-2px);
     }
    
@@ -1176,6 +1183,15 @@ async function main() {
       throw new Error('Unexpected JSON structure');
     }
     
+    // Load folder mapping from sitemap generation
+    let folderMapping = {};
+    try {
+      folderMapping = JSON.parse(fs.readFileSync('./folder-mapping.json', 'utf-8'));
+      console.log('Loaded folder mapping from sitemap generation');
+    } catch (err) {
+      console.warn('No folder mapping found, will generate folders dynamically');
+    }
+    
     // Build ALL events info first (for nearby calculations)
     const allEventsInfoComplete = [];
     for (const event of events) {
@@ -1203,29 +1219,43 @@ async function main() {
     cleanupRemovedEvents(validSlugs);
     const slugToSubfolder = {};
     const allEventsInfo = [];
+    
     for (const event of selectedEvents) {
       const slug = slugify(event.properties.eventname);
-      const subfolder = getSubfolder(slug);
-      let actualSubfolder = subfolder;
-      if (!folderCounts[subfolder]) {
-        folderCounts[subfolder] = 0;
-      }
-      if (folderCounts[subfolder] >= MAX_FILES_PER_FOLDER) {
-        let suffix = 2;
-        while (true) {
-          const cand = `${subfolder}${suffix}`;
-          if (!folderCounts[cand]) {
-            folderCounts[cand] = 0;
-          }
-          if (folderCounts[cand] < MAX_FILES_PER_FOLDER) {
-            actualSubfolder = cand;
-            break;
-          }
-          suffix++;
+      
+      // Use folder mapping from sitemap if available
+      let actualSubfolder;
+      if (folderMapping[slug]) {
+        actualSubfolder = folderMapping[slug];
+      } else {
+        // Fall back to dynamic assignment
+        const subfolder = getSubfolder(slug);
+        actualSubfolder = subfolder;
+        if (!folderCounts[subfolder]) {
+          folderCounts[subfolder] = 0;
         }
+        if (folderCounts[subfolder] >= MAX_FILES_PER_FOLDER) {
+          let suffix = 2;
+          while (true) {
+            const cand = `${subfolder}${suffix}`;
+            if (!folderCounts[cand]) {
+              folderCounts[cand] = 0;
+            }
+            if (folderCounts[cand] < MAX_FILES_PER_FOLDER) {
+              actualSubfolder = cand;
+              break;
+            }
+            suffix++;
+          }
+        }
+      }
+      
+      if (!folderCounts[actualSubfolder]) {
+        folderCounts[actualSubfolder] = 0;
       }
       folderCounts[actualSubfolder]++;
       slugToSubfolder[slug] = actualSubfolder;
+      
       const lat = event.geometry.coordinates[1] || 0;
       const lon = event.geometry.coordinates[0] || 0;
       const longName = event.properties.EventLongName || event.properties.eventname;
@@ -1234,6 +1264,18 @@ async function main() {
       const relativePath = `${actualSubfolder}/${slug}`;
       eventPaths.push(relativePath);
     }
+    
+    // Build complete slugToSubfolder map for ALL events (for nearby links)
+    const completeSlugToSubfolder = {};
+    for (const event of events) {
+      const slug = slugify(event.properties.eventname);
+      if (folderMapping[slug]) {
+        completeSlugToSubfolder[slug] = folderMapping[slug];
+      } else {
+        completeSlugToSubfolder[slug] = getSubfolder(slug);
+      }
+    }
+    
     for (const event of selectedEvents) {
       const slug = slugify(event.properties.eventname);
       const actualSubfolder = slugToSubfolder[slug];
@@ -1241,15 +1283,13 @@ async function main() {
       ensureDirectoryExists(subfolderPath);
       const filename = path.join(subfolderPath, `${slug}.html`);
       const relativePath = `${actualSubfolder}/${slug}`;
-      const htmlContent = await generateHtml(event, relativePath, allEventsInfoComplete, slugToSubfolder);
+      const htmlContent = await generateHtml(event, relativePath, allEventsInfoComplete, completeSlugToSubfolder);
       fs.writeFileSync(filename, htmlContent, 'utf-8');
       console.log(
         `Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`
       );
     }
-    const sitemapContent = generateSitemap(eventPaths);
-    fs.writeFileSync('./sitemap.events.xml', sitemapContent, 'utf-8');
-    console.log('Generated sitemap.xml in root folder.');
+    
     console.log('\nFolder distribution:');
     Object.entries(folderCounts).forEach(([folder, count]) => {
       console.log(` ${folder}: ${count} files`);
