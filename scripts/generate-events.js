@@ -198,15 +198,20 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
     }
   }
-  // Calculate nearby events in same country - FIXED SORTING
+  // Calculate nearby events in same country - PROPERLY FIXED SORTING
   const currentSlug = slugify(name);
-  const nearby = allEventsInfo
+  
+  // First, add distances to ALL events in the same country
+  const eventsWithDistances = allEventsInfo
     .filter(e => e.slug !== currentSlug && e.country === countryCode)
     .map(e => {
       const dist = calculateDistance(latitude, longitude, e.lat, e.lon);
       return { ...e, dist };
-    })
-    .sort((a, b) => a.dist - b.dist) // Sort by distance ascending (closest first)
+    });
+  
+  // Then sort ALL of them by distance and take the closest 4
+  const nearby = eventsWithDistances
+    .sort((a, b) => a.dist - b.dist)
     .slice(0, 4);
   const nearbyHtml = nearby.length > 0 ? `
     <div id="nearby-section" class="iframe-container">
@@ -334,7 +339,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     }
    
     h1 {
-      font-size: 4rem;
+      font-size: 5rem;
       font-weight: 800;
       margin-bottom: 1rem;
       background: linear-gradient(135deg, #2e7d32, #4caf50);
@@ -801,7 +806,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       }
      
       h1 {
-        font-size: 2.5rem;
+        font-size: 3rem;
       }
      
       .subtitle {
