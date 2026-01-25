@@ -198,7 +198,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
     }
   }
-  // Calculate nearby events in same country
+  // Calculate nearby events in same country - FIXED SORTING
   const currentSlug = slugify(name);
   const nearby = allEventsInfo
     .filter(e => e.slug !== currentSlug && e.country === countryCode)
@@ -206,7 +206,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       const dist = calculateDistance(latitude, longitude, e.lat, e.lon);
       return { ...e, dist };
     })
-    .sort((a, b) => a.dist - b.dist)
+    .sort((a, b) => a.dist - b.dist) // Sort by distance ascending (closest first)
     .slice(0, 4);
   const nearbyHtml = nearby.length > 0 ? `
     <div id="nearby-section" class="iframe-container">
@@ -245,11 +245,8 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 <link rel="canonical" href="https://www.parkrunnertourist.com/${relativePath}" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Apple Smart Banner -->
   <meta name="apple-itunes-app" content="app-id=6743163993, app-argument=https://www.parkrunnertourist.com">
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="https://parkrunnertourist.com/favicon.ico">
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-REFFZSK4XK"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -307,6 +304,28 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     header a:hover {
       transform: translateY(-2px);
     }
+
+    .header-map-btn {
+      padding: 0.5rem 1.25rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid white;
+      border-radius: 0.5rem;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .header-map-btn:hover {
+      background: white;
+      color: #2e7d32;
+      transform: translateY(-2px);
+    }
    
     main {
       padding: 3rem 2rem;
@@ -315,7 +334,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     }
    
     h1 {
-      font-size: 3rem;
+      font-size: 4rem;
       font-weight: 800;
       margin-bottom: 1rem;
       background: linear-gradient(135deg, #2e7d32, #4caf50);
@@ -438,7 +457,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       width: 100%;
     }
    
-    /* Loading placeholder for weather iframe */
     .weather-iframe[data-src]:not([src]) {
       background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
                   linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
@@ -458,7 +476,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       content: 'Loading weather...';
     }
    
-    /* Loading placeholder for map iframe */
     .map-iframe[data-src]:not([src]) {
       background: linear-gradient(45deg, #e8f5e8 25%, transparent 25%),
                   linear-gradient(-45deg, #e8f5e8 25%, transparent 25%),
@@ -512,7 +529,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       background: linear-gradient(135deg, #388e3c, #1b5e20);
     }
    
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -634,7 +650,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       color: #64748b;
     }
    
-    /* Cancellation styles */
     .cancel-banner {
       background: #ef4444;
       color: white;
@@ -688,7 +703,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       margin-top: 0.5rem;
     }
    
-    /* Download footer */
     .download-footer {
       background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
       padding: 3rem 2rem;
@@ -750,7 +764,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       margin-top: 0.5rem;
     }
    
-    /* Responsive Design */
     @media (max-width: 1024px) {
       .content-grid {
         grid-template-columns: 1fr;
@@ -829,9 +842,13 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       .close {
         font-size: 2rem;
       }
+
+      .header-map-btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 1rem;
+      }
     }
    
-    /* Hide Buy Me a Coffee widget on mobile and tablets */
     @media (max-width: 1024px) {
       [data-name="BMC-Widget"] {
         display: none !important;
@@ -856,7 +873,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 <body>
 <header>
   <a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
-  <div></div>
+  <a href="https://www.parkrunnertourist.com/webapp" target="_blank" class="header-map-btn">Show Full Map</a>
 </header>
 <div id="cancel-banner" class="cancel-banner"></div>
 <main>
@@ -908,7 +925,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     </div>
   </div>
 </main>
-<!-- Course Modal -->
 <div id="courseModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -918,7 +934,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     <iframe id="courseIframe" src="" title="Course Map"></iframe>
   </div>
 </div>
-<!-- Volunteer Modal -->
 <div id="volunteerModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -942,7 +957,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 <footer>
   &copy; ${new Date().getFullYear()} parkrunner tourist
 </footer>
-<!-- Buy Me a Coffee Widget - Hidden on mobile and tablets -->
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 <script>
   function switchView(mode) {
@@ -953,7 +967,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     document.getElementById('btn-map').classList.toggle('active', mode === 'map');
   }
  
-  // Modal functions
   function openModal(modalId, eventName) {
     const modal = document.getElementById(modalId);
     const eventSlug = eventName.toLowerCase().replace(/\\s+/g, '');
@@ -975,7 +988,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
    
-    // Clear iframe src to stop loading
     if (modalId === 'courseModal') {
       document.getElementById('courseIframe').src = '';
     } else if (modalId === 'volunteerModal') {
@@ -983,21 +995,17 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
     }
   }
  
-  // Close modal when clicking outside
   window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
       closeModal(event.target.id);
     }
   }
  
-  // Load weather and map iframes only for real users (not crawlers/bots)
   document.addEventListener('DOMContentLoaded', function() {
-    // Check if this is likely a crawler/bot
     const userAgent = navigator.userAgent.toLowerCase();
     const isBot = /bot|crawler|spider|crawling|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegram|slackbot|discord|googlebot|bingbot|yahoo|duckduckbot|baiduspider|yandexbot|applebot|ia_archiver|curl|wget|python-requests|scrapy|selenium|phantomjs|headless/i.test(userAgent);
    
     if (!isBot && 'IntersectionObserver' in window) {
-      // Use Intersection Observer to load iframes when they come into view
       const lazyIframes = document.querySelectorAll('iframe[data-src]');
      
       const observer = new IntersectionObserver((entries) => {
@@ -1008,14 +1016,13 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
           }
         });
       }, {
-        rootMargin: '50px' // Load when within 50px of viewport
+        rootMargin: '50px'
       });
      
       lazyIframes.forEach(iframe => {
         observer.observe(iframe);
       });
     } else if (!isBot) {
-      // Fallback for browsers without Intersection Observer
       setTimeout(() => {
         const lazyIframes = document.querySelectorAll('iframe[data-src]');
         lazyIframes.forEach(iframe => {
@@ -1026,7 +1033,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       }, 1000);
     }
    
-    // Add loading states for other iframes
     const iframes = document.querySelectorAll('iframe:not([data-src])');
     iframes.forEach(iframe => {
       const container = iframe.closest('.iframe-container');
@@ -1037,7 +1043,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       });
     });
 
-    // Fetch cancellations dynamically
     async function fetchCancellations() {
       try {
         const [upcoming, further, lastUpdate] = await Promise.all([
@@ -1067,7 +1072,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
           cancelBanner.textContent = 'This event is cancelled on ' + upcomingCancel.date + ': ' + upcomingCancel.reason;
           cancelBanner.style.display = 'block';
           cancelTile.classList.add('cancel-red');
-          cancelMessage.innerHTML = '<span class="status-icon red">⚠</span> Cancelled: ' + upcomingCancel.reason + ' on ' + upcomingCancel.date;
+          cancelMessage.innerHTML = '<span class="status-icon red">!</span> Cancelled: ' + upcomingCancel.reason + ' on ' + upcomingCancel.date;
         } else {
           cancelTile.classList.add('cancel-green');
           cancelMessage.innerHTML = '<span class="status-icon green">✓</span> Event is running as scheduled';
@@ -1076,7 +1081,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
         if (furtherCancels.length > 0) {
           furtherTile.style.display = 'block';
           furtherUpdate.textContent = 'Last updated: ' + updateTime;
-          furtherList.innerHTML = furtherCancels.map(c => '<li><span class="status-icon yellow">⚠</span> ' + c.reason + ' on ' + c.date + '</li>').join('');
+          furtherList.innerHTML = furtherCancels.map(c => '<li><span class="status-icon yellow">!</span> ' + c.reason + ' on ' + c.date + '</li>').join('');
         } else {
           furtherTile.style.display = 'none';
         }
@@ -1091,12 +1096,10 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
 </body>
 </html>`;
 }
-// Sitemap XML generator with subfolder support (no .html in URLs)
 function generateSitemap(eventPaths) {
   const today = new Date().toISOString().slice(0, 10);
   const urlset = eventPaths
     .map(eventPath => {
-      // Remove .html and ensure no trailing slash
       const cleanPath = eventPath.replace(/\.html$/, '').replace(/\/$/, '');
       return `<url>
         <loc>${BASE_URL}/${cleanPath}</loc>
@@ -1111,16 +1114,13 @@ function generateSitemap(eventPaths) {
 ${urlset}
 </urlset>`;
 }
-// Create directory structure recursively
 function ensureDirectoryExists(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
 }
-// Clean up old files and folders
 function cleanupOldStructure() {
   try {
-    // Remove old HTML files directly in events folder
     if (fs.existsSync(OUTPUT_DIR)) {
       const items = fs.readdirSync(OUTPUT_DIR);
       for (const item of items) {
@@ -1173,23 +1173,17 @@ async function main() {
     const selectedEvents = events.slice(0, MAX_EVENTS);
     const eventPaths = [];
     const folderCounts = {};
-    // Ensure main output directory exists
     ensureDirectoryExists(OUTPUT_DIR);
-    // Clean up old structure
     cleanupOldStructure();
-    // Sort events by name to ensure consistent folder distribution
     selectedEvents.sort((a, b) => {
       const nameA = (a.properties.eventname || '').toLowerCase();
       const nameB = (b.properties.eventname || '').toLowerCase();
       return nameA.localeCompare(nameB);
     });
-    // Create a set of valid slugs
     const validSlugs = new Set(
       selectedEvents.map(e => slugify(e.properties.eventname))
     );
-    // Remove any HTMLs from disk that don't match
     cleanupRemovedEvents(validSlugs);
-    // First pass: assign subfolders and build maps
     const slugToSubfolder = {};
     const allEventsInfo = [];
     for (const event of selectedEvents) {
@@ -1223,7 +1217,6 @@ async function main() {
       const relativePath = `${actualSubfolder}/${slug}`;
       eventPaths.push(relativePath);
     }
-    // Second pass: generate and write HTML files
     for (const event of selectedEvents) {
       const slug = slugify(event.properties.eventname);
       const actualSubfolder = slugToSubfolder[slug];
@@ -1237,11 +1230,9 @@ async function main() {
         `Generated: ${filename} (${folderCounts[actualSubfolder]}/${MAX_FILES_PER_FOLDER} in ${actualSubfolder})`
       );
     }
-    // Save sitemap.xml in root directory
     const sitemapContent = generateSitemap(eventPaths);
     fs.writeFileSync('./sitemap.events.xml', sitemapContent, 'utf-8');
     console.log('Generated sitemap.xml in root folder.');
-    // Log folder distribution
     console.log('\nFolder distribution:');
     Object.entries(folderCounts).forEach(([folder, count]) => {
       console.log(` ${folder}: ${count} files`);
