@@ -51,6 +51,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add explore/
+
+          git add explore/ sitemap.events.xml
           git commit -m "Auto-update event pages" || echo "No changes to commit"
-          git push
+
+          # Always sync with remote before pushing
+          git pull --rebase origin main
+          git push origin main
+
