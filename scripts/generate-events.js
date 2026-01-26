@@ -345,19 +345,19 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       margin: 0 auto;
     }
    
-    h1 {
-      font-size: 5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #2e7d32, #4caf50);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-align: center;
-      position: relative;
-      padding: 2rem 0 1rem 0;
-      line-height: 1.2;
-    }
+h1 {
+  font-size: 6rem;  // CHANGE THIS TO 6rem for larger text
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #2e7d32, #4caf50);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  position: relative;
+  padding: 2rem 0 1rem 0;
+  line-height: 1.2;
+}
    
     .subtitle {
       font-size: 2rem;
@@ -776,49 +776,64 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder)
       margin-top: 0.5rem;
     }
    
-    @media (max-width: 1024px) {
-      .content-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 
-      .left-column, .right-column {
-        grid-column: 1;
-      }
+  .left-column, .right-column {
+    grid-column: 1;
+  }
 
-      #weather-section { order: 1; }
-      #location-section { order: 2; }
-      #hotels-section { order: 3; }
-      #nearby-section { order: 4; }
-      #cancel-tile { order: 5; }
-      #further-tile { order: 6; }
-     
-      .weather-iframe {
-        height: 250px;
-      }
-     
-      .accommodation-iframe,
-      .map-iframe {
-        height: 450px;
-      }
-     
-      .app-badges {
-        justify-content: center;
-      }
-    }
+  // REPLACE THIS ORDER:
+  #cancel-tile { order: 1; }
+  #further-tile { order: 2; }
+  #weather-section { order: 3; }
+  #location-section { order: 4; }
+  #hotels-section { order: 5; }
+  #nearby-section { order: 6; }
+  
+  .weather-iframe {
+    height: 250px;
+  }
+  
+  .accommodation-iframe,
+  .map-iframe {
+    height: 450px;
+  }
+  
+  .app-badges {
+    justify-content: center;
+  }
+}
+  
+  .weather-iframe {
+    height: 250px;
+  }
+  
+  .accommodation-iframe,
+  .map-iframe {
+    height: 450px;
+  }
+  
+  .app-badges {
+    justify-content: center;
+  }
+}
    
-    @media (max-width: 768px) {
-      main {
-        padding: 2rem 1rem;
-      }
-     
-      h1 {
-        font-size: 4rem;
-      }
-     
-      .subtitle {
-        font-size: 1.5rem;
-      }
+@media (max-width: 768px) {
+  main {
+    padding: 2rem 1rem;
+  }
+  
+  h1 {
+    font-size: 4rem;  // CHANGE THIS TO 4.5rem for larger mobile text
+  }
+  
+  .subtitle {
+    font-size: 1.5rem;
+  }
      
       header {
         padding: 1rem;
