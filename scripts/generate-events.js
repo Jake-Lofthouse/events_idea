@@ -346,7 +346,7 @@ margin: 0 auto;
 }
  
 h1 {
-font-size: 6rem;
+font-size: 7rem;
 font-weight: 800;
 margin-bottom: 0.5rem;
 background: linear-gradient(135deg, #2e7d32, #4caf50);
@@ -817,7 +817,7 @@ padding: 2rem 1rem;
 }
  
 h1 {
-font-size: 4.5rem;
+font-size: 5rem;
 }
  
 .subtitle {
