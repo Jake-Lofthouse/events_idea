@@ -166,6 +166,8 @@ const parkrunType = isCurrentJunior ? 'Junior' : '5k';
 const mainIframeUrl = `https://parkrunnertourist.com/main?${parkrunType}&lat=${latitude}&lon=${longitude}&zoom=13`;
 // Weather iframe URL
 const weatherIframeUrl = `https://parkrunnertourist.com/weather?lat=${latitude}&lon=${longitude}`;
+const eventSlug = slugify(name);
+const volunteerUrl = `https://${parkrunDomain}/${eventSlug}/futureroster/`;
 return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -821,7 +823,7 @@ padding: 0.4rem 1rem;
  
 <div class="parkrun-actions">
 <a href="#" class="action-btn" onclick="openModal('courseModal', '${name}')">Course Map</a>
-<a href="#" class="action-btn" onclick="openModal('volunteerModal', '${name}')">Volunteer Roster</a>
+<a href="${volunteerUrl}" target="_blank" class="action-btn">Volunteer Roster</a>
 <a href="https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}" target="_blank" class="action-btn">Directions</a>
 </div>
  
@@ -852,16 +854,6 @@ src="${stay22ExpBaseUrl}&viewmode=listview&listviewexpand=true"
 title="Stay22 experiences listing">
 </iframe>
 </div>
-<div id="cancel-tile" class="iframe-container cancel-tile">
-<h2 class="section-title">Event Status</h2>
-<p id="cancel-message"></p>
-<div id="cancel-update" class="last-update"></div>
-</div>
-<div id="further-tile" class="iframe-container further-tile">
-<h2 class="section-title">Future Cancellations</h2>
-<ul id="further-list"></ul>
-<div id="further-update" class="last-update"></div>
-</div>
 </div>
 <div class="right-column">
 <div id="location-section" class="iframe-container">
@@ -873,6 +865,16 @@ title="Stay22 experiences listing">
 <iframe class="weather-iframe" data-src="${weatherIframeUrl}" title="Weather forecast for ${name}"></iframe>
 </div>
 ${nearbyHtml}
+<div id="cancel-tile" class="iframe-container cancel-tile">
+<h2 class="section-title">Event Status</h2>
+<p id="cancel-message"></p>
+<div id="cancel-update" class="last-update"></div>
+</div>
+<div id="further-tile" class="iframe-container further-tile">
+<h2 class="section-title">Future Cancellations</h2>
+<ul id="further-list"></ul>
+<div id="further-update" class="last-update"></div>
+</div>
 </div>
 </div>
 </main>
@@ -883,15 +885,6 @@ ${nearbyHtml}
 <span class="close" onclick="closeModal('courseModal')">&times;</span>
 </div>
 <iframe id="courseIframe" src="" title="Course Map" sandbox="allow-scripts"></iframe>
-</div>
-</div>
-<div id="volunteerModal" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h2>Volunteer Roster</h2>
-<span class="close" onclick="closeModal('volunteerModal')">&times;</span>
-</div>
-<iframe id="volunteerIframe" src="" title="Volunteer Roster" sandbox="allow-scripts"></iframe>
 </div>
 </div>
 <div class="download-footer">
@@ -928,9 +921,6 @@ const eventSlug = eventName.toLowerCase().replace(/\\s+/g, '');
 if (modalId === 'courseModal') {
 const courseIframe = document.getElementById('courseIframe');
 courseIframe.src = \`https://${parkrunDomain}/\${eventSlug}/course/\`;
-} else if (modalId === 'volunteerModal') {
-const volunteerIframe = document.getElementById('volunteerIframe');
-volunteerIframe.src = \`https://${parkrunDomain}/\${eventSlug}/futureroster/\`;
 }
  
 modal.style.display = 'block';
@@ -944,8 +934,6 @@ document.body.style.overflow = 'auto';
  
 if (modalId === 'courseModal') {
 document.getElementById('courseIframe').src = '';
-} else if (modalId === 'volunteerModal') {
-document.getElementById('volunteerIframe').src = '';
 }
 }
  
