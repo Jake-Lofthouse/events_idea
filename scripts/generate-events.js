@@ -125,10 +125,10 @@ return today.toISOString().slice(0, 10);
 function getParkrunInfo(latitude, longitude) {
 for (const code in COUNTRIES) {
 const country = COUNTRIES[code];
-if (country.bounds) {
+if (country.url && country.bounds) {
 const [minLng, minLat, maxLng, maxLat] = country.bounds;
 if (longitude >= minLng && longitude <= maxLng && latitude >= minLat && latitude <= maxLat) {
-return { url: country.url || "www.parkrun.org.uk", code };
+return { url: country.url, code };
 }
 }
 }
@@ -229,7 +229,8 @@ ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolde
 ` : '';
 const nearbyKeywords = nearby.map(n => n.longName.toLowerCase()).join(', ');
 // Stay22 iframe base URL with scroll locking via scrolling="no"
-const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=${isCurrentJunior ? '40e0d0' : '7dd856'}&venue=${encodedName}&invmode=experience`;
+const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=${isCurrentJunior ? '40e0d0' : '7dd856'}&venue=${encodedName}`;
+const stay22ExpBaseUrl = `${stay22BaseUrl}&invmode=experience`;
 const siteName = isCurrentJunior ? 'junior parkrunner tourist' : 'parkrunner tourist';
 const pageTitle = `Accommodation near ${longName} | Hotels, Weather, Course Map & More | ${siteName}`;
 const parkrunType = isCurrentJunior ? 'Junior' : '5k';
@@ -790,7 +791,8 @@ display: contents;
 #weather-section { order: 3; }
 #location-section { order: 4; }
 #hotels-section { order: 5; }
-#nearby-section { order: 6; }
+#experiences-section { order: 6; }
+#nearby-section { order: 7; }
  
 .weather-iframe {
 height: 250px;
@@ -902,12 +904,23 @@ ${description}
 <div id="hotels-section" class="iframe-container">
 <h2 class="section-title">Hotels & Rentals</h2>
 <div>
-<button class="toggle-btn active" onclick="switchView('listview')" id="btn-listview">List View</button>
-<button class="toggle-btn" onclick="switchView('map')" id="btn-map">Map View</button>
+<button class="toggle-btn active" onclick="switchView('hotels','listview')" id="btn-listview-hotels">List View</button>
+<button class="toggle-btn" onclick="switchView('hotels','map')" id="btn-map-hotels">Map View</button>
 </div>
 <iframe id="stay22Frame" class="accommodation-iframe" scrolling="no"
 src="${stay22BaseUrl}&viewmode=listview&listviewexpand=true"
 title="Stay22 accommodation listing">
+</iframe>
+</div>
+<div id="experiences-section" class="iframe-container">
+<h2 class="section-title">Experiences</h2>
+<div>
+<button class="toggle-btn active" onclick="switchView('experiences','listview')" id="btn-listview-exp">List View</button>
+<button class="toggle-btn" onclick="switchView('experiences','map')" id="btn-map-exp">Map View</button>
+</div>
+<iframe id="stay22ExpFrame" class="accommodation-iframe" scrolling="no"
+src="${stay22ExpBaseUrl}&viewmode=listview&listviewexpand=true"
+title="Stay22 experiences listing">
 </iframe>
 </div>
 <div id="cancel-tile" class="iframe-container cancel-tile">
@@ -968,12 +981,15 @@ Download The App
 </footer>
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 <script>
-function switchView(mode) {
-const iframe = document.getElementById('stay22Frame');
-const baseUrl = "${stay22BaseUrl}";
+function switchView(type, mode) {
+const frameId = type === 'hotels' ? 'stay22Frame' : 'stay22ExpFrame';
+const baseUrl = type === 'hotels' ? "${stay22BaseUrl}" : "${stay22ExpBaseUrl}";
+const iframe = document.getElementById(frameId);
 iframe.src = baseUrl + "&viewmode=" + mode + "&listviewexpand=" + (mode === 'listview');
-document.getElementById('btn-listview').classList.toggle('active', mode === 'listview');
-document.getElementById('btn-map').classList.toggle('active', mode === 'map');
+const btnList = document.getElementById('btn-listview-' + (type === 'hotels' ? 'hotels' : 'exp'));
+const btnMap = document.getElementById('btn-map-' + (type === 'hotels' ? 'hotels' : 'exp'));
+btnList.classList.toggle('active', mode === 'listview');
+btnMap.classList.toggle('active', mode === 'map');
 }
  
 function openModal(modalId, eventName) {
