@@ -128,7 +128,7 @@ const country = COUNTRIES[code];
 if (country.bounds) {
 const [minLng, minLat, maxLng, maxLat] = country.bounds;
 if (longitude >= minLng && longitude <= maxLng && latitude >= minLat && latitude <= maxLat) {
-return { url: country.url, code };
+return { url: country.url || "www.parkrun.org.uk", code };
 }
 }
 }
@@ -174,13 +174,13 @@ return R * c;
 async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder) {
 const name = event.properties.eventname || 'Unknown event';
 const longName = event.properties.EventLongName || name;
+const isCurrentJunior = longName.toLowerCase().includes('junior');
 const location = event.properties.EventLocation || '';
 const coords = event.geometry.coordinates || [];
 const latitude = coords[1] || 0;
 const longitude = coords[0] || 0;
 const encodedName = encodeURIComponent(`${longName}`);
 const checkinDate = getNextFridayDateISO();
-const pageTitle = `Accommodation near ${longName} | Hotels, Weather, Course Map & More | parkrunner tourist`;
 const { url: parkrunDomain, code: countryCode } = getParkrunInfo(latitude, longitude);
 let description = event.properties.EventDescription || '';
 const hasDescription = description && description.trim() !== '' && description.trim() !== 'No description available.';
@@ -200,8 +200,7 @@ description = `<p>${description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
 }
 // Calculate nearby events in same country - PROPERLY FIXED SORTING
 const currentSlug = slugify(name);
-const isCurrentJunior = longName.toLowerCase().includes('junior');
- 
+
 // First, add distances to ALL events in the same country
 // Filter to only show same type (junior with junior, 5k with 5k)
 const eventsWithDistances = allEventsInfo
@@ -215,14 +214,14 @@ eIsJunior === isCurrentJunior; // Only show same type
 const dist = calculateDistance(latitude, longitude, e.lat, e.lon);
 return { ...e, dist };
 });
- 
+
 // Then sort ALL of them by distance and take the closest 4
 const nearby = eventsWithDistances
 .sort((a, b) => a.dist - b.dist)
 .slice(0, 4);
 const nearbyHtml = nearby.length > 0 ? `
 <div id="nearby-section" class="iframe-container">
-<h2 class="section-title">Nearby ${isCurrentJunior ? 'junior parkruns' : 'parkruns'}</h2>
+<h2 class="section-title">Nearby ${isCurrentJunior ? 'junior events' : 'events'}</h2>
 <ul class="nearby-list">
 ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolder[n.slug] || getSubfolder(n.slug)}/${n.slug}" target="_blank">${n.longName}</a> <span class="distance">(${n.dist.toFixed(1)} km)</span></li>`).join('')}
 </ul>
@@ -230,10 +229,10 @@ ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolde
 ` : '';
 const nearbyKeywords = nearby.map(n => n.longName.toLowerCase()).join(', ');
 // Stay22 iframe base URL with scroll locking via scrolling="no"
-const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=7dd856&venue=${encodedName}`;
-// Determine if it's a junior parkrun and set the appropriate URL
-const isJunior = longName.toLowerCase().includes('junior');
-const parkrunType = isJunior ? 'Junior' : '5k';
+const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=${isCurrentJunior ? '40e0d0' : '7dd856'}&venue=${encodedName}&invmode=experience`;
+const siteName = isCurrentJunior ? 'junior parkrunner tourist' : 'parkrunner tourist';
+const pageTitle = `Accommodation near ${longName} | Hotels, Weather, Course Map & More | ${siteName}`;
+const parkrunType = isCurrentJunior ? 'Junior' : '5k';
 const mainIframeUrl = `https://parkrunnertourist.com/main?${parkrunType}&lat=${latitude}&lon=${longitude}&zoom=13`;
 // Weather iframe URL
 const weatherIframeUrl = `https://parkrunnertourist.com/weather?lat=${latitude}&lon=${longitude}`;
@@ -243,18 +242,18 @@ return `<!DOCTYPE html>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${pageTitle}</title>
-<meta name="description" content="Discover the best accommodation near ${longName}. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
-<meta name="keywords" content="parkrun accommodation, hotels near ${name.toLowerCase()} parkrun, ${longName.toLowerCase()} hotels, parkrun tourist, nearby parkruns, ${nearbyKeywords}, parkrun weather, parkrun course map" />
+<meta name="description" content="Discover the best accommodation near ${longName}. Book hotels, view weather forecasts, course maps, volunteer rosters." />
+<meta name="keywords" content="parkrun accommodation, hotels near ${name.toLowerCase()} parkrun, ${longName.toLowerCase()} hotels, ${siteName}, nearby parkruns, ${nearbyKeywords}, parkrun weather, parkrun course map" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="${location}" />
 <meta name="geo.position" content="${latitude};${longitude}" />
 <meta property="og:title" content="${pageTitle}" />
-<meta property="og:description" content="Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
-<meta property="og:url" content="https://www.parkrunnertourist.com/${relativePath}" />
+<meta property="og:description" content="Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster and nearby parkruns." />
+<meta property="og:url" content="https://www.parkrunnertourist.com/explore/${relativePath}" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
-<link rel="canonical" href="https://www.parkrunnertourist.com/${relativePath}" />
+<link rel="canonical" href="https://www.parkrunnertourist.com/explore/${relativePath}" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <meta name="apple-itunes-app" content="app-id=6743163993, app-argument=https://www.parkrunnertourist.com">
@@ -280,7 +279,7 @@ line-height: 1.6;
 }
  
 header {
-background: linear-gradient(135deg, ${isJunior ? '#7b2cbf 0%, #5a189a 100%' : '#2e7d32 0%, #1b5e20 100%'});
+background: linear-gradient(135deg, ${isCurrentJunior ? '#40e0d0 0%, #008080 100%' : '#2e7d32 0%, #1b5e20 100%'});
 color: white;
 padding: 1.5rem 2rem;
 font-weight: 600;
@@ -288,7 +287,7 @@ font-size: 1.75rem;
 display: flex;
 justify-content: space-between;
 align-items: center;
-box-shadow: 0 4px 20px rgba(${isJunior ? '123, 44, 191' : '46, 125, 50'}, 0.3);
+box-shadow: 0 4px 20px rgba(${isCurrentJunior ? '0, 128, 128' : '46, 125, 50'}, 0.3);
 position: relative;
 overflow: hidden;
 }
@@ -335,7 +334,7 @@ display: inline-block;
  
 .header-map-btn:hover {
 background: white;
-color: ${isJunior ? '#7b2cbf' : '#2e7d32'};
+color: ${isCurrentJunior ? '#008080' : '#2e7d32'};
 transform: translateY(-2px);
 }
  
@@ -349,7 +348,7 @@ h1 {
 font-size: 7rem;
 font-weight: 800;
 margin-bottom: 0.5rem;
-background: linear-gradient(135deg, #2e7d32, #4caf50);
+background: linear-gradient(135deg, ${isCurrentJunior ? '#008080' : '#2e7d32'}, ${isCurrentJunior ? '#40e0d0' : '#4caf50'});
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 background-clip: text;
@@ -362,7 +361,7 @@ line-height: 1.2;
 .subtitle {
 font-size: 2rem;
 font-weight: 600;
-color: #4caf50;
+color: ${isCurrentJunior ? '#40e0d0' : '#4caf50'};
 text-align: center;
 margin-bottom: 3rem;
 position: relative;
@@ -376,7 +375,7 @@ left: 50%;
 transform: translateX(-50%);
 width: 100px;
 height: 4px;
-background: linear-gradient(135deg, #4caf50, #2e7d32);
+background: linear-gradient(135deg, ${isCurrentJunior ? '#40e0d0' : '#4caf50'}, ${isCurrentJunior ? '#008080' : '#2e7d32'});
 border-radius: 2px;
 }
  
@@ -386,7 +385,7 @@ padding: 2rem;
 border-radius: 1rem;
 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 margin-bottom: 3rem;
-border: 1px solid rgba(76, 175, 80, 0.2);
+border: 1px solid rgba(${isCurrentJunior ? '64, 224, 208' : '76, 175, 80'}, 0.2);
 }
  
 .description p {
@@ -409,7 +408,7 @@ gap: 0.5rem;
 content: '';
 width: 4px;
 height: 1.5rem;
-background: linear-gradient(135deg, #4caf50, #2e7d32);
+background: linear-gradient(135deg, ${isCurrentJunior ? '#40e0d0' : '#4caf50'}, ${isCurrentJunior ? '#008080' : '#2e7d32'});
 border-radius: 2px;
 }
  
@@ -420,25 +419,25 @@ margin-right: 1rem;
 margin-bottom: 1rem;
 cursor: pointer;
 font-weight: 600;
-border: 2px solid #4caf50;
+border: 2px solid ${isCurrentJunior ? '#40e0d0' : '#4caf50'};
 transition: all 0.3s ease;
 background-color: white;
-color: #4caf50;
+color: ${isCurrentJunior ? '#40e0d0' : '#4caf50'};
 user-select: none;
 font-size: 1rem;
-box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+box-shadow: 0 2px 10px rgba(${isCurrentJunior ? '64, 224, 208' : '76, 175, 80'}, 0.2);
 }
  
 .toggle-btn:hover:not(.active) {
 background-color: #f1f8e9;
-box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+box-shadow: 0 4px 15px rgba(${isCurrentJunior ? '64, 224, 208' : '76, 175, 80'}, 0.3);
 }
  
 .toggle-btn.active {
-background: linear-gradient(135deg, #4caf50, #2e7d32);
+background: linear-gradient(135deg, ${isCurrentJunior ? '#40e0d0' : '#4caf50'}, ${isCurrentJunior ? '#008080' : '#2e7d32'});
 color: white;
 transform: translateY(-2px);
-box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+box-shadow: 0 6px 20px rgba(${isCurrentJunior ? '64, 224, 208' : '76, 175, 80'}, 0.4);
 }
  
 .content-grid {
@@ -453,7 +452,7 @@ background: white;
 border-radius: 1rem;
 padding: 1rem;
 box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-border: 1px solid rgba(76, 175, 80, 0.2);
+border: 1px solid rgba(${isCurrentJunior ? '64, 224, 208' : '76, 175, 80'}, 0.2);
 overflow: hidden;
 }
  
@@ -499,7 +498,7 @@ animation: loading 1s linear infinite;
 display: flex;
 align-items: center;
 justify-content: center;
-color: #4caf50;
+color: ${isCurrentJunior ? '#40e0d0' : '#4caf50'};
 font-weight: 500;
 }
  
@@ -525,20 +524,20 @@ padding: 0.75rem 1.5rem;
 border-radius: 0.75rem;
 cursor: pointer;
 font-weight: 600;
-border: 2px solid #4caf50;
+border: 2px solid ${isCurrentJunior ? '#40e0d0' : '#4caf50'};
 transition: all 0.3s ease;
-background: linear-gradient(135deg, #4caf50, #2e7d32);
+background: linear-gradient(135deg, ${isCurrentJunior ? '#40e0d0' : '#4caf50'}, ${isCurrentJunior ? '#008080' : '#2e7d32'});
 color: white;
 text-decoration: none;
 display: inline-block;
 font-size: 1rem;
-box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+box-shadow: 0 4px 15px rgba(${isCurrentJunior ? '64, 224, 208' : '76, 175, 80'}, 0.3);
 }
  
 .action-btn:hover {
 transform: translateY(-2px);
-box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-background: linear-gradient(135deg, #388e3c, #1b5e20);
+box-shadow: 0 6px 20px rgba(${isCurrentJunior ? '64, 224, 208' : '76, 175, 80'}, 0.4);
+background: linear-gradient(135deg, ${isCurrentJunior ? '#30d5c8' : '#388e3c'}, ${isCurrentJunior ? '#006666' : '#1b5e20'});
 }
  
 .modal {
@@ -566,7 +565,7 @@ box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
  
 .modal-header {
-background: linear-gradient(135deg, #4caf50, #2e7d32);
+background: linear-gradient(135deg, ${isCurrentJunior ? '#40e0d0' : '#4caf50'}, ${isCurrentJunior ? '#008080' : '#2e7d32'});
 color: white;
 padding: 2rem 2rem;
 border-radius: 1rem 1rem 0 0;
@@ -647,14 +646,14 @@ background: #e2e8f0;
 }
  
 .nearby-list a {
-color: #4caf50;
+color: ${isCurrentJunior ? '#40e0d0' : '#4caf50'};
 text-decoration: none;
 font-weight: 500;
 transition: color 0.3s;
 }
  
 .nearby-list a:hover {
-color: #2e7d32;
+color: ${isCurrentJunior ? '#008080' : '#2e7d32'};
 }
  
 .distance {
@@ -870,19 +869,19 @@ padding: 0.4rem 1rem;
 "@context": "https://schema.org",
 "@type": "WebPage",
 "name": "${pageTitle}",
-"description": "Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
-"keywords": "parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}, nearby parkruns, ${nearbyKeywords}",
+"description": "Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster and nearby parkrun events.",
+"keywords": "parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}, nearby events, ${nearbyKeywords}",
 "author": {
 "@type": "Person",
 "name": "Jake Lofthouse"
 },
-"url": "https://www.parkrunnertourist.com/${relativePath}"
+"url": "https://www.parkrunnertourist.com/explore/${relativePath}"
 }
 </script>
 </head>
 <body>
 <header>
-<a href="https://www.parkrunnertourist.com" target="_self" title="Go to parkrunner tourist homepage">parkrunner tourist</a>
+<a href="https://www.parkrunnertourist.com" target="_self" title="Go to ${siteName} homepage">${siteName}</a>
 <a href="https://www.parkrunnertourist.com/webapp" target="_blank" class="header-map-btn">Show Full Map</a>
 </header>
 <div id="cancel-banner" class="cancel-banner"></div>
@@ -901,7 +900,7 @@ ${description}
 <div class="content-grid">
 <div class="left-column">
 <div id="hotels-section" class="iframe-container">
-<h2 class="section-title">Hotel Prices</h2>
+<h2 class="section-title">Hotels & Rentals</h2>
 <div>
 <button class="toggle-btn active" onclick="switchView('listview')" id="btn-listview">List View</button>
 <button class="toggle-btn" onclick="switchView('map')" id="btn-map">Map View</button>
@@ -965,7 +964,7 @@ Download The App
 </div>
 </div>
 <footer>
-&copy; ${new Date().getFullYear()} parkrunner tourist
+&copy; ${new Date().getFullYear()} ${siteName}
 </footer>
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 <script>
