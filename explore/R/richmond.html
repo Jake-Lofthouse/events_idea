@@ -4,18 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Accommodation near Richmond parkrun | Hotels, Weather, Course Map & More | parkrunner tourist</title>
-<meta name="description" content="Discover the best accommodation near Richmond parkrun. Book hotels, view weather forecasts, course maps, volunteer rosters, and explore nearby parkruns for the ultimate parkrun tourism experience." />
-<meta name="keywords" content="parkrun accommodation, hotels near richmond parkrun, richmond parkrun hotels, parkrun tourist, nearby parkruns, old deer park parkrun, kingston parkrun, wimbledon common parkrun, gunnersbury parkrun, parkrun weather, parkrun course map" />
+<meta name="description" content="Discover the best accommodation near Richmond parkrun. Book hotels, view weather forecasts, course maps, volunteer rosters." />
+<meta name="keywords" content="parkrun accommodation, hotels near richmond parkrun, richmond parkrun hotels, parkrunner tourist, nearby parkruns, old deer park parkrun, kingston parkrun, wimbledon common parkrun, gunnersbury parkrun, parkrun weather, parkrun course map" />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="Richmond Park, Richmond upon Thames" />
 <meta name="geo.position" content="51.451962;-0.292886" />
 <meta property="og:title" content="Accommodation near Richmond parkrun | Hotels, Weather, Course Map & More | parkrunner tourist" />
-<meta property="og:description" content="Find and book hotels, campsites and cafes around Richmond parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns." />
-<meta property="og:url" content="https://www.parkrunnertourist.com/R/richmond" />
+<meta property="og:description" content="Find and book hotels, campsites and cafes around Richmond parkrun. Includes weather forecast, course map, volunteer roster and nearby parkruns." />
+<meta property="og:url" content="https://www.parkrunnertourist.com/explore/R/richmond" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
-<link rel="canonical" href="https://www.parkrunnertourist.com/R/richmond" />
+<link rel="canonical" href="https://www.parkrunnertourist.com/explore/R/richmond" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <meta name="apple-itunes-app" content="app-id=6743163993, app-argument=https://www.parkrunnertourist.com">
@@ -631,13 +631,13 @@ padding: 0.4rem 1rem;
 "@context": "https://schema.org",
 "@type": "WebPage",
 "name": "Accommodation near Richmond parkrun | Hotels, Weather, Course Map & More | parkrunner tourist",
-"description": "Find and book hotels, campsites and cafes around Richmond parkrun. Includes weather forecast, course map, volunteer roster, and nearby parkruns.",
-"keywords": "parkrun, accommodation, hotels, stay, tourist, richmond, nearby parkruns, old deer park parkrun, kingston parkrun, wimbledon common parkrun, gunnersbury parkrun",
+"description": "Find and book hotels, campsites and cafes around Richmond parkrun. Includes weather forecast, course map, volunteer roster and nearby parkrun events.",
+"keywords": "parkrun, accommodation, hotels, stay, tourist, richmond, nearby events, old deer park parkrun, kingston parkrun, wimbledon common parkrun, gunnersbury parkrun",
 "author": {
 "@type": "Person",
 "name": "Jake Lofthouse"
 },
-"url": "https://www.parkrunnertourist.com/R/richmond"
+"url": "https://www.parkrunnertourist.com/explore/R/richmond"
 }
 </script>
 </head>
@@ -660,13 +660,13 @@ padding: 0.4rem 1rem;
 <div class="content-grid">
 <div class="left-column">
 <div id="hotels-section" class="iframe-container">
-<h2 class="section-title">Hotel Prices</h2>
+<h2 class="section-title">Hotels & Rentals</h2>
 <div>
 <button class="toggle-btn active" onclick="switchView('listview')" id="btn-listview">List View</button>
 <button class="toggle-btn" onclick="switchView('map')" id="btn-map">Map View</button>
 </div>
 <iframe id="stay22Frame" class="accommodation-iframe" scrolling="no"
-src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.451962&lng=-0.292886&checkin=2026-01-30&maincolor=7dd856&venue=Richmond%20parkrun&viewmode=listview&listviewexpand=true"
+src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.451962&lng=-0.292886&checkin=2026-02-06&maincolor=7dd856&venue=Richmond%20parkrun&invmode=experience&viewmode=listview&listviewexpand=true"
 title="Stay22 accommodation listing">
 </iframe>
 </div>
@@ -692,7 +692,7 @@ title="Stay22 accommodation listing">
 </div>
 
 <div id="nearby-section" class="iframe-container">
-<h2 class="section-title">Nearby parkruns</h2>
+<h2 class="section-title">Nearby events</h2>
 <ul class="nearby-list">
 <li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/O/olddeerpark" target="_blank">Old Deer Park parkrun</a> <span class="distance">(1.7 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/K/kingston" target="_blank">Kingston parkrun</a> <span class="distance">(3.0 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/W/wimbledon" target="_blank">Wimbledon Common parkrun</a> <span class="distance">(4.3 km)</span></li><li class="nearby-item"><a href="https://www.parkrunnertourist.com/explore/G/gunnersbury" target="_blank">Gunnersbury parkrun</a> <span class="distance">(5.3 km)</span></li>
 </ul>
@@ -737,7 +737,7 @@ Download The App
 <script>
 function switchView(mode) {
 const iframe = document.getElementById('stay22Frame');
-const baseUrl = "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.451962&lng=-0.292886&checkin=2026-01-30&maincolor=7dd856&venue=Richmond%20parkrun";
+const baseUrl = "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.451962&lng=-0.292886&checkin=2026-02-06&maincolor=7dd856&venue=Richmond%20parkrun&invmode=experience";
 iframe.src = baseUrl + "&viewmode=" + mode + "&listviewexpand=" + (mode === 'listview');
 document.getElementById('btn-listview').classList.toggle('active', mode === 'listview');
 document.getElementById('btn-map').classList.toggle('active', mode === 'map');
@@ -749,10 +749,10 @@ const eventSlug = eventName.toLowerCase().replace(/\s+/g, '');
  
 if (modalId === 'courseModal') {
 const courseIframe = document.getElementById('courseIframe');
-courseIframe.src = `https://null/${eventSlug}/course/`;
+courseIframe.src = `https://www.parkrun.org.uk/${eventSlug}/course/`;
 } else if (modalId === 'volunteerModal') {
 const volunteerIframe = document.getElementById('volunteerIframe');
-volunteerIframe.src = `https://null/${eventSlug}/futureroster/`;
+volunteerIframe.src = `https://www.parkrun.org.uk/${eventSlug}/futureroster/`;
 }
  
 modal.style.display = 'block';
