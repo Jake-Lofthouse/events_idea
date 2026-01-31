@@ -552,7 +552,8 @@ display: contents;
 #weather-section { order: 3; }
 #location-section { order: 4; }
 #hotels-section { order: 5; }
-#nearby-section { order: 6; }
+#experiences-section { order: 6; }
+#nearby-section { order: 7; }
  
 .weather-iframe {
 height: 250px;
@@ -662,12 +663,23 @@ padding: 0.4rem 1rem;
 <div id="hotels-section" class="iframe-container">
 <h2 class="section-title">Hotels & Rentals</h2>
 <div>
-<button class="toggle-btn active" onclick="switchView('listview')" id="btn-listview">List View</button>
-<button class="toggle-btn" onclick="switchView('map')" id="btn-map">Map View</button>
+<button class="toggle-btn active" onclick="switchView('hotels','listview')" id="btn-listview-hotels">List View</button>
+<button class="toggle-btn" onclick="switchView('hotels','map')" id="btn-map-hotels">Map View</button>
 </div>
 <iframe id="stay22Frame" class="accommodation-iframe" scrolling="no"
-src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.307648&lng=-0.184225&checkin=2026-02-06&maincolor=7dd856&venue=Banstead%20Woods%20parkrun&invmode=experience&viewmode=listview&listviewexpand=true"
+src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.307648&lng=-0.184225&checkin=2026-02-06&maincolor=7dd856&venue=Banstead%20Woods%20parkrun&viewmode=listview&listviewexpand=true"
 title="Stay22 accommodation listing">
+</iframe>
+</div>
+<div id="experiences-section" class="iframe-container">
+<h2 class="section-title">Experiences</h2>
+<div>
+<button class="toggle-btn active" onclick="switchView('experiences','listview')" id="btn-listview-exp">List View</button>
+<button class="toggle-btn" onclick="switchView('experiences','map')" id="btn-map-exp">Map View</button>
+</div>
+<iframe id="stay22ExpFrame" class="accommodation-iframe" scrolling="no"
+src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.307648&lng=-0.184225&checkin=2026-02-06&maincolor=7dd856&venue=Banstead%20Woods%20parkrun&invmode=experience&viewmode=listview&listviewexpand=true"
+title="Stay22 experiences listing">
 </iframe>
 </div>
 <div id="cancel-tile" class="iframe-container cancel-tile">
@@ -735,12 +747,15 @@ Download The App
 </footer>
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 <script>
-function switchView(mode) {
-const iframe = document.getElementById('stay22Frame');
-const baseUrl = "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.307648&lng=-0.184225&checkin=2026-02-06&maincolor=7dd856&venue=Banstead%20Woods%20parkrun&invmode=experience";
+function switchView(type, mode) {
+const frameId = type === 'hotels' ? 'stay22Frame' : 'stay22ExpFrame';
+const baseUrl = type === 'hotels' ? "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.307648&lng=-0.184225&checkin=2026-02-06&maincolor=7dd856&venue=Banstead%20Woods%20parkrun" : "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.307648&lng=-0.184225&checkin=2026-02-06&maincolor=7dd856&venue=Banstead%20Woods%20parkrun&invmode=experience";
+const iframe = document.getElementById(frameId);
 iframe.src = baseUrl + "&viewmode=" + mode + "&listviewexpand=" + (mode === 'listview');
-document.getElementById('btn-listview').classList.toggle('active', mode === 'listview');
-document.getElementById('btn-map').classList.toggle('active', mode === 'map');
+const btnList = document.getElementById('btn-listview-' + (type === 'hotels' ? 'hotels' : 'exp'));
+const btnMap = document.getElementById('btn-map-' + (type === 'hotels' ? 'hotels' : 'exp'));
+btnList.classList.toggle('active', mode === 'listview');
+btnMap.classList.toggle('active', mode === 'map');
 }
  
 function openModal(modalId, eventName) {
