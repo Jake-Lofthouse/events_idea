@@ -150,7 +150,7 @@ const nearby = eventsWithDistances
 .slice(0, 4);
 const nearbyHtml = nearby.length > 0 ? `
 <div id="nearby-section" class="iframe-container">
-<h2 class="section-title">Nearby ${isCurrentJunior ? 'junior events' : 'events'}</h2>
+<h2 class="section-title">Nearby ${isCurrentJunior ? 'Junior Events' : 'Events'}</h2>
 <ul class="nearby-list">
 ${nearby.map(n => `<li class="nearby-item"><a href="${BASE_URL}/${slugToSubfolder[n.slug] || getSubfolder(n.slug)}/${n.slug}" target="_blank">${n.longName}</a> <span class="distance">(${n.dist.toFixed(1)} km)</span></li>`).join('')}
 </ul>
@@ -823,7 +823,7 @@ padding: 0.4rem 1rem;
  
 <div class="parkrun-actions">
 <a href="#" class="action-btn" onclick="openModal('courseModal', '${name}')">Course Map</a>
-<a href="${volunteerUrl}" target="_blank" class="action-btn">Volunteer Roster</a>
+<a href="https://${parkrunDomain}/${eventSlug}/futureroster/" target="_blank" class="action-btn">Volunteer Roster</a>
 <a href="https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}" target="_blank" class="action-btn">Directions</a>
 </div>
  
