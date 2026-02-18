@@ -161,7 +161,7 @@ const nearbyKeywords = nearby.map(n => n.longName.toLowerCase()).join(', ');
 const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=${isCurrentJunior ? '40e0d0' : '7dd856'}&venue=${encodedName}`;
 const stay22ExpBaseUrl = `${stay22BaseUrl}&invmode=experience`;
 const siteName = isCurrentJunior ? 'junior parkrunner tourist' : 'parkrunner tourist';
-const pageTitle = `Accommodation near ${longName} | Hotels, Weather, Course Map & More | ${siteName}`;
+const pageTitle = `${longName} - Hotels & Visitor Guide`;
 const parkrunType = isCurrentJunior ? 'Junior' : '5k';
 const mainIframeUrl = `https://parkrunnertourist.com/main?${parkrunType}&lat=${latitude}&lon=${longitude}&zoom=13`;
 // Weather iframe URL
@@ -174,13 +174,12 @@ return `<!DOCTYPE html>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${pageTitle}</title>
-<meta name="description" content="Discover the best accommodation near ${longName}. Book hotels, view weather forecasts, course maps, volunteer rosters." />
-<meta name="keywords" content="parkrun accommodation, hotels near ${name.toLowerCase()} parkrun, ${longName.toLowerCase()} hotels, ${siteName}, nearby parkruns, ${nearbyKeywords}, parkrun weather, parkrun course map" />
+<meta name="description" content="Visiting ${longName}? Compare nearby hotels, explore the course map, check the latest weather forecast and plan your perfect parkrun weekend." />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="${location}" />
 <meta name="geo.position" content="${latitude};${longitude}" />
 <meta property="og:title" content="${pageTitle}" />
-<meta property="og:description" content="Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster and nearby parkruns." />
+<meta property="og:description" content="Planning a visit to ${longName}? Discover nearby hotels, explore the course map, check the latest weather forecast and find local cafés." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/explore/${relativePath}" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
@@ -716,7 +715,7 @@ gap: 1.5rem;
 .left-column, .right-column {
 display: contents;
 }
-// REPLACE THIS ORDER:
+
 #cancel-tile { order: 1; }
 #further-tile { order: 2; }
 #weather-section { order: 3; }
@@ -799,18 +798,58 @@ padding: 0.4rem 1rem;
 </style>
 <script type="application/ld+json">
 {
-"@context": "https://schema.org",
-"@type": "WebPage",
-"name": "${pageTitle}",
-"description": "Find and book hotels, campsites and cafes around ${longName}. Includes weather forecast, course map, volunteer roster and nearby parkrun events.",
-"keywords": "parkrun, accommodation, hotels, stay, tourist, ${name.toLowerCase()}, nearby events, ${nearbyKeywords}",
-"author": {
-"@type": "Person",
-"name": "Jake Lofthouse"
+  "@context": "https://schema.org",
+  "@graph": [
+  { 
+  "@type": "SportsEvent",
+  "name": "${longName}",
+  "description": "Visitor guide to ${longName}. Hotels, course map, weather forecast and travel information.",
+  "sport": "Running",
+  "eventAttendanceMode": "OfflineEventAttendanceMode",
+  "location": {
+    "@type": "Place",
+    "name": "${location}",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "${latitude}",
+      "longitude": "${longitude}"
+    }
+  },
+  "url": "https://www.parkrunnertourist.com/explore/${relativePath}"
 },
-"url": "https://www.parkrunnertourist.com/explore/${relativePath}"
+{
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the weather like at ${longName} this week?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check the 'Weather This Week' section for the forecast at 9am on the day of the event."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is ${longName} held?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "${longName} takes place at ${location}. See the parkrun Location map above for directions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I find hotels and rentals near ${longName}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The 'Hotels & Rentals' section lists nearby accommodations with list and map views for easy planning."
+     }
+    }
+   ]
+  }
+ ]
 }
 </script>
+
 </head>
 <body>
 <header>
@@ -819,7 +858,7 @@ padding: 0.4rem 1rem;
 </header>
 <div id="cancel-banner" class="cancel-banner"></div>
 <main>
-<h1>Accommodation near ${longName}</h1>
+<h1>${longName} - Hotels & Visitor Guide</h1>
  
 <div class="parkrun-actions">
 <a href="#" class="action-btn" onclick="openModal('courseModal', '${name}')">Course Map</a>
@@ -899,6 +938,10 @@ Download The App
 </div>
 </div>
 <footer>
+<p style="max-width:900px;margin:0 auto 1rem auto;font-size:0.85rem;line-height:1.5;color:#64748b;">
+parkrun is a registered trademark of parkrun Limited. 
+This website is independent and is not affiliated with or endorsed by parkrun.
+</p>
 &copy; ${new Date().getFullYear()} ${siteName}
 </footer>
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="jlofthouse" data-description="Support me on Buy me a coffee!" data-message="Support The App" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
