@@ -339,6 +339,18 @@ iframe { width: 100%; border-radius: 0.75rem; border: none; overflow: hidden; }
   box-shadow: 0 4px 15px rgba(${isCurrentJunior ? '64,224,208' : '76,175,80'}, 0.3);
 }
 .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(${isCurrentJunior ? '64,224,208' : '76,175,80'}, 0.4); }
+.course-animate-btn {
+  background: linear-gradient(135deg, #28a745, #20c997) !important;
+  border-color: #28a745 !important;
+  box-shadow: 0 4px 15px rgba(40,167,69,0.35) !important;
+}
+.course-animate-btn:hover { box-shadow: 0 6px 22px rgba(40,167,69,0.5) !important; }
+.course-map-btn {
+  background: linear-gradient(135deg, #fd7e14, #ffc107) !important;
+  border-color: #fd7e14 !important;
+  box-shadow: 0 4px 15px rgba(253,126,20,0.35) !important;
+}
+.course-map-btn:hover { box-shadow: 0 6px 22px rgba(253,126,20,0.5) !important; }
 /* ── Course Modal — identical to main.html ── */
 #course-map-modal {
   display: none; position: fixed; top:0;left:0;width:100%;height:100%;
@@ -474,9 +486,8 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
 <main>
   <h1>${longName} - Hotels &amp; Visitor Guide</h1>
   <div class="parkrun-actions">
-    ${hasRoute
-      ? `<button onclick="openCourseModal()" class="action-btn"><i class="fas fa-route"></i> Animate Course</button>`
-      : `<a href="https://${parkrunDomain}/${eventSlug}/course/" target="_blank" class="action-btn"><i class="fas fa-route"></i> Course Map</a>`}
+    ${hasRoute ? `<button onclick="openCourseModal()" class="action-btn course-animate-btn"><i class="fas fa-play-circle"></i> Animate Course</button>` : ''}
+    <a href="https://${parkrunDomain}/${eventSlug}/course/" target="_blank" class="action-btn course-map-btn"><i class="fas fa-route"></i> Course Map</a>
     <a href="https://${parkrunDomain}/${eventSlug}/futureroster/" target="_blank" class="action-btn"><i class="fas fa-hand-paper"></i> Volunteer Roster</a>
     <a href="https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}" target="_blank" class="action-btn"><i class="fas fa-directions"></i> Directions</a>
   </div>
@@ -679,7 +690,7 @@ function initCoursePreview() {
   });
 
   // Stamen Terrain via Stadia — shows real elevation shading & terrain
-  L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 18
   }).addTo(_previewMap);
 
@@ -820,7 +831,7 @@ function initCourseModalMap(route) {
       tap: false, touchZoom: true, attributionControl: false
     });
     // Terrain tiles matching the preview
-    L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(courseModalMap);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(courseModalMap);
     courseModalMap.on('move zoom', _drawFrame);
     courseModalMap.on('moveend zoomend', function() { _drawFrame(); _enforceMinZoom(); });
   }
