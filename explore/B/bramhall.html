@@ -4,12 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Bramhall parkrun - Hotels & Visitor Guide</title>
-<meta name="description" content="Visiting Bramhall parkrun? Compare nearby hotels, explore the course map, check the latest weather forecast and plan your perfect parkrun weekend." />
+<meta name="description" content="Visiting Bramhall parkrun? Compare nearby hotels, explore the course map, learn about the terrain, find local experiences and attractions, check the latest weather forecast and plan your perfect parkrun weekend." />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="Bramhall Park, near Stockport" />
 <meta name="geo.position" content="53.374268;-2.160702" />
 <meta property="og:title" content="Bramhall parkrun - Hotels & Visitor Guide" />
-<meta property="og:description" content="Planning a visit to Bramhall parkrun? Discover nearby hotels, explore the course map, check the latest weather forecast and find local cafes." />
+<meta property="og:description" content="Planning a visit to Bramhall parkrun? Discover nearby hotels, explore the course map, learn about the terrain, find local experiences and attractions, check the latest weather forecast and find local cafes." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/explore/B/bramhall" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
@@ -109,7 +109,7 @@ iframe { width: 100%; border-radius: 0.75rem; border: none; overflow: hidden; }
 }
 .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76,175,80, 0.4); }
 
-/* ── Course Modal — identical to main.html ── */
+/* Course Modal */
 #course-map-modal {
   display: none; position: fixed; top:0;left:0;width:100%;height:100%;
   z-index: 9999; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
@@ -258,7 +258,6 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
           <button class="toggle-btn" onclick="switchView('hotels','map')" id="btn-map-hotels">Map View</button>
         </div>
         <iframe id="stay22Frame" class="accommodation-iframe" scrolling="no"
-          src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=53.374268&lng=-2.160702&checkin=2026-03-13&maincolor=7dd856&venue=Bramhall%20parkrun&viewmode=listview&listviewexpand=true"
           title="Stay22 accommodation listing"></iframe>
       </div>
       <div id="experiences-section" class="iframe-container">
@@ -268,7 +267,6 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
           <button class="toggle-btn" onclick="switchView('experiences','map')" id="btn-map-exp">Map View</button>
         </div>
         <iframe id="stay22ExpFrame" class="accommodation-iframe" scrolling="no"
-          src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=53.374268&lng=-2.160702&checkin=2026-03-13&maincolor=7dd856&venue=Bramhall%20parkrun&invmode=experience&viewmode=listview&listviewexpand=true"
           title="Stay22 experiences listing"></iframe>
       </div>
     </div>
@@ -321,7 +319,7 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   </div>
 </main>
 
-<!-- Course Map Modal — identical to main.html -->
+<!-- Course Map Modal -->
 <div id="course-map-modal">
   <div class="course-modal-inner">
     <div class="course-modal-header">
@@ -378,10 +376,10 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ── Decrypt helper ────────────────────────────────────────────────────────
+// Decrypt helper
 function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
 
-// ── Course data (encrypted at build time, decrypted at runtime) ───────────
+// Course data (encrypted at build time, decrypted at runtime)
 const _er = "Wy0xMTQ2Mzg1MSw1MzA3Mjk5NCwtMTE3NjkxNDgsNjM3OTAzNjcsLTYzODQ4NTMsNTYwMDMwODIsLTg2ODU4NjIsNjAwMzYzMzEsLTUwOTQ1NDAsNTQwMjQ0NTgsLTE2MTIzNDkwLDY2OTAzNTI0LC0zNDkxODk2LDU1NDQ5MjE5LC04NDE1NzcsNTUxNTY4NjcsLTU5Njk0ODYsNjIyMzkzMDAsLTM0NjkxMzcsNjIxNjgwNTYsLTI1NzIyODIsNTU0NDI2MjEsLTEzMzM5NzI3LDUwOTE4ODYwLC00ODI3NzAxLDU1NTg0MDUxLC05OTc1ODIzLDU4NTE3NjMwLC0xNDQ1MDU0MCw2NDk4ODY1NSwtNjYwMjQ2MSw1MDk4NTgyMiwtNTI1MDkzNyw1ODI3OTM4NywtNzI4MDkwMyw2MzU5NzU3MywtODcxOTUyMiw1NDU4MDg0NSwtMzEwNzA5MCw1ODc5NTE2NCwtMTU2MzQ1MTYsNjQ2NDc5NzcsLTIzOTc4NzgsNjA4NDcxNDksLTEzMTkyNTI2LDYwNTgxMTA5LC0xNDA4Mzg0Nyw2MjM5MTc2MywtNjYyMDE0Nyw2NjYzOTk4NiwtMTQzMzI0Nyw1NTM3ODUyNCwtNjExODAxMCw2MTQxOTc2NywtMzY5NDMxNiw2NTUzNTk4MCwtMTE3OTQyNjgsNjA0ODc1NTAsLTE2MTE3MDg2LDY1MzM4NTczLC03ODA2OTMzLDUwMzQyNjk2LC01MDI3NTUxLDY1NDgyODQ4LC0yNDI4Mjg2LDY0NTYwNDI4LC0yMjM2NTQ3LDYzOTgxMzc4LC05NTkwNTgsNjYzMjI0NTUsLTc2NzI3ODUsNTA1OTQyMTksLTEyNzY4ODQ1LDUxNTU5ODkxLC0xMDU4NDE4NCw2MDk5NDU3MCwtMjUxNjY0OSw1MjIzOTA2NCwtMzA2MTM3Miw1NDIwMTIyMCwtMjMwOTk2Niw2NjU5ODExMywtMTI2OTQ5Miw2NjUzOTg4MCwtMTI0ODE2ODQsNjY3NTYwMjQsLTY3MzA2NzUsNjU1ODIzNDgsLTExODk0MjksNTcxMzY2ODgsLTg0MDU4NTUsNjIzNjU2MjQsLTE0NDYxMDg3LDY1MDY5NTE3LC0xMDg4MDEyOSw1MjUwMDAxMywtMTU2MDkyMjYsNjcwMzg2NzksLTYwMjUyMDgsNTgxOTIzMDEsLTEzNDY3NDQ5LDUxMjE3NDY4LC0xMDIzOTIyOCw2Njk1ODQyOCwtMTI2MDEwMiw2NjQ2NzM4MCwtMzIyMjA3OSw2NDUyNDE2MywtNTgxNTIzMiw1NjgwNjg5MSwtMTAzNDc2OTMsNjEwMDA3NjAsLTE5MjE3MTEsNjE2NTAxNjksLTE2MjEwMzEwLDUxMDAxNTcwLC01NjgzMDYwLDYwNDM4Nzc1LC0xMDI1Njk4OSw2NTU0NDEzNiwtMTU3NzQxNjUsNTExMDMxMjUsLTEzMDY0MTkwLDYzMzYwMTYwLC0xNDUxNDE4Miw1MTY5MzE4NSwtMTY0NjQ4MzMsNTk3Mzk2NDEsLTgwODExMDUsNjUyNzYzMDgsLTYwNDgwNTksNTM0ODA3MTgsLTEyNzkxNDQ1LDYwNjQyOTgwLC0xMTU4NzkxNCw1ODU4Njk1NSwtNjUyNjkzMSw1ODc3NzMzOSwtNjEyNjM1OCw2NDY0MDg4MSwtNjgwOTE1MSw1NTI5ODY3NCwtNjczNzA2Niw1OTM5ODE4MSwtNTk5Mzk0Nyw2NTY4NTg0MywtMTMyMzM5MTAsNTQ3MDA3MTksLTMwMDkxNTcsNjEwNzIzNzIsLTE0ODEyNTUxLDU2NTA2NzYyLC0xNDA5MjYwMSw1MjI5ODg0NCwtNDkwMzI5Myw2NjExMjc0OSwtODA2OTE1OCw2NjM4NzE2OSwtOTQyNjA3Miw1MDc4NTc4MywtODIxODg2LDY1MjM1NTA0LC0xNTkzOTI2NCw1NjIzMjI3OCwtMzc5OTg5OCw2NDg5MDczNywtMzg2ODk5Myw1ODcxMDMzMSwtMTIzMjQ0MTgsNTkzNTM3MTEsLTExMjgyMjI3LDU4ODg4OTA2LC01NjQ2Mzg1LDYzNDQwNDI0LC0xNDIzNjAwMiw1MzExMTk1NSwtNjY2MjU4MCw2MTYxNzc1OSwtMTI1MjczNiw2NjM4NTM2MCwtNDU5OTE5OCw2NTQ2NDA3NywtODQ1NDg2Nyw1NDcyMTQ5MywtNjI1MzQ5LDU4NjkxNTYxLC0xNDIxMzA2Nyw1OTYwNTI1MiwtNDA3MTE3MCw1NDAxNjM5MSwtNzIwMjM2NCw1NzAwNDc5MCwtMTU4NTYwNDgsNjU5ODkyMjEsLTYzMjU5MDEsNjE3MTI0MjUsLTEyMTc5OTcwLDU3NDg5MTgzLC0xMjM4NTg2Myw1NjEyODM5MywtMTUyNDczNDAsNTkwOTU5NDgsLTI4NTI5NDEsNTcwNjEwODIsLTMzNzkyMjMsNTE5OTU3NDQsLTM2MTU2NDEsNTgzNDE0OTMsLTEzMjk4Nyw1OTQ2NDg3MSwtNTgxNzc0MSw2MjY1MjQxMiwtMTE1MDgyMjIsNjUyMTUwMTksLTEyNDI5NTM3LDU1NDA0MTQxLC0xMzY0Mzg1MCw1NjM3MTI1MSwtNzk1NTgxOSw1NTUwMjExOSwtNzU5ODgzNCw1ODQzNTU0MiwtMTQ1Mjg4MTUsNjA2NTAwODAsLTE1NTE2MzI5LDYwOTgxOTExLC0xMTc1ODc2Miw1NjI4NzcyNywtNDgwMzAyMyw1NDE2MTc1NywtNDU2Nzc1Nyw1NDk3NTAzNiwtNzM4NzcxNiw1OTU3MDIxNSwtMTAyNjEwNTUsNjQ5MDAxMTIsLTEyODU1OCw1OTg5MzcxNiwtMTMxOTYzNDQsNTE1NTMwNjksLTEyNDIyMDQ1LDU0MTY3NDc0LC0xMTA3MzAxNSw2NTc2NjQxMiwtMTEyNjc4MjAsNTMxMDk2OTMsLTIxMDc0NTksNjQzMjUzMDcsLTE2MTk3MDI0LDU2MDkxODY2LC03MjQ2MjkzLDUxNTcwODA0LC0xNDQ3NzkzOSw1MzQyODY1NSwtMjQyNDExMyw1MzAwMzIzMCwtODgyNDIzNCw1Mzc3MDk1NiwtMTE2MDk4MjAsNTQ1ODk2NTAsLTExNzEyMjI0LDY1MzMxMjQ4LC0xMDA0NTAyMyw2NzA5OTQ5NCwtMTAwODk0NTEsNTYyNDYzMDIsLTQ5Njk5MTgsNjUzMjgzNjUsLTkxNDM0NTcsNjM1NDY4NTYsLTEwMjAzNDg4LDU1Mjk5NjUyLC0xNzYzNDc1LDYwMjM0NjYyLC0zODc4MzMsNjI3ODI0NjMsLTQ1NjIzMjYsNjY3NzY4MTAsLTM1MDc1NjQsNjYxNTc3MzcsLTQ1NjA5MzMsNTY3NDc0MzgsLTg3OTk3MzUsNTc3ODA3ODgsLTQ1NzMwOSw2MTc0NzczMCwtOTU1NzI2NSw2Mjk2NzI1N10=";
 const _es = "Wy0yMDM4MjgwLDYyNjY0MTI5XQ==";
 const _ef = "Wy0xNjMzNzk3NCw2MzU3MTgxNF0=";
@@ -391,17 +389,33 @@ const _courseStart  = _es ? _d(_es, _sk +  7)[0] : null;
 const _courseFinish = _ef ? _d(_ef, _sk + 13)[0] : null;
 const HAS_ROUTE = !!(_courseRoute && _courseRoute.length > 1);
 
-// ── Stay22 switcher ───────────────────────────────────────────────────────
+// Stay22 check-in date computed at page load (next Friday)
+function getNextFridayDateISO() {
+  const today = new Date();
+  const day = today.getDay();
+  const daysUntilFriday = (5 - day + 7) % 7 || 7;
+  today.setDate(today.getDate() + daysUntilFriday);
+  return today.toISOString().slice(0, 10);
+}
+const _checkinDate   = getNextFridayDateISO();
+const _stay22Base    = "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=53.374268&lng=-2.160702&maincolor=7dd856&venue=Bramhall%20parkrun&checkin=" + _checkinDate;
+const _stay22ExpBase = "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=53.374268&lng=-2.160702&maincolor=7dd856&venue=Bramhall%20parkrun&invmode=experience&checkin=" + _checkinDate;
+
+// Initialise Stay22 iframes with live check-in date
+document.getElementById('stay22Frame').src    = _stay22Base    + '&viewmode=listview&listviewexpand=true';
+document.getElementById('stay22ExpFrame').src = _stay22ExpBase + '&viewmode=listview&listviewexpand=true';
+
+// Stay22 view switcher
 function switchView(type, mode) {
   const id      = type === 'hotels' ? 'stay22Frame' : 'stay22ExpFrame';
-  const baseUrl = type === 'hotels' ? "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=53.374268&lng=-2.160702&checkin=2026-03-13&maincolor=7dd856&venue=Bramhall%20parkrun" : "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=53.374268&lng=-2.160702&checkin=2026-03-13&maincolor=7dd856&venue=Bramhall%20parkrun&invmode=experience";
+  const baseUrl = type === 'hotels' ? _stay22Base : _stay22ExpBase;
   document.getElementById(id).src = baseUrl + '&viewmode=' + mode + '&listviewexpand=' + (mode === 'listview');
   const pfx = type === 'hotels' ? 'hotels' : 'exp';
   document.getElementById('btn-listview-' + pfx).classList.toggle('active', mode === 'listview');
   document.getElementById('btn-map-'      + pfx).classList.toggle('active', mode === 'map');
 }
 
-// ── Lazy iframe loading ───────────────────────────────────────────────────
+// Lazy iframe loading
 document.addEventListener('DOMContentLoaded', function() {
   const isBot = /bot|crawler|spider|facebookexternalhit|twitterbot|linkedinbot|googlebot|bingbot/i.test(navigator.userAgent);
   if (!isBot && 'IntersectionObserver' in window) {
@@ -455,9 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// ══════════════════════════════════════════════════════════════════
-// COURSE PREVIEW — mini Leaflet tile with Stamen Terrain
-// ══════════════════════════════════════════════════════════════════
+// Course preview mini-map
 let _previewMap = null;
 
 function initCoursePreview() {
@@ -470,25 +482,21 @@ function initCoursePreview() {
     tap: false, touchZoom: false, attributionControl: false
   });
 
-  // Stamen Terrain via Stadia — shows real elevation shading & terrain
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 18
   }).addTo(_previewMap);
 
   const routeLatLngs = _courseRoute.map(p => [p[1], p[0]]);
 
-  // Route polyline
   L.polyline(routeLatLngs, {
     color: '#28a745', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round'
   }).addTo(_previewMap);
 
-  // Start dot (green)
   const startPt = _courseStart || _courseRoute[0];
   L.circleMarker([startPt[1], startPt[0]], {
     radius: 7, fillColor: '#28a745', color: '#fff', weight: 2, fillOpacity: 1
   }).addTo(_previewMap);
 
-  // Finish dot (red)
   const finishPt = _courseFinish || _courseRoute[_courseRoute.length - 1];
   L.circleMarker([finishPt[1], finishPt[0]], {
     radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1
@@ -497,9 +505,7 @@ function initCoursePreview() {
   _previewMap.fitBounds(L.latLngBounds(routeLatLngs), { padding: [24, 24], animate: false });
 }
 
-// ══════════════════════════════════════════════════════════════════
-// COURSE MODAL — identical logic to main.html parkrunner_tourist.html
-// ══════════════════════════════════════════════════════════════════
+// Course modal
 let courseModalMap           = null;
 let courseModalStartMark     = null;
 let courseModalFinishMark    = null;
@@ -611,7 +617,6 @@ function initCourseModalMap(route) {
       doubleClickZoom: true, boxZoom: false, keyboard: false,
       tap: false, touchZoom: true, attributionControl: false
     });
-    // Terrain tiles matching the preview
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(courseModalMap);
     courseModalMap.on('move zoom', _drawFrame);
     courseModalMap.on('moveend zoomend', function() { _drawFrame(); _enforceMinZoom(); });
@@ -619,7 +624,6 @@ function initCourseModalMap(route) {
   if (courseModalStartMark)  courseModalMap.removeLayer(courseModalStartMark);
   if (courseModalFinishMark) courseModalMap.removeLayer(courseModalFinishMark);
 
-  // Invisible hit-target markers for tooltips
   if (_courseStart) {
     courseModalStartMark = L.circleMarker([_courseStart[1], _courseStart[0]],
       { radius: 10, fillOpacity: 0, opacity: 0, interactive: true }).addTo(courseModalMap);
@@ -689,7 +693,7 @@ function updateCourseFrame(progress) {
   const [sx,sy]  = startLL  ? toXY(startLL[1],  startLL[0])  : toXY(route[0][1], route[0][0]);
   const [fx,fy]  = finishLL ? toXY(finishLL[1], finishLL[0]) : toXY(route[route.length-1][1], route[route.length-1][0]);
 
-  // Green trail behind runner — starts exactly at start dot
+  // Green trail behind runner
   if (progress > 0) {
     ctx.beginPath(); ctx.lineWidth = 5; ctx.strokeStyle = '#28a745';
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';

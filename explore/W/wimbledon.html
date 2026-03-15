@@ -4,12 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Wimbledon Common parkrun - Hotels & Visitor Guide</title>
-<meta name="description" content="Visiting Wimbledon Common parkrun? Compare nearby hotels, explore the course map, check the latest weather forecast and plan your perfect parkrun weekend." />
+<meta name="description" content="Visiting Wimbledon Common parkrun? Compare nearby hotels, explore the course map, learn about the terrain, find local experiences and attractions, check the latest weather forecast and plan your perfect parkrun weekend." />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="Wimbledon Common" />
 <meta name="geo.position" content="51.442078;-0.232215" />
 <meta property="og:title" content="Wimbledon Common parkrun - Hotels & Visitor Guide" />
-<meta property="og:description" content="Planning a visit to Wimbledon Common parkrun? Discover nearby hotels, explore the course map, check the latest weather forecast and find local cafes." />
+<meta property="og:description" content="Planning a visit to Wimbledon Common parkrun? Discover nearby hotels, explore the course map, learn about the terrain, find local experiences and attractions, check the latest weather forecast and find local cafes." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/explore/W/wimbledon" />
 <meta property="og:type" content="article" />
 <meta name="robots" content="index, follow" />
@@ -109,7 +109,7 @@ iframe { width: 100%; border-radius: 0.75rem; border: none; overflow: hidden; }
 }
 .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76,175,80, 0.4); }
 
-/* ── Course Modal — identical to main.html ── */
+/* Course Modal */
 #course-map-modal {
   display: none; position: fixed; top:0;left:0;width:100%;height:100%;
   z-index: 9999; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
@@ -258,7 +258,6 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
           <button class="toggle-btn" onclick="switchView('hotels','map')" id="btn-map-hotels">Map View</button>
         </div>
         <iframe id="stay22Frame" class="accommodation-iframe" scrolling="no"
-          src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.442078&lng=-0.232215&checkin=2026-03-13&maincolor=7dd856&venue=Wimbledon%20Common%20parkrun&viewmode=listview&listviewexpand=true"
           title="Stay22 accommodation listing"></iframe>
       </div>
       <div id="experiences-section" class="iframe-container">
@@ -268,7 +267,6 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
           <button class="toggle-btn" onclick="switchView('experiences','map')" id="btn-map-exp">Map View</button>
         </div>
         <iframe id="stay22ExpFrame" class="accommodation-iframe" scrolling="no"
-          src="https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.442078&lng=-0.232215&checkin=2026-03-13&maincolor=7dd856&venue=Wimbledon%20Common%20parkrun&invmode=experience&viewmode=listview&listviewexpand=true"
           title="Stay22 experiences listing"></iframe>
       </div>
     </div>
@@ -321,7 +319,7 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   </div>
 </main>
 
-<!-- Course Map Modal — identical to main.html -->
+<!-- Course Map Modal -->
 <div id="course-map-modal">
   <div class="course-modal-inner">
     <div class="course-modal-header">
@@ -378,10 +376,10 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ── Decrypt helper ────────────────────────────────────────────────────────
+// Decrypt helper
 function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
 
-// ── Course data (encrypted at build time, decrypted at runtime) ───────────
+// Course data (encrypted at build time, decrypted at runtime)
 const _er = "Wy0xMjExODc0Miw2NDY1MDg5MywtODAyNDcyNCw2MzkwNzY5MywtNTkzMjk5NCw1NjgyNjA3NSwtMTU1MTQ3NTYsNTE0ODg0NTUsLTI1MTQyNDYsNjE5NzMwODcsLTE3ODg3OTYsNTQ5Njg3NDcsLTkwMTg2NTQsNTc0NjczMjksLTY5MDE0MDIsNTYzMTMzNjEsLTI5ODgxNjYsNTkxOTMyOTMsLTI1Mzk3NDQsNTM1NzgyODEsLTE0Nzk4Mzg0LDU2NDMyMjg5LC02OTMzMTQyLDY2OTY2OTg3LC0xNDI5ODk4Niw1NjcxNzQwMywtOTQxNjAyMCw2Mzg0MjQ4NywtMTY2Mzg4NCw1MzY5MjU3OSwtMTEwMDYwMjIsNjQyNDI1NzEsLTM4MzYwMjIsNjYwMzA3NjVd";
 const _es = "Wy03MjUxMDg3LDU0OTE2OTA4XQ==";
 const _ef = "Wy0zOTk0ODUsNjIzNjg1NjZd";
@@ -391,17 +389,33 @@ const _courseStart  = _es ? _d(_es, _sk +  7)[0] : null;
 const _courseFinish = _ef ? _d(_ef, _sk + 13)[0] : null;
 const HAS_ROUTE = !!(_courseRoute && _courseRoute.length > 1);
 
-// ── Stay22 switcher ───────────────────────────────────────────────────────
+// Stay22 check-in date computed at page load (next Friday)
+function getNextFridayDateISO() {
+  const today = new Date();
+  const day = today.getDay();
+  const daysUntilFriday = (5 - day + 7) % 7 || 7;
+  today.setDate(today.getDate() + daysUntilFriday);
+  return today.toISOString().slice(0, 10);
+}
+const _checkinDate   = getNextFridayDateISO();
+const _stay22Base    = "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.442078&lng=-0.232215&maincolor=7dd856&venue=Wimbledon%20Common%20parkrun&checkin=" + _checkinDate;
+const _stay22ExpBase = "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.442078&lng=-0.232215&maincolor=7dd856&venue=Wimbledon%20Common%20parkrun&invmode=experience&checkin=" + _checkinDate;
+
+// Initialise Stay22 iframes with live check-in date
+document.getElementById('stay22Frame').src    = _stay22Base    + '&viewmode=listview&listviewexpand=true';
+document.getElementById('stay22ExpFrame').src = _stay22ExpBase + '&viewmode=listview&listviewexpand=true';
+
+// Stay22 view switcher
 function switchView(type, mode) {
   const id      = type === 'hotels' ? 'stay22Frame' : 'stay22ExpFrame';
-  const baseUrl = type === 'hotels' ? "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.442078&lng=-0.232215&checkin=2026-03-13&maincolor=7dd856&venue=Wimbledon%20Common%20parkrun" : "https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=51.442078&lng=-0.232215&checkin=2026-03-13&maincolor=7dd856&venue=Wimbledon%20Common%20parkrun&invmode=experience";
+  const baseUrl = type === 'hotels' ? _stay22Base : _stay22ExpBase;
   document.getElementById(id).src = baseUrl + '&viewmode=' + mode + '&listviewexpand=' + (mode === 'listview');
   const pfx = type === 'hotels' ? 'hotels' : 'exp';
   document.getElementById('btn-listview-' + pfx).classList.toggle('active', mode === 'listview');
   document.getElementById('btn-map-'      + pfx).classList.toggle('active', mode === 'map');
 }
 
-// ── Lazy iframe loading ───────────────────────────────────────────────────
+// Lazy iframe loading
 document.addEventListener('DOMContentLoaded', function() {
   const isBot = /bot|crawler|spider|facebookexternalhit|twitterbot|linkedinbot|googlebot|bingbot/i.test(navigator.userAgent);
   if (!isBot && 'IntersectionObserver' in window) {
@@ -455,9 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// ══════════════════════════════════════════════════════════════════
-// COURSE PREVIEW — mini Leaflet tile with Stamen Terrain
-// ══════════════════════════════════════════════════════════════════
+// Course preview mini-map
 let _previewMap = null;
 
 function initCoursePreview() {
@@ -470,25 +482,21 @@ function initCoursePreview() {
     tap: false, touchZoom: false, attributionControl: false
   });
 
-  // Stamen Terrain via Stadia — shows real elevation shading & terrain
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 18
   }).addTo(_previewMap);
 
   const routeLatLngs = _courseRoute.map(p => [p[1], p[0]]);
 
-  // Route polyline
   L.polyline(routeLatLngs, {
     color: '#28a745', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round'
   }).addTo(_previewMap);
 
-  // Start dot (green)
   const startPt = _courseStart || _courseRoute[0];
   L.circleMarker([startPt[1], startPt[0]], {
     radius: 7, fillColor: '#28a745', color: '#fff', weight: 2, fillOpacity: 1
   }).addTo(_previewMap);
 
-  // Finish dot (red)
   const finishPt = _courseFinish || _courseRoute[_courseRoute.length - 1];
   L.circleMarker([finishPt[1], finishPt[0]], {
     radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1
@@ -497,9 +505,7 @@ function initCoursePreview() {
   _previewMap.fitBounds(L.latLngBounds(routeLatLngs), { padding: [24, 24], animate: false });
 }
 
-// ══════════════════════════════════════════════════════════════════
-// COURSE MODAL — identical logic to main.html parkrunner_tourist.html
-// ══════════════════════════════════════════════════════════════════
+// Course modal
 let courseModalMap           = null;
 let courseModalStartMark     = null;
 let courseModalFinishMark    = null;
@@ -611,7 +617,6 @@ function initCourseModalMap(route) {
       doubleClickZoom: true, boxZoom: false, keyboard: false,
       tap: false, touchZoom: true, attributionControl: false
     });
-    // Terrain tiles matching the preview
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(courseModalMap);
     courseModalMap.on('move zoom', _drawFrame);
     courseModalMap.on('moveend zoomend', function() { _drawFrame(); _enforceMinZoom(); });
@@ -619,7 +624,6 @@ function initCourseModalMap(route) {
   if (courseModalStartMark)  courseModalMap.removeLayer(courseModalStartMark);
   if (courseModalFinishMark) courseModalMap.removeLayer(courseModalFinishMark);
 
-  // Invisible hit-target markers for tooltips
   if (_courseStart) {
     courseModalStartMark = L.circleMarker([_courseStart[1], _courseStart[0]],
       { radius: 10, fillOpacity: 0, opacity: 0, interactive: true }).addTo(courseModalMap);
@@ -689,7 +693,7 @@ function updateCourseFrame(progress) {
   const [sx,sy]  = startLL  ? toXY(startLL[1],  startLL[0])  : toXY(route[0][1], route[0][0]);
   const [fx,fy]  = finishLL ? toXY(finishLL[1], finishLL[0]) : toXY(route[route.length-1][1], route[route.length-1][0]);
 
-  // Green trail behind runner — starts exactly at start dot
+  // Green trail behind runner
   if (progress > 0) {
     ctx.beginPath(); ctx.lineWidth = 5; ctx.strokeStyle = '#28a745';
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
