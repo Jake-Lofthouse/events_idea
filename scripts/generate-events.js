@@ -10,7 +10,7 @@ if (!COURSE_MAPS_URL) {
 }
 
 const OUTPUT_DIR = './explore';
-const MAX_EVENTS = 6;
+const MAX_EVENTS = 9999999;
 const MAX_FILES_PER_FOLDER = 999;
 const BASE_URL = 'https://www.parkrunnertourist.com/explore';
 
@@ -215,6 +215,14 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
 <meta property="og:description" content="Planning a visit to ${longName}? Discover nearby hotels, explore the course map, learn about the terrain, find local experiences and attractions, check the latest weather forecast and find local cafes." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/explore/${relativePath}" />
 <meta property="og:type" content="article" />
+<meta property="og:image" content="https://www.parkrunnertourist.com/explore/images/${relativePath}.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="${longName} course map" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="${pageTitle}" />
+<meta name="twitter:description" content="Planning a visit to ${longName}? Discover nearby hotels, explore the course map, terrain, weather forecast and local cafes." />
+<meta name="twitter:image" content="https://www.parkrunnertourist.com/explore/images/${relativePath}.jpg" />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
 <link rel="canonical" href="https://www.parkrunnertourist.com/explore/${relativePath}" />
