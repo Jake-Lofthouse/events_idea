@@ -59,25 +59,18 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Puppeteer
-        run: npm install puppeteer
+      - name: Install dependencies
+        run: npm install canvas sharp
 
-      - name: Install Puppeteer system dependencies
+      - name: Install canvas system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libgbm-dev \
-            libnss3 \
-            libatk-bridge2.0-0 \
-            libdrm2 \
-            libxkbcommon0 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxrandr2 \
-            libgtk-3-0 \
-            libasound2t64 \
-            libpangocairo-1.0-0 \
-            libx11-xcb1
+            libcairo2-dev \
+            libpango1.0-dev \
+            libjpeg-dev \
+            libgif-dev \
+            librsvg2-dev
 
       - name: Clear existing images (force regenerate)
         if: ${{ github.event.inputs.force_regenerate == true || github.event.inputs.force_regenerate == 'true' }}
