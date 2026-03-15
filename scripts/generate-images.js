@@ -12,6 +12,7 @@ const OUTPUT_DIR     = path.join(__dirname, '../explore/images');
 const IMAGE_WIDTH    = 1200;
 const IMAGE_HEIGHT   = 630;
 const MAX_EVENTS     = 9999999;
+const MAX_FILES_PER_FOLDER = 999;
 const CONCURRENCY    = 3; // how many pages rendered in parallel
 const IMAGE_LIMIT    = parseInt(process.env.IMAGE_LIMIT || '0', 10);
 
@@ -200,13 +201,13 @@ window._mapReady = true;
 // ============================================================
 // RENDER ONE IMAGE
 // ============================================================
-async function renderImage(browser, event, courseMaps, folderMapping) {
+async function renderImage(browser, event, courseMaps, slugToSubfolder) {
   const name      = event.properties.eventname || '';
   const longName  = event.properties.EventLongName || name;
   const isJunior  = longName.toLowerCase().includes('junior');
   const slug      = slugify(name);
 
-  const sub = folderMapping[slug] || getSubfolder(slug);
+  const sub = slugToSubfolder[slug] || getSubfolder(slug);
   const outDir  = path.join(OUTPUT_DIR, sub);
   const outFile = path.join(outDir, `${slug}.jpg`);
 
@@ -297,6 +298,23 @@ async function main() {
   if (IMAGE_LIMIT > 0) console.log(`Limit set — generating up to ${IMAGE_LIMIT} images.`);
   console.log(`Processing ${limitedEvents.length} events...`);
 
+  // Build slugToSubfolder with same overflow logic as generate-events.js
+  const folderCounts = {};
+  const slugToSubfolder = {};
+  for (const event of selectedEvents) {
+    const slug = slugify(event.properties.eventname);
+    let sub = folderMapping[slug] || getSubfolder(slug);
+    if (!folderCounts[sub]) folderCounts[sub] = 0;
+    if (folderCounts[sub] >= MAX_FILES_PER_FOLDER) {
+      let sfx = 2;
+      while (true) {
+        const c = `${sub}${sfx}`; if (!folderCounts[c]) folderCounts[c] = 0;
+        if (folderCounts[c] < MAX_FILES_PER_FOLDER) { sub = c; break; } sfx++;
+      }
+    }
+    folderCounts[sub]++; slugToSubfolder[slug] = sub;
+  }
+
   ensureDir(OUTPUT_DIR);
 
   console.log(`Launching browser...`);
@@ -317,10 +335,9 @@ async function main() {
   for (const batch of batches) {
     await Promise.all(batch.map(async event => {
       try {
-        const before = generated;
-        await renderImage(browser, event, courseMaps, folderMapping);
+        await renderImage(browser, event, courseMaps, slugToSubfolder);
         const slug = slugify(event.properties.eventname || '');
-        const sub  = folderMapping[slug] || getSubfolder(slug);
+        const sub  = slugToSubfolder[slug] || getSubfolder(slug);
         if (fs.existsSync(path.join(OUTPUT_DIR, sub, `${slug}.jpg`))) {
           generated++;
         } else {
