@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Max images to generate (0 = all)'
+        description: 'Max events to generate for both HTML and images (0 = all)'
         required: false
         default: '0'
         type: string
@@ -35,6 +35,7 @@ jobs:
       - name: Generate HTML pages
         env:
           COURSE_MAPS_URL: ${{ secrets.COURSE_MAPS_URL }}
+          EVENT_LIMIT: ${{ github.event.inputs.limit || '0' }}
         run: node scripts/generate-events.js
 
       - name: Upload HTML artifact
