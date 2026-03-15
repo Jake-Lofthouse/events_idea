@@ -1,37 +1,37 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const puppeteer = require('puppeteer');
+const http = require('http');
+const { createCanvas, loadImage } = require('canvas');
+const sharp = require('sharp');
 
 // ============================================================
 // CONFIG
 // ============================================================
-const EVENTS_URL     = 'https://www.parkrunnertourist.com/events1.json';
-const COURSE_MAPS_URL = process.env.COURSE_MAPS_URL;
-const OUTPUT_DIR     = path.join(__dirname, '../explore/images');
-const IMAGE_WIDTH    = 1200;
-const IMAGE_HEIGHT   = 630;
-const MAX_EVENTS     = 9999999;
+const EVENTS_URL           = 'https://www.parkrunnertourist.com/events1.json';
+const COURSE_MAPS_URL      = process.env.COURSE_MAPS_URL;
+const OUTPUT_DIR           = path.join(__dirname, '../explore/images');
+const IMAGE_WIDTH          = 1200;
+const IMAGE_HEIGHT         = 630;
+const TILE_SIZE            = 256;
+const MAX_EVENTS           = 9999999;
 const MAX_FILES_PER_FOLDER = 999;
-const CONCURRENCY    = 3; // how many pages rendered in parallel
-const IMAGE_LIMIT    = parseInt(process.env.IMAGE_LIMIT || '0', 10);
+const IMAGE_LIMIT          = parseInt(process.env.IMAGE_LIMIT || '0', 10);
+const CONCURRENCY          = 12; // no browser overhead — pure CPU/IO
+const TILE_ZOOM            = 14;
+const TILE_CACHE_DIR       = path.join(__dirname, '../.tile-cache');
 
-if (!COURSE_MAPS_URL) {
-  throw new Error('COURSE_MAPS_URL secret not set');
-}
+if (!COURSE_MAPS_URL) throw new Error('COURSE_MAPS_URL secret not set');
 
 // ============================================================
 // HELPERS
 // ============================================================
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
+    https.get(url, res => {
       let data = '';
       res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch (e) { reject(e); }
-      });
+      res.on('end', () => { try { resolve(JSON.parse(data)); } catch (e) { reject(e); } });
     }).on('error', reject);
   });
 }
@@ -41,227 +41,307 @@ function slugify(name) {
 }
 
 function getSubfolder(slug) {
-  const firstChar = slug.charAt(0).toLowerCase();
-  if (firstChar >= 'a' && firstChar <= 'z') return firstChar.toUpperCase();
-  return '0-9';
+  const c = slug.charAt(0).toLowerCase();
+  return (c >= 'a' && c <= 'z') ? c.toUpperCase() : '0-9';
 }
 
-function ensureDir(dirPath) {
-  if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
-}
-
-function chunk(arr, size) {
-  const chunks = [];
-  for (let i = 0; i < arr.length; i += size) chunks.push(arr.slice(i, i + size));
-  return chunks;
+function ensureDir(p) {
+  if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 }
 
 // ============================================================
-// BUILD HTML FOR PUPPETEER TO RENDER
-// Each page is a self-contained Leaflet map with route + labels.
+// TILE MATHS (Web Mercator / Slippy Map)
 // ============================================================
-function buildMapHtml(longName, isJunior, route, start, finish) {
-  const accentColor = isJunior ? '#40e0d0' : '#4caf50';
-  const darkColor   = isJunior ? '#008080' : '#2e7d32';
-
-  const routeJson  = JSON.stringify(route);
-  const startJson  = JSON.stringify(start);
-  const finishJson = JSON.stringify(finish);
-
-  return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8" />
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: ${IMAGE_WIDTH}px; height: ${IMAGE_HEIGHT}px; overflow: hidden; }
-#map { width: ${IMAGE_WIDTH}px; height: ${IMAGE_HEIGHT}px; }
-
-/* Event name overlay */
-#title-bar {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  z-index: 1000;
-  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 100%);
-  padding: 2.5rem 2rem 1.5rem 2rem;
-  pointer-events: none;
-}
-#title-text {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 2.6rem;
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
-  letter-spacing: -0.5px;
-  line-height: 1.15;
-}
-#subtitle-text {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: rgba(255,255,255,0.82);
-  margin-top: 0.3rem;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+function lngLatToTile(lng, lat, zoom) {
+  const x = Math.floor((lng + 180) / 360 * Math.pow(2, zoom));
+  const latRad = lat * Math.PI / 180;
+  const y = Math.floor((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * Math.pow(2, zoom));
+  return { x, y };
 }
 
-/* Logo badge top-right */
-#logo-badge {
-  position: absolute;
-  top: 1.25rem; right: 1.5rem;
-  z-index: 1000;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(8px);
-  border-radius: 999px;
-  padding: 0.45rem 1rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: ${darkColor};
-  pointer-events: none;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-}
-
-.leaflet-control-attribution { display: none !important; }
-.leaflet-control-zoom { display: none !important; }
-</style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-</head>
-<body>
-<div id="map"></div>
-<div id="title-bar">
-  <div id="title-text">${longName}</div>
-  <div id="subtitle-text">parkrunner tourist &nbsp;·&nbsp; Course Map</div>
-</div>
-<div id="logo-badge">parkrunner tourist</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-const route  = ${routeJson};
-const start  = ${startJson};
-const finish = ${finishJson};
-
-const map = L.map('map', {
-  zoomControl: false,
-  attributionControl: false,
-  dragging: false,
-  scrollWheelZoom: false,
-  doubleClickZoom: false,
-  boxZoom: false,
-  keyboard: false,
-  tap: false,
-  touchZoom: false
-});
-
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  maxZoom: 19
-}).addTo(map);
-
-const routeLatLngs = route.map(p => [p[1], p[0]]);
-
-// Route polyline
-L.polyline(routeLatLngs, {
-  color: '${accentColor}',
-  weight: 5,
-  opacity: 1,
-  lineJoin: 'round',
-  lineCap: 'round'
-}).addTo(map);
-
-// Start marker (green circle)
-const startPt = start || route[0];
-L.circleMarker([startPt[1], startPt[0]], {
-  radius: 10,
-  fillColor: '#28a745',
-  color: '#fff',
-  weight: 3,
-  fillOpacity: 1
-}).addTo(map).bindTooltip('Start', { permanent: true, direction: 'top', offset: [0, -10],
-  className: 'leaflet-tooltip' });
-
-// Finish marker (red circle)
-const finishPt = finish || route[route.length - 1];
-L.circleMarker([finishPt[1], finishPt[0]], {
-  radius: 10,
-  fillColor: '#dc3545',
-  color: '#fff',
-  weight: 3,
-  fillOpacity: 1
-}).addTo(map).bindTooltip('Finish', { permanent: true, direction: 'top', offset: [0, -10],
-  className: 'leaflet-tooltip' });
-
-map.fitBounds(L.latLngBounds(routeLatLngs), { padding: [60, 60], animate: false });
-
-// Signal ready for screenshot
-window._mapReady = true;
-</script>
-</body>
-</html>`;
+function lngLatToPixel(lng, lat, zoom, originTileX, originTileY) {
+  const scale = Math.pow(2, zoom);
+  const worldX = (lng + 180) / 360 * scale * TILE_SIZE;
+  const latRad = lat * Math.PI / 180;
+  const worldY = (1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * scale * TILE_SIZE;
+  return {
+    x: worldX - originTileX * TILE_SIZE,
+    y: worldY - originTileY * TILE_SIZE
+  };
 }
 
 // ============================================================
-// RENDER ONE IMAGE
+// TILE FETCHING WITH DISK CACHE
 // ============================================================
-async function renderImage(browser, event, courseMaps, slugToSubfolder) {
-  const name      = event.properties.eventname || '';
-  const longName  = event.properties.EventLongName || name;
-  const isJunior  = longName.toLowerCase().includes('junior');
-  const slug      = slugify(name);
+const tileInflight = new Map(); // deduplicate concurrent fetches of same tile
 
-  const sub = slugToSubfolder[slug] || getSubfolder(slug);
+function fetchTile(x, y, z) {
+  const key = `${z}-${x}-${y}`;
+  if (tileInflight.has(key)) return tileInflight.get(key);
+
+  const cacheFile = path.join(TILE_CACHE_DIR, `${key}.png`);
+  if (fs.existsSync(cacheFile)) {
+    return Promise.resolve(fs.readFileSync(cacheFile));
+  }
+
+  const subdomain = ['a', 'b', 'c', 'd'][Math.abs(x + y) % 4];
+  const url = `https://${subdomain}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
+
+  const promise = new Promise((resolve, reject) => {
+    const req = https.get(url, { headers: { 'User-Agent': 'parkrunnertourist-imagegen/1.0' } }, res => {
+      const chunks = [];
+      res.on('data', chunk => chunks.push(chunk));
+      res.on('end', () => {
+        const buf = Buffer.concat(chunks);
+        try { ensureDir(TILE_CACHE_DIR); fs.writeFileSync(cacheFile, buf); } catch (_) {}
+        resolve(buf);
+      });
+    });
+    req.on('error', reject);
+    req.setTimeout(8000, () => { req.destroy(); reject(new Error(`Tile timeout: ${key}`)); });
+  }).finally(() => tileInflight.delete(key));
+
+  tileInflight.set(key, promise);
+  return promise;
+}
+
+// ============================================================
+// BEST ZOOM LEVEL
+// ============================================================
+function chooseBestZoom(route, start, finish) {
+  const pts = [...route];
+  if (start)  pts.push(start);
+  if (finish) pts.push(finish);
+  let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity;
+  for (const [lng, lat] of pts) {
+    if (lng < minLng) minLng = lng; if (lng > maxLng) maxLng = lng;
+    if (lat < minLat) minLat = lat; if (lat > maxLat) maxLat = lat;
+  }
+
+  for (let z = 16; z >= 10; z--) {
+    const tl = lngLatToTile(minLng, maxLat, z);
+    const br = lngLatToTile(maxLng, minLat, z);
+    const tilesW = (br.x - tl.x + 1) * TILE_SIZE;
+    const tilesH = (br.y - tl.y + 1) * TILE_SIZE;
+    if (tilesW <= IMAGE_WIDTH && tilesH <= IMAGE_HEIGHT) return { z, minLng, maxLng, minLat, maxLat };
+  }
+  return { z: 10, minLng, maxLng, minLat, maxLat };
+}
+
+// ============================================================
+// SVG OVERLAY — title bar + badge (composited by sharp)
+// ============================================================
+function buildOverlaySvg(longName, isJunior, w, h) {
+  const escaped   = longName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const darkColor = isJunior ? '#008080' : '#2e7d32';
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.72)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="${h - 200}" width="${w}" height="200" fill="url(#grad)"/>
+  <text x="40" y="${h - 58}"
+    font-family="Arial, sans-serif" font-size="52" font-weight="bold"
+    fill="white">${escaped}</text>
+  <text x="40" y="${h - 22}"
+    font-family="Arial, sans-serif" font-size="22" font-weight="500"
+    fill="rgba(255,255,255,0.82)">parkrunner tourist · Course Map</text>
+  <rect x="${w - 210}" y="18" width="192" height="36" rx="18"
+    fill="rgba(255,255,255,0.92)"/>
+  <text x="${w - 114}" y="42"
+    font-family="Arial, sans-serif" font-size="15" font-weight="bold"
+    fill="${darkColor}" text-anchor="middle">parkrunner tourist</text>
+</svg>`;
+}
+
+// ============================================================
+// DRAW ONE IMAGE
+// ============================================================
+async function renderImage(event, courseMaps, slugToSubfolder) {
+  const name     = event.properties.eventname || '';
+  const longName = event.properties.EventLongName || name;
+  const isJunior = longName.toLowerCase().includes('junior');
+  const slug     = slugify(name);
+
+  const sub     = slugToSubfolder[slug] || getSubfolder(slug);
   const outDir  = path.join(OUTPUT_DIR, sub);
   const outFile = path.join(outDir, `${slug}.jpg`);
 
-  // Skip if already exists (incremental builds)
-  if (fs.existsSync(outFile)) {
-    console.log(`Skipped (exists): ${sub}/${slug}.jpg`);
-    return;
-  }
+  if (fs.existsSync(outFile)) return 'skipped';
 
-  // Find course data
   const courseKey = Object.keys(courseMaps).find(k =>
-    k === name ||
-    k === name.toLowerCase() ||
-    k === slug ||
+    k === name || k === name.toLowerCase() || k === slug ||
     k.replace(/-/g, '').toLowerCase() === name.replace(/\s+/g, '').toLowerCase()
   );
   const courseData = courseKey ? courseMaps[courseKey] : null;
   const hasRoute   = courseData && Array.isArray(courseData.route) && courseData.route.length > 1;
-
-  if (!hasRoute) {
-    console.log(`No route — skipping: ${slug}`);
-    return;
-  }
+  if (!hasRoute) return 'skipped';
 
   const route  = courseData.route;
   const start  = Array.isArray(courseData.start)  && courseData.start.length  === 2 ? courseData.start  : null;
   const finish = Array.isArray(courseData.finish) && courseData.finish.length === 2 ? courseData.finish : null;
 
-  const html = buildMapHtml(longName, isJunior, route, start, finish);
+  const accentColor = isJunior ? '#40e0d0' : '#4caf50';
 
-  const page = await browser.newPage();
-  try {
-    await page.setViewport({ width: IMAGE_WIDTH, height: IMAGE_HEIGHT, deviceScaleFactor: 1 });
-    await page.setContent(html, { waitUntil: 'networkidle2', timeout: 30000 });
+  // Choose zoom + bounds
+  const { z: zoom, minLng, maxLng, minLat, maxLat } = chooseBestZoom(route, start, finish);
 
-    // Wait for Leaflet tiles and map to be ready
-    await page.waitForFunction(() => window._mapReady === true, { timeout: 15000 });
-    // Extra settle time for tiles to paint
-    await new Promise(r => setTimeout(r, 1500));
+  const tlTile = lngLatToTile(minLng, maxLat, zoom);
+  const brTile = lngLatToTile(maxLng, minLat, zoom);
+  const tileX0 = tlTile.x - 2;
+  const tileY0 = tlTile.y - 2;
+  const tileX1 = brTile.x + 2;
+  const tileY1 = brTile.y + 2;
+  const tilesWide = tileX1 - tileX0 + 1;
+  const tilesHigh = tileY1 - tileY0 + 1;
+  const canvasW   = tilesWide * TILE_SIZE;
+  const canvasH   = tilesHigh * TILE_SIZE;
 
-    ensureDir(outDir);
-    await page.screenshot({
-      path: outFile,
-      type: 'jpeg',
-      quality: 88,
-      clip: { x: 0, y: 0, width: IMAGE_WIDTH, height: IMAGE_HEIGHT }
-    });
-
-    console.log(`Generated: ${sub}/${slug}.jpg`);
-  } catch (err) {
-    console.warn(`Failed: ${slug} — ${err.message}`);
-  } finally {
-    await page.close();
+  // Fetch tiles in parallel
+  const tileJobs = [];
+  for (let tx = tileX0; tx <= tileX1; tx++) {
+    for (let ty = tileY0; ty <= tileY1; ty++) {
+      tileJobs.push(
+        fetchTile(tx, ty, zoom)
+          .then(buf => ({ tx, ty, buf }))
+          .catch(() => ({ tx, ty, buf: null }))
+      );
+    }
   }
+  const tiles = await Promise.all(tileJobs);
+
+  // Stitch tiles onto canvas
+  const canvas = createCanvas(canvasW, canvasH);
+  const ctx    = canvas.getContext('2d');
+  ctx.fillStyle = '#f2f3f0';
+  ctx.fillRect(0, 0, canvasW, canvasH);
+
+  await Promise.all(tiles.map(async ({ tx, ty, buf }) => {
+    if (!buf) return;
+    try {
+      const img = await loadImage(buf);
+      ctx.drawImage(img, (tx - tileX0) * TILE_SIZE, (ty - tileY0) * TILE_SIZE);
+    } catch (_) {}
+  }));
+
+  function toXY(lng, lat) {
+    return lngLatToPixel(lng, lat, zoom, tileX0, tileY0);
+  }
+
+  // Route polyline
+  ctx.beginPath();
+  ctx.strokeStyle = accentColor;
+  ctx.lineWidth   = 5;
+  ctx.lineJoin    = 'round';
+  ctx.lineCap     = 'round';
+  for (let i = 0; i < route.length; i++) {
+    const { x, y } = toXY(route[i][0], route[i][1]);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Marker helper
+  function drawMarker(lng, lat, fillColor) {
+    const { x, y } = toXY(lng, lat);
+    ctx.beginPath();
+    ctx.arc(x, y, 12, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI * 2);
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth   = 3;
+    ctx.stroke();
+  }
+
+  // Label helper
+  function drawLabel(lng, lat, text) {
+    const { x, y } = toXY(lng, lat);
+    ctx.font      = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    const tw = ctx.measureText(text).width;
+    const bx = x - tw / 2 - 5, by = y - 38, bw = tw + 10, bh = 20, br = 5;
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.beginPath();
+    ctx.moveTo(bx + br, by);
+    ctx.lineTo(bx + bw - br, by);
+    ctx.quadraticCurveTo(bx + bw, by, bx + bw, by + br);
+    ctx.lineTo(bx + bw, by + bh - br);
+    ctx.quadraticCurveTo(bx + bw, by + bh, bx + bw - br, by + bh);
+    ctx.lineTo(bx + br, by + bh);
+    ctx.quadraticCurveTo(bx, by + bh, bx, by + bh - br);
+    ctx.lineTo(bx, by + br);
+    ctx.quadraticCurveTo(bx, by, bx + br, by);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#1f2937';
+    ctx.fillText(text, x, by + 14);
+  }
+
+  const finishPt = finish || route[route.length - 1];
+  const startPt  = start  || route[0];
+  drawMarker(finishPt[0], finishPt[1], '#dc3545');
+  drawMarker(startPt[0],  startPt[1],  '#28a745');
+  drawLabel(startPt[0],   startPt[1],  'Start');
+  drawLabel(finishPt[0],  finishPt[1], 'Finish');
+
+  // Compute crop centred on route
+  const routePixels = route.map(p => toXY(p[0], p[1]));
+  let rMinX = Infinity, rMaxX = -Infinity, rMinY = Infinity, rMaxY = -Infinity;
+  for (const { x, y } of routePixels) {
+    if (x < rMinX) rMinX = x; if (x > rMaxX) rMaxX = x;
+    if (y < rMinY) rMinY = y; if (y > rMaxY) rMaxY = y;
+  }
+  const PAD    = 90;
+  const routeW = rMaxX - rMinX + PAD * 2;
+  const routeH = rMaxY - rMinY + PAD * 2;
+  const scale  = Math.min(IMAGE_WIDTH / routeW, IMAGE_HEIGHT / routeH, 1);
+  const cropW  = Math.round(IMAGE_WIDTH  / scale);
+  const cropH  = Math.round(IMAGE_HEIGHT / scale);
+  const cropX  = Math.max(0, Math.min(Math.round(rMinX - PAD + (routeW - cropW) / 2), canvasW - cropW));
+  const cropY  = Math.max(0, Math.min(Math.round(rMinY - PAD + (routeH - cropH) / 2), canvasH - cropH));
+
+  const fullBuf = canvas.toBuffer('image/png');
+  const overlay = Buffer.from(buildOverlaySvg(longName, isJunior, IMAGE_WIDTH, IMAGE_HEIGHT));
+
+  ensureDir(outDir);
+  await sharp(fullBuf)
+    .extract({ left: cropX, top: cropY, width: Math.min(cropW, canvasW - cropX), height: Math.min(cropH, canvasH - cropY) })
+    .resize(IMAGE_WIDTH, IMAGE_HEIGHT)
+    .composite([{ input: overlay, gravity: 'center' }])
+    .jpeg({ quality: 88 })
+    .toFile(outFile);
+
+  console.log(`Generated: ${sub}/${slug}.jpg`);
+  return 'generated';
+}
+
+// ============================================================
+// WORKER POOL
+// ============================================================
+async function runWithConcurrency(items, concurrency, fn) {
+  let index = 0, generated = 0, skipped = 0, failed = 0;
+  async function worker() {
+    while (index < items.length) {
+      const item = items[index++];
+      try {
+        const result = await fn(item);
+        if (result === 'generated') generated++;
+        else if (result === 'skipped') skipped++;
+        else failed++;
+      } catch (e) {
+        failed++;
+        console.warn(`Error on ${item.properties?.eventname}: ${e.message}`);
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: concurrency }, worker));
+  return { generated, skipped, failed };
 }
 
 // ============================================================
@@ -281,9 +361,7 @@ async function main() {
   try {
     courseMaps = await fetchJson(COURSE_MAPS_URL);
     console.log(`Loaded ${Object.keys(courseMaps).length} course map entries.`);
-  } catch (e) {
-    console.warn('Could not load course maps:', e.message);
-  }
+  } catch (e) { console.warn('Could not load course maps:', e.message); }
 
   let folderMapping = {};
   try { folderMapping = JSON.parse(fs.readFileSync(path.join(__dirname, '../folder-mapping.json'), 'utf-8')); }
@@ -298,7 +376,7 @@ async function main() {
   if (IMAGE_LIMIT > 0) console.log(`Limit set — generating up to ${IMAGE_LIMIT} images.`);
   console.log(`Processing ${limitedEvents.length} events...`);
 
-  // Build slugToSubfolder with same overflow logic as generate-events.js
+  // Build slugToSubfolder with overflow logic
   const folderCounts = {};
   const slugToSubfolder = {};
   for (const event of selectedEvents) {
@@ -316,41 +394,14 @@ async function main() {
   }
 
   ensureDir(OUTPUT_DIR);
+  ensureDir(TILE_CACHE_DIR);
 
-  console.log(`Launching browser...`);
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu'
-    ]
-  });
+  const { generated, skipped, failed } = await runWithConcurrency(
+    limitedEvents,
+    CONCURRENCY,
+    event => renderImage(event, courseMaps, slugToSubfolder)
+  );
 
-  let generated = 0, skipped = 0, failed = 0;
-
-  // Process in batches to control concurrency
-  const batches = chunk(limitedEvents, CONCURRENCY);
-  for (const batch of batches) {
-    await Promise.all(batch.map(async event => {
-      try {
-        await renderImage(browser, event, courseMaps, slugToSubfolder);
-        const slug = slugify(event.properties.eventname || '');
-        const sub  = slugToSubfolder[slug] || getSubfolder(slug);
-        if (fs.existsSync(path.join(OUTPUT_DIR, sub, `${slug}.jpg`))) {
-          generated++;
-        } else {
-          skipped++;
-        }
-      } catch (e) {
-        failed++;
-        console.warn('Batch error:', e.message);
-      }
-    }));
-  }
-
-  await browser.close();
   console.log(`\nDone! ${generated} generated, ${skipped} skipped, ${failed} failed.`);
 }
 
