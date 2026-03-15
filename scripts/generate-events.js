@@ -10,7 +10,7 @@ if (!COURSE_MAPS_URL) {
 }
 
 const OUTPUT_DIR = './explore';
-const MAX_EVENTS = 6;
+const MAX_EVENTS = 8;
 const MAX_FILES_PER_FOLDER = 999;
 const BASE_URL = 'https://www.parkrunnertourist.com/explore';
 
@@ -55,30 +55,8 @@ function slugify(name) {
   return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-function getNextFridayDateISO() {
-  const today = new Date();
-  const day = today.getDay();
-  const daysUntilFriday = (5 - day + 7) % 7 || 7;
-  today.setDate(today.getDate() + daysUntilFriday);
-  return today.toISOString().slice(0, 10);
-}
-
 function getParkrunDomain(code) {
   return COUNTRIES[code]?.url || "www.parkrun.org.uk";
-}
-
-async function fetchWikipediaDescription(eventName) {
-  const query = encodeURIComponent(eventName);
-  const url = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro&explaintext&titles=${query}`;
-  try {
-    const data = await fetchJson(url);
-    const pages = data.query.pages;
-    const pageId = Object.keys(pages)[0];
-    if (pageId !== '-1') return pages[pageId].extract;
-  } catch (e) {
-    console.warn(`Wiki fetch error for ${eventName}: ${e}`);
-  }
-  return null;
 }
 
 function getSubfolder(slug) {
@@ -139,7 +117,6 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
   const latitude = coords[1] || 0;
   const longitude = coords[0] || 0;
   const encodedName = encodeURIComponent(`${longName}`);
-  const checkinDate = getNextFridayDateISO();
   const countryCode = event.properties.countrycode;
   const parkrunDomain = getParkrunDomain(countryCode);
   const eventSlug = slugify(name);
@@ -147,16 +124,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
   let description = event.properties.EventDescription || '';
   const hasDescription = description && description.trim() !== '' && description.trim() !== 'No description available.';
   if (hasDescription) {
-    try {
-      const wikiDesc = await fetchWikipediaDescription(name);
-      if (wikiDesc && wikiDesc.length > 50) {
-        description = `<p>${wikiDesc}</p><p><em>Source: <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(name.replace(/\s+/g, '_'))}" target="_blank" rel="noopener noreferrer">Wikipedia</a></em></p>`;
-      } else {
-        description = `<p>${description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>`;
-      }
-    } catch (e) {
-      description = `<p>${description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>`;
-    }
+    description = `<p>${description.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>`;
   }
 
   // Nearby events
@@ -178,7 +146,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
   </ul>
 </div>` : '';
 
-  const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&checkin=${checkinDate}&maincolor=${isCurrentJunior ? '40e0d0' : '7dd856'}&venue=${encodedName}`;
+  const stay22BaseUrl = `https://www.stay22.com/embed/gm?aid=parkrunnertourist&lat=${latitude}&lng=${longitude}&maincolor=${isCurrentJunior ? '40e0d0' : '7dd856'}&venue=${encodedName}`;
   const stay22ExpBaseUrl = `${stay22BaseUrl}&invmode=experience`;
   const siteName = isCurrentJunior ? 'junior parkrunner tourist' : 'parkrunner tourist';
   const pageTitle = `${longName} - Hotels & Visitor Guide`;
@@ -189,9 +157,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
   const accentColor = isCurrentJunior ? '#40e0d0' : '#4caf50';
   const darkColor   = isCurrentJunior ? '#008080' : '#2e7d32';
 
-  // ── Course data lookup ─────────────────────────────────────────────────
-  // API keys are the raw eventname from the JSON (not slugified)
-  // e.g. "bushy" not "bushy-parkrun"
+  // Course data lookup
   const courseKey = Object.keys(courseMaps).find(k =>
     k === name ||
     k === name.toLowerCase() ||
@@ -209,7 +175,7 @@ async function generateHtml(event, relativePath, allEventsInfo, slugToSubfolder,
   const encStart  = hasStart  ? `"${encryptCoords([courseData.start],  seed +  7)}"` : 'null';
   const encFinish = hasFinish ? `"${encryptCoords([courseData.finish], seed + 13)}"` : 'null';
 
-  // Course tile HTML — mini Leaflet map preview
+  // Course tile HTML
   const courseTileHtml = `
 <div id="course-terrain-section" class="iframe-container">
   <h2 class="section-title">Course &amp; Terrain</h2>
@@ -345,7 +311,7 @@ iframe { width: 100%; border-radius: 0.75rem; border: none; overflow: hidden; }
 }
 .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(${isCurrentJunior ? '64,224,208' : '76,175,80'}, 0.4); }
 
-/* ── Course Modal — identical to main.html ── */
+/* Course Modal */
 #course-map-modal {
   display: none; position: fixed; top:0;left:0;width:100%;height:100%;
   z-index: 9999; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
@@ -496,7 +462,6 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
           <button class="toggle-btn" onclick="switchView('hotels','map')" id="btn-map-hotels">Map View</button>
         </div>
         <iframe id="stay22Frame" class="accommodation-iframe" scrolling="no"
-          src="${stay22BaseUrl}&viewmode=listview&listviewexpand=true"
           title="Stay22 accommodation listing"></iframe>
       </div>
       <div id="experiences-section" class="iframe-container">
@@ -506,7 +471,6 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
           <button class="toggle-btn" onclick="switchView('experiences','map')" id="btn-map-exp">Map View</button>
         </div>
         <iframe id="stay22ExpFrame" class="accommodation-iframe" scrolling="no"
-          src="${stay22ExpBaseUrl}&viewmode=listview&listviewexpand=true"
           title="Stay22 experiences listing"></iframe>
       </div>
     </div>
@@ -535,7 +499,7 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   </div>
 </main>
 
-<!-- Course Map Modal — identical to main.html -->
+<!-- Course Map Modal -->
 <div id="course-map-modal">
   <div class="course-modal-inner">
     <div class="course-modal-header">
@@ -592,10 +556,10 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ── Decrypt helper ────────────────────────────────────────────────────────
+// Decrypt helper
 ${decryptFnJs()}
 
-// ── Course data (encrypted at build time, decrypted at runtime) ───────────
+// Course data (encrypted at build time, decrypted at runtime)
 const _er = ${encRoute};
 const _es = ${encStart};
 const _ef = ${encFinish};
@@ -605,17 +569,33 @@ const _courseStart  = _es ? _d(_es, _sk +  7)[0] : null;
 const _courseFinish = _ef ? _d(_ef, _sk + 13)[0] : null;
 const HAS_ROUTE = !!(_courseRoute && _courseRoute.length > 1);
 
-// ── Stay22 switcher ───────────────────────────────────────────────────────
+// Stay22 check-in date computed at page load (next Friday)
+function getNextFridayDateISO() {
+  const today = new Date();
+  const day = today.getDay();
+  const daysUntilFriday = (5 - day + 7) % 7 || 7;
+  today.setDate(today.getDate() + daysUntilFriday);
+  return today.toISOString().slice(0, 10);
+}
+const _checkinDate   = getNextFridayDateISO();
+const _stay22Base    = "${stay22BaseUrl}&checkin=" + _checkinDate;
+const _stay22ExpBase = "${stay22ExpBaseUrl}&checkin=" + _checkinDate;
+
+// Initialise Stay22 iframes with live check-in date
+document.getElementById('stay22Frame').src    = _stay22Base    + '&viewmode=listview&listviewexpand=true';
+document.getElementById('stay22ExpFrame').src = _stay22ExpBase + '&viewmode=listview&listviewexpand=true';
+
+// Stay22 view switcher
 function switchView(type, mode) {
   const id      = type === 'hotels' ? 'stay22Frame' : 'stay22ExpFrame';
-  const baseUrl = type === 'hotels' ? "${stay22BaseUrl}" : "${stay22ExpBaseUrl}";
+  const baseUrl = type === 'hotels' ? _stay22Base : _stay22ExpBase;
   document.getElementById(id).src = baseUrl + '&viewmode=' + mode + '&listviewexpand=' + (mode === 'listview');
   const pfx = type === 'hotels' ? 'hotels' : 'exp';
   document.getElementById('btn-listview-' + pfx).classList.toggle('active', mode === 'listview');
   document.getElementById('btn-map-'      + pfx).classList.toggle('active', mode === 'map');
 }
 
-// ── Lazy iframe loading ───────────────────────────────────────────────────
+// Lazy iframe loading
 document.addEventListener('DOMContentLoaded', function() {
   const isBot = /bot|crawler|spider|facebookexternalhit|twitterbot|linkedinbot|googlebot|bingbot/i.test(navigator.userAgent);
   if (!isBot && 'IntersectionObserver' in window) {
@@ -669,9 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// ══════════════════════════════════════════════════════════════════
-// COURSE PREVIEW — mini Leaflet tile with Stamen Terrain
-// ══════════════════════════════════════════════════════════════════
+// Course preview mini-map
 let _previewMap = null;
 
 function initCoursePreview() {
@@ -684,25 +662,21 @@ function initCoursePreview() {
     tap: false, touchZoom: false, attributionControl: false
   });
 
-  // Stamen Terrain via Stadia — shows real elevation shading & terrain
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 18
   }).addTo(_previewMap);
 
   const routeLatLngs = _courseRoute.map(p => [p[1], p[0]]);
 
-  // Route polyline
   L.polyline(routeLatLngs, {
     color: '#28a745', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round'
   }).addTo(_previewMap);
 
-  // Start dot (green)
   const startPt = _courseStart || _courseRoute[0];
   L.circleMarker([startPt[1], startPt[0]], {
     radius: 7, fillColor: '#28a745', color: '#fff', weight: 2, fillOpacity: 1
   }).addTo(_previewMap);
 
-  // Finish dot (red)
   const finishPt = _courseFinish || _courseRoute[_courseRoute.length - 1];
   L.circleMarker([finishPt[1], finishPt[0]], {
     radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1
@@ -711,9 +685,7 @@ function initCoursePreview() {
   _previewMap.fitBounds(L.latLngBounds(routeLatLngs), { padding: [24, 24], animate: false });
 }
 
-// ══════════════════════════════════════════════════════════════════
-// COURSE MODAL — identical logic to main.html parkrunner_tourist.html
-// ══════════════════════════════════════════════════════════════════
+// Course modal
 let courseModalMap           = null;
 let courseModalStartMark     = null;
 let courseModalFinishMark    = null;
@@ -825,7 +797,6 @@ function initCourseModalMap(route) {
       doubleClickZoom: true, boxZoom: false, keyboard: false,
       tap: false, touchZoom: true, attributionControl: false
     });
-    // Terrain tiles matching the preview
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(courseModalMap);
     courseModalMap.on('move zoom', _drawFrame);
     courseModalMap.on('moveend zoomend', function() { _drawFrame(); _enforceMinZoom(); });
@@ -833,7 +804,6 @@ function initCourseModalMap(route) {
   if (courseModalStartMark)  courseModalMap.removeLayer(courseModalStartMark);
   if (courseModalFinishMark) courseModalMap.removeLayer(courseModalFinishMark);
 
-  // Invisible hit-target markers for tooltips
   if (_courseStart) {
     courseModalStartMark = L.circleMarker([_courseStart[1], _courseStart[0]],
       { radius: 10, fillOpacity: 0, opacity: 0, interactive: true }).addTo(courseModalMap);
@@ -903,7 +873,7 @@ function updateCourseFrame(progress) {
   const [sx,sy]  = startLL  ? toXY(startLL[1],  startLL[0])  : toXY(route[0][1], route[0][0]);
   const [fx,fy]  = finishLL ? toXY(finishLL[1], finishLL[0]) : toXY(route[route.length-1][1], route[route.length-1][0]);
 
-  // Green trail behind runner — starts exactly at start dot
+  // Green trail behind runner
   if (progress > 0) {
     ctx.beginPath(); ctx.lineWidth = 5; ctx.strokeStyle = '#28a745';
     ctx.lineJoin = 'round'; ctx.lineCap = 'round';
@@ -1094,17 +1064,8 @@ function updateElevationCursor(progress) {
 }
 
 // ============================================================
-// SITEMAP
+// MAIN
 // ============================================================
-function generateSitemap(eventPaths) {
-  const today = new Date().toISOString().slice(0, 10);
-  const urlset = eventPaths.map(p => {
-    const clean = p.replace(/\.html$/, '').replace(/\/$/, '');
-    return `<url>\n  <loc>${BASE_URL}/${clean}</loc>\n  <lastmod>${today}</lastmod>\n  <changefreq>monthly</changefreq>\n  <priority>0.8</priority>\n</url>`;
-  }).join('\n');
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlset}\n</urlset>`;
-}
-
 function ensureDirectoryExists(dirPath) {
   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
 }
@@ -1133,9 +1094,6 @@ function cleanupRemovedEvents(validSlugs) {
   }
 }
 
-// ============================================================
-// MAIN
-// ============================================================
 async function main() {
   try {
     console.log('Fetching events JSON...');
@@ -1172,7 +1130,7 @@ async function main() {
       (a.properties.eventname || '').toLowerCase().localeCompare((b.properties.eventname || '').toLowerCase())
     );
 
-    const eventPaths = [], folderCounts = {};
+    const folderCounts = {};
     ensureDirectoryExists(OUTPUT_DIR);
     cleanupOldStructure();
     cleanupRemovedEvents(new Set(selectedEvents.map(e => slugify(e.properties.eventname))));
@@ -1190,7 +1148,6 @@ async function main() {
         }
       }
       folderCounts[sub]++; slugToSubfolder[slug] = sub;
-      eventPaths.push(`${sub}/${slug}`);
     }
 
     const completeS2S = {};
@@ -1215,7 +1172,6 @@ async function main() {
       console.log(`Generated: ${sub}/${slug}.html`);
     }
 
-    fs.writeFileSync(path.join(OUTPUT_DIR, 'sitemap.xml'), generateSitemap(eventPaths), 'utf-8');
     console.log('\nFolder distribution:');
     Object.entries(folderCounts).forEach(([f,c]) => console.log(`  ${f}: ${c}`));
     console.log(`\nDone! ${selectedEvents.length} pages. Course: ${found} matched, ${missing} missing.`);
