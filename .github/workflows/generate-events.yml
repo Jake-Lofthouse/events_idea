@@ -92,11 +92,46 @@ jobs:
           retention-days: 1
 
   # ============================================================
-  # JOB 3 — Commit everything together once both jobs finish
+  # JOB 3 — Generate location pages (country / region / city)
+  # ============================================================
+  generate-locations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate location pages
+        env:
+          COURSE_MAPS_URL: ${{ secrets.COURSE_MAPS_URL }}
+          EVENT_LIMIT: ${{ github.event.inputs.limit || '0' }}
+        run: node scripts/generate-locations.js
+
+      - name: Upload location pages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: location-pages
+          path: ./locations
+          retention-days: 1
+
+      - name: Upload geo cache artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: geo-cache
+          path: ./geo-cache.json
+          retention-days: 1
+          if-no-files-found: ignore
+
+  # ============================================================
+  # JOB 4 — Commit everything together once all jobs finish
   # ============================================================
   commit:
     runs-on: ubuntu-latest
-    needs: [generate-html, generate-images]
+    needs: [generate-html, generate-images, generate-locations]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -113,11 +148,27 @@ jobs:
           name: feature-images
           path: ./explore/images
 
+      - name: Download location pages
+        uses: actions/download-artifact@v4
+        with:
+          name: location-pages
+          path: ./locations
+
+      - name: Download geo cache
+        uses: actions/download-artifact@v4
+        with:
+          name: geo-cache
+          path: .
+          # If no new coords were resolved this run the artifact may not exist — that is fine
+        continue-on-error: true
+
       - name: Commit and push all output
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ./explore
+          git add ./explore ./locations
+          # Commit geo-cache.json if present so future runs skip already-resolved coords
+          [ -f ./geo-cache.json ] && git add ./geo-cache.json || true
           git diff --cached --quiet \
             && echo "Nothing to commit." \
-            || git commit -m "chore: regenerate pages and feature images [skip ci]" && git push
+            || git commit -m "chore: regenerate pages, images and location index [skip ci]" && git push
