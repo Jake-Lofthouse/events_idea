@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>parkrun Events in Leeds — Hotels &amp; Visitor Guides</title>
+<meta name="description" content="All parkrun events in Leeds, West Yorkshire. Browse course maps, find nearby hotels and plan your parkrun visit." />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://www.parkrunnertourist.com/locations/united-kingdom/west-yorkshire/leeds/index.html" />
+<meta name="geo.position" content="53.808582;-1.560059" /><meta name="geo.placename" content="Leeds" />
+<meta property="og:title" content="parkrun Events in Leeds — Hotels &amp; Visitor Guides" />
+<meta property="og:description" content="All parkrun events in Leeds, West Yorkshire. Browse course maps, find nearby hotels and plan your parkrun visit." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.parkrunnertourist.com/locations/united-kingdom/west-yorkshire/leeds/index.html" />
+<meta name="twitter:card" content="summary" />
+<link rel="icon" type="image/x-icon" href="https://parkrunnertourist.com/favicon.ico" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-REFFZSK4XK"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-REFFZSK4XK');</script>
+</head>
+<body>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#4caf50;--dark:#2e7d32;--teal:#40e0d0;
+  --bg:#f4f6f0;--surface:#ffffff;--border:#e2e8d8;
+  --text:#1a2318;--muted:#5a6e52;--radius:12px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+header{
+  background:linear-gradient(135deg,var(--dark) 0%,#1b5e20 100%);
+  color:#fff;padding:1rem 2rem;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 4px 20px rgba(46,125,50,0.3);
+}
+header a.brand{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff;}
+header a.map-btn{
+  padding:.4rem 1.1rem;border:2px solid rgba(255,255,255,.7);border-radius:8px;
+  font-size:.875rem;font-weight:600;color:#fff;transition:all .2s;
+}
+header a.map-btn:hover{background:#fff;color:var(--dark);}
+.breadcrumb{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:.6rem 2rem;font-size:.825rem;color:var(--muted);
+  display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;
+}
+.breadcrumb a{color:var(--dark);font-weight:500;}
+.breadcrumb a:hover{text-decoration:underline;}
+.breadcrumb span{opacity:.5;}
+main{max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.page-hero{text-align:center;padding:2.5rem 0 2rem;}
+.page-hero h1{
+  font-family:'DM Serif Display',serif;font-size:3rem;
+  color:var(--dark);margin-bottom:.5rem;line-height:1.15;
+}
+.page-hero p{color:var(--muted);font-size:1.05rem;max-width:600px;margin:0 auto;}
+.section-label{
+  font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1rem;
+}
+.search-wrap{margin-bottom:1.75rem;position:relative;}
+.search-input{
+  width:100%;padding:.75rem 1.1rem .75rem 2.75rem;
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  font-family:'DM Sans',sans-serif;font-size:1rem;background:var(--surface);
+  outline:none;transition:border .2s;
+}
+.search-input:focus{border-color:var(--green);}
+.search-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:.9rem;}
+.tile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.tile{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;
+  transition:box-shadow .2s,transform .2s;cursor:pointer;
+}
+.tile:hover{box-shadow:0 6px 24px rgba(46,125,50,.13);transform:translateY(-2px);}
+.tile-name{font-weight:600;font-size:.975rem;}
+.tile-count{
+  background:#e8f5e9;color:var(--dark);
+  font-size:.75rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;flex-shrink:0;
+}
+.event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;}
+.event-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:box-shadow .25s,transform .25s;display:flex;flex-direction:column;
+}
+.event-card:hover{box-shadow:0 8px 32px rgba(46,125,50,.15);transform:translateY(-3px);}
+.card-map{height:180px;flex-shrink:0;}
+.card-body{padding:1rem 1.1rem;flex:1;display:flex;flex-direction:column;gap:.4rem;}
+.card-title{font-weight:700;font-size:1rem;color:var(--text);line-height:1.3;}
+.card-location{font-size:.825rem;color:var(--muted);display:flex;align-items:center;gap:.35rem;}
+.card-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem;}
+.badge{font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:99px;background:#e8f5e9;color:var(--dark);}
+.badge.junior{background:#e0f7fa;color:#006064;}
+.card-cta{
+  display:block;margin:.75rem 1.1rem 1rem;padding:.55rem 1rem;
+  background:linear-gradient(135deg,var(--green),var(--dark));
+  color:#fff;border-radius:8px;font-weight:600;font-size:.875rem;
+  text-align:center;transition:opacity .2s;
+}
+.card-cta:hover{opacity:.88;}
+.hotel-cta{
+  background:linear-gradient(135deg,var(--dark),#1b5e20);
+  border-radius:var(--radius);padding:2rem 1.75rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1.5rem;margin-bottom:2.5rem;flex-wrap:wrap;
+}
+.hotel-cta-text h2{font-family:'DM Serif Display',serif;font-size:1.5rem;color:#fff;margin-bottom:.3rem;}
+.hotel-cta-text p{font-size:.9rem;color:rgba(255,255,255,.75);}
+.hotel-cta-btn{
+  background:#fff;color:var(--dark);font-weight:700;font-size:.95rem;
+  padding:.75rem 1.75rem;border-radius:10px;white-space:nowrap;
+  border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;flex-shrink:0;
+}
+.hotel-cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.18);}
+#stay22-modal{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:1rem;
+}
+#stay22-modal.open{display:flex;}
+.stay22-inner{
+  background:#fff;border-radius:16px;width:100%;max-width:900px;max-height:90vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+}
+.stay22-header{
+  padding:.85rem 1.1rem;border-bottom:1px solid #eee;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.stay22-header span{font-weight:700;font-size:.95rem;}
+.stay22-close{
+  background:rgba(0,0,0,.07);border:none;border-radius:50%;
+  width:28px;height:28px;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;color:#555;
+}
+.stay22-close:hover{background:rgba(0,0,0,.14);}
+#stay22-iframe{flex:1;border:none;min-height:480px;}
+.stats-bar{
+  display:flex;gap:2rem;margin-bottom:2rem;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.5rem;
+}
+.stat{display:flex;flex-direction:column;}
+.stat-value{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--dark);line-height:1;}
+.stat-label{font-size:.775rem;color:var(--muted);margin-top:.2rem;}
+.country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+.country-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem 1.4rem;transition:box-shadow .2s,transform .2s;
+}
+.country-card:hover{box-shadow:0 6px 24px rgba(46,125,50,.12);transform:translateY(-2px);}
+.country-card h3{font-weight:700;font-size:1rem;margin-bottom:.2rem;}
+.country-card p{font-size:.825rem;color:var(--muted);}
+footer{
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:1.5rem 2rem;text-align:center;font-size:.8rem;color:var(--muted);
+}
+.leaflet-control-attribution{display:none!important;}
+@media(max-width:640px){
+  .page-hero h1{font-size:2rem;}
+  main{padding:1.25rem 1rem 3rem;}
+  .hotel-cta{flex-direction:column;text-align:center;}
+  .hotel-cta-btn{width:100%;}
+}
+</style>
+<header>
+  <a class="brand" href="https://www.parkrunnertourist.com">parkrunner tourist</a>
+  <a class="map-btn" href="https://www.parkrunnertourist.com/webapp" target="_blank">Full Map</a>
+</header>
+<div class="breadcrumb"><a href="https://www.parkrunnertourist.com/locations/index.html">All Locations</a><span>/</span><a href="https://www.parkrunnertourist.com/locations/united-kingdom/index.html">United Kingdom</a><span>/</span><a href="https://www.parkrunnertourist.com/locations/united-kingdom/west-yorkshire/index.html">West Yorkshire</a><span>/</span><span>Leeds</span></div>
+<main>
+  <div class="page-hero">
+    <h1>Leeds</h1>
+    <p>1 parkrun event in Leeds</p>
+  </div>
+  <div class="hotel-cta">
+    <div class="hotel-cta-text">
+      <h2>Staying in Leeds?</h2>
+      <p>Find hotels and rentals near your parkrun event.</p>
+    </div>
+    <button class="hotel-cta-btn" onclick="openStay22(53.808582,-1.560059,'Leeds parkrun')">Find Hotels</button>
+  </div>
+  
+  <div class="section-label">Events in Leeds</div>
+  <div class="event-grid" id="event-grid"><div class="event-card" data-search="woodhouse moor parkrun leeds">
+  <div class="card-map"><div id="map-woodhousemoor" style="height:180px;"></div></div>
+  <div class="card-body">
+    <div class="card-title">Woodhouse Moor parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Leeds</span>
+    <div class="card-badges"><span class="badge">5k</span></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/W/woodhousemoor" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('map-woodhousemoor');
+  if (!el) return;
+  var map = L.map('map-woodhousemoor', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  var enc = "Wy01NDAzOTA2LDU1ODYwNjIxLC0zOTYzNzAzLDY2OTI3NDMwLC03MjI4ODIsNjM1NzEzOTgsLTE0MzYwODMsNjI5NzE1NzUsLTgzNDU2NjksNTk4NTYyODcsLTkwMTc2MTIsNTcwOTI2NzksLTc0NDAyLDU3MzMxNjgwLC01MDM3MDQwLDUwNDcxODU1LC0xNzM5MDgwLDU4MzMwNjY1LC0xNDM2ODY2MCw1NTgwNTA4NiwtMTU0Mzg4NDAsNTU4NzQzMDIsLTEwNjQ0MzE3LDU2MzIwMDEwLC02NTU2OTE0LDU3MjcwOTgwLC0zMTM5NjcyLDU4MjE1Mzc3LC0yMTk1MDgwLDUxNjYxMzExLC01OTY4MTY5LDU2NjY2MTM1LC0xNDIwMDg4Miw1MjAyNTg1MCwtNjQ5ODgyMiw1NzEwODUzNSwtNzYzMDcyOSw1NTkxNTA3MywtMTIxMjk5NTksNjUwMTA3MzUsLTEzNjQ1MzYxLDUzNzk3ODk0LC0xMjM3OTIwOSw1Nzg5NzM2NCwtMTI3OTkyMzMsNTM4OTk1MTgsLTI2ODc5MzYsNjMyNzM2MzUsLTE1Njc5MjA0LDYyMjg3Nzk1LC0xMDQ0NjM2LDYzNTY2MDI2LC0xNjIwMzg0LDYxMjc2MTA3LC0xMDc5NzE1MCw1NjE2NjE3NSwtNjY2OTYxMyw1MDk1MDI1M10=";
+  if (enc) {
+    var route = _d(enc, 11799279);
+    var lls = route.map(function(p) { return [p[1], p[0]]; });
+    L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: .9 }).addTo(map);
+    L.circleMarker(lls[0], { radius: 6, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+    L.circleMarker(lls[lls.length - 1], { radius: 6, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+    map.fitBounds(L.latLngBounds(lls), { padding: [16, 16], animate: false });
+  } else {
+    map.setView([53.808582, -1.560059], 14);
+    L.circleMarker([53.808582, -1.560059], { radius: 8, fillColor: '#4caf50', color: '#fff', weight: 2.5, fillOpacity: 1 }).addTo(map);
+  }
+})();
+</script></div>
+</main>
+<footer>
+  <p style="max-width:800px;margin:0 auto .5rem;">
+    parkrun is a registered trademark of parkrun Limited.
+    This website is independent and is not affiliated with or endorsed by parkrun.
+  </p>
+  &copy; 2026 parkrunner tourist
+</footer>
+
+<div id="stay22-modal">
+  <div class="stay22-inner">
+    <div class="stay22-header">
+      <span id="stay22-modal-title">Find Hotels</span>
+      <button class="stay22-close" onclick="closeStay22()">&times;</button>
+    </div>
+    <iframe id="stay22-iframe" src="" title="Find hotels near parkrun events"></iframe>
+  </div>
+</div>
+<script>
+function openStay22(lat, lon, name) {
+  var date = (function(){
+    var d = new Date(), day = d.getDay(), diff = (5 - day + 7) % 7 || 7;
+    d.setDate(d.getDate() + diff);
+    return d.toISOString().slice(0, 10);
+  })();
+  var url = 'https://www.stay22.com/embed/gm?aid=parkrunnertourist'
+    + '&lat=' + lat + '&lng=' + lon + '&maincolor=4caf50'
+    + '&venue=' + encodeURIComponent(name) + '&checkin=' + date
+    + '&viewmode=listview&listviewexpand=true';
+  document.getElementById('stay22-iframe').src = url;
+  document.getElementById('stay22-modal-title').textContent = 'Hotels near ' + name;
+  document.getElementById('stay22-modal').classList.add('open');
+}
+function closeStay22() {
+  document.getElementById('stay22-modal').classList.remove('open');
+  document.getElementById('stay22-iframe').src = '';
+}
+document.getElementById('stay22-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeStay22();
+});
+</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body></html>

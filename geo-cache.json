@@ -1,0 +1,94 @@
+{
+  "51.411,-0.3358": {
+    "city_district": "London Borough of Richmond upon Thames",
+    "ISO3166-2-lvl8": "GB-RIC",
+    "city": "Greater London",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "51.4421,-0.2322": {
+    "city_district": "London Borough of Wandsworth",
+    "ISO3166-2-lvl8": "GB-WND",
+    "city": "Greater London",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "51.3076,-0.1842": {
+    "city": "Reigate and Banstead",
+    "county": "Surrey",
+    "ISO3166-2-lvl6": "GB-SRY",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "51.452,-0.2929": {
+    "city_district": "London Borough of Richmond upon Thames",
+    "ISO3166-2-lvl8": "GB-RIC",
+    "city": "Greater London",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "53.8086,-1.5601": {
+    "city": "Leeds",
+    "ISO3166-2-lvl8": "GB-LDS",
+    "state_district": "West Yorkshire",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "53.3743,-2.1607": {
+    "town": "Stockport",
+    "ISO3166-2-lvl8": "GB-SKP",
+    "state_district": "Greater Manchester",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "50.8421,-0.1725": {
+    "city": "Brighton",
+    "county": "Brighton and Hove",
+    "ISO3166-2-lvl6": "GB-BNH",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "postcode": "BN1 1HH",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "51.4974,-3.2071": {
+    "city": "Cardiff",
+    "county": "Cardiff",
+    "ISO3166-2-lvl6": "GB-CRF",
+    "state": "Cymru / Wales",
+    "ISO3166-2-lvl4": "GB-WLS",
+    "postcode": "CF10 2AF",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "54.565,-1.2318": {
+    "county": "Middlesbrough",
+    "ISO3166-2-lvl6": "GB-MDB",
+    "state_district": "Tees Valley",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  },
+  "51.2588,-1.082": {
+    "city": "Basingstoke and Deane",
+    "county": "Hampshire",
+    "ISO3166-2-lvl6": "GB-HAM",
+    "state": "England",
+    "ISO3166-2-lvl4": "GB-ENG",
+    "country": "United Kingdom",
+    "country_code": "gb"
+  }
+}

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cardiff parkrun Events — Hotels &amp; Visitor Guides</title>
+<meta name="description" content="All parkrun events in Cardiff. Browse course maps, find nearby hotels, check weather forecasts and plan your perfect parkrun weekend." />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://www.parkrunnertourist.com/locations/united-kingdom/cardiff/index.html" />
+<meta name="geo.position" content="51.49736;-3.207107" /><meta name="geo.placename" content="Cardiff" />
+<meta property="og:title" content="Cardiff parkrun Events — Hotels &amp; Visitor Guides" />
+<meta property="og:description" content="All parkrun events in Cardiff. Browse course maps, find nearby hotels, check weather forecasts and plan your perfect parkrun weekend." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.parkrunnertourist.com/locations/united-kingdom/cardiff/index.html" />
+<meta name="twitter:card" content="summary" />
+<link rel="icon" type="image/x-icon" href="https://parkrunnertourist.com/favicon.ico" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-REFFZSK4XK"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-REFFZSK4XK');</script>
+</head>
+<body>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#4caf50;--dark:#2e7d32;--teal:#40e0d0;
+  --bg:#f4f6f0;--surface:#ffffff;--border:#e2e8d8;
+  --text:#1a2318;--muted:#5a6e52;--radius:12px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+header{
+  background:linear-gradient(135deg,var(--dark) 0%,#1b5e20 100%);
+  color:#fff;padding:1rem 2rem;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 4px 20px rgba(46,125,50,0.3);
+}
+header a.brand{font-family:'DM Serif Display',serif;font-size:1.4rem;color:#fff;}
+header a.map-btn{
+  padding:.4rem 1.1rem;border:2px solid rgba(255,255,255,.7);border-radius:8px;
+  font-size:.875rem;font-weight:600;color:#fff;transition:all .2s;
+}
+header a.map-btn:hover{background:#fff;color:var(--dark);}
+.breadcrumb{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:.6rem 2rem;font-size:.825rem;color:var(--muted);
+  display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;
+}
+.breadcrumb a{color:var(--dark);font-weight:500;}
+.breadcrumb a:hover{text-decoration:underline;}
+.breadcrumb span{opacity:.5;}
+main{max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.page-hero{text-align:center;padding:2.5rem 0 2rem;}
+.page-hero h1{
+  font-family:'DM Serif Display',serif;font-size:3rem;
+  color:var(--dark);margin-bottom:.5rem;line-height:1.15;
+}
+.page-hero p{color:var(--muted);font-size:1.05rem;max-width:600px;margin:0 auto;}
+.section-label{
+  font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1rem;
+}
+.search-wrap{margin-bottom:1.75rem;position:relative;}
+.search-input{
+  width:100%;padding:.75rem 1.1rem .75rem 2.75rem;
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  font-family:'DM Sans',sans-serif;font-size:1rem;background:var(--surface);
+  outline:none;transition:border .2s;
+}
+.search-input:focus{border-color:var(--green);}
+.search-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:.9rem;}
+.tile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.tile{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;
+  transition:box-shadow .2s,transform .2s;cursor:pointer;
+}
+.tile:hover{box-shadow:0 6px 24px rgba(46,125,50,.13);transform:translateY(-2px);}
+.tile-name{font-weight:600;font-size:.975rem;}
+.tile-count{
+  background:#e8f5e9;color:var(--dark);
+  font-size:.75rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;flex-shrink:0;
+}
+.event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;}
+.event-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:box-shadow .25s,transform .25s;display:flex;flex-direction:column;
+}
+.event-card:hover{box-shadow:0 8px 32px rgba(46,125,50,.15);transform:translateY(-3px);}
+.card-map{height:180px;flex-shrink:0;}
+.card-body{padding:1rem 1.1rem;flex:1;display:flex;flex-direction:column;gap:.4rem;}
+.card-title{font-weight:700;font-size:1rem;color:var(--text);line-height:1.3;}
+.card-location{font-size:.825rem;color:var(--muted);display:flex;align-items:center;gap:.35rem;}
+.card-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem;}
+.badge{font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:99px;background:#e8f5e9;color:var(--dark);}
+.badge.junior{background:#e0f7fa;color:#006064;}
+.card-cta{
+  display:block;margin:.75rem 1.1rem 1rem;padding:.55rem 1rem;
+  background:linear-gradient(135deg,var(--green),var(--dark));
+  color:#fff;border-radius:8px;font-weight:600;font-size:.875rem;
+  text-align:center;transition:opacity .2s;
+}
+.card-cta:hover{opacity:.88;}
+.hotel-cta{
+  background:linear-gradient(135deg,var(--dark),#1b5e20);
+  border-radius:var(--radius);padding:2rem 1.75rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1.5rem;margin-bottom:2.5rem;flex-wrap:wrap;
+}
+.hotel-cta-text h2{font-family:'DM Serif Display',serif;font-size:1.5rem;color:#fff;margin-bottom:.3rem;}
+.hotel-cta-text p{font-size:.9rem;color:rgba(255,255,255,.75);}
+.hotel-cta-btn{
+  background:#fff;color:var(--dark);font-weight:700;font-size:.95rem;
+  padding:.75rem 1.75rem;border-radius:10px;white-space:nowrap;
+  border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;flex-shrink:0;
+}
+.hotel-cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.18);}
+#stay22-modal{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:1rem;
+}
+#stay22-modal.open{display:flex;}
+.stay22-inner{
+  background:#fff;border-radius:16px;width:100%;max-width:900px;max-height:90vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+}
+.stay22-header{
+  padding:.85rem 1.1rem;border-bottom:1px solid #eee;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.stay22-header span{font-weight:700;font-size:.95rem;}
+.stay22-close{
+  background:rgba(0,0,0,.07);border:none;border-radius:50%;
+  width:28px;height:28px;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;color:#555;
+}
+.stay22-close:hover{background:rgba(0,0,0,.14);}
+#stay22-iframe{flex:1;border:none;min-height:480px;}
+.stats-bar{
+  display:flex;gap:2rem;margin-bottom:2rem;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.5rem;
+}
+.stat{display:flex;flex-direction:column;}
+.stat-value{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--dark);line-height:1;}
+.stat-label{font-size:.775rem;color:var(--muted);margin-top:.2rem;}
+.country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+.country-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem 1.4rem;transition:box-shadow .2s,transform .2s;
+}
+.country-card:hover{box-shadow:0 6px 24px rgba(46,125,50,.12);transform:translateY(-2px);}
+.country-card h3{font-weight:700;font-size:1rem;margin-bottom:.2rem;}
+.country-card p{font-size:.825rem;color:var(--muted);}
+footer{
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:1.5rem 2rem;text-align:center;font-size:.8rem;color:var(--muted);
+}
+.leaflet-control-attribution{display:none!important;}
+@media(max-width:640px){
+  .page-hero h1{font-size:2rem;}
+  main{padding:1.25rem 1rem 3rem;}
+  .hotel-cta{flex-direction:column;text-align:center;}
+  .hotel-cta-btn{width:100%;}
+}
+</style>
+<header>
+  <a class="brand" href="https://www.parkrunnertourist.com">parkrunner tourist</a>
+  <a class="map-btn" href="https://www.parkrunnertourist.com/webapp" target="_blank">Full Map</a>
+</header>
+<div class="breadcrumb"><a href="https://www.parkrunnertourist.com/locations/index.html">All Locations</a><span>/</span><a href="https://www.parkrunnertourist.com/locations/united-kingdom/index.html">United Kingdom</a><span>/</span><span>Cardiff</span></div>
+<main>
+  <div class="page-hero">
+    <h1>Cardiff</h1>
+    <p>1 parkrun event in this region</p>
+  </div>
+  <div class="hotel-cta">
+    <div class="hotel-cta-text">
+      <h2>Need accommodation in Cardiff?</h2>
+      <p>Compare hotels and rentals near any Cardiff parkrun event.</p>
+    </div>
+    <button class="hotel-cta-btn" onclick="openStay22(51.49736,-3.207107,'Cardiff parkrun')">Find Hotels</button>
+  </div>
+  
+  
+  <div class="section-label">All events in Cardiff</div>
+  <div class="event-grid" id="event-grid"><div class="event-card" data-search="cardiff parkrun cardiff">
+  <div class="card-map"><div id="map-cardiff" style="height:180px;"></div></div>
+  <div class="card-body">
+    <div class="card-title">Cardiff parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Cardiff</span>
+    <div class="card-badges"><span class="badge">5k</span></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/C/cardiff" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('map-cardiff');
+  if (!el) return;
+  var map = L.map('map-cardiff', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  var enc = "Wy04MzQyNTg1LDUyOTYzOTIzLC0xMTY0MTYxOCw2MzQ5Njg1NCwtMzMyMDM3LDYwOTE4NzkwLC01ODE1MzQxLDYxNTIxMTEzLC0xNDExMDk4OSw1ODI5MDE3MCwtMTE0MDUxNzQsNTEwNjUzNzEsLTM1ODM4MjMsNjA3MDUwMDUsLTEzNjE2NTIwLDY0NjkwMjUzLC05Njk4MjQ5LDU3MDM5MzY4LC0xNTA3MDU2MCw2Mzk0MDU0OCwtMTA2NzY3MTAsNjM5NDU3MDEsLTY0NzY4MTUsNjA2MTQyMzQsLTEzNTUyOTYyLDU4NDc2ODEwLC03NDQ2NDA3LDU0OTMwNjczLC05MTk1MDMsNjAxMTQ3OTQsLTEzMjE1NTg0LDU4MjI5NTc4LC0xNDE4NDgyOCw1MjkxNjg3MCwtMTA3MTg2MDQsNTM0MTQ2MzAsLTEzNzk4NTcsNTg3NzE3MjQsLTcxNDczMTksNjAzNjg5NjQsLTc2ODgwMTYsNTM1MTM5OTEsLTEwNTMzNDkwLDU2NDk5MjYxLC0xMDc3MjkwMSw2MTE1NzAzOCwtOTM4MDcwLDU1MTAyMzQ1LC02MTU4MjUyLDU3Nzk3NzY2LC0xMDU1MDc4Nyw2NDcwMzcwMCwtMTIzOTUwMzAsNjQxNDYyODYsLTIwODEwMzUsNTIxOTU4MjcsLTEwMDk4ODc2LDYwNDY2OTI0LC0zMTYwMzgyLDY1Mzg5NDA3LC03Njc4MTcyLDUyODY2MTY2LC0yNDI3MzgwLDUxMjM4NzIwLC05MjYzNTkwLDUxMTY0OTk2LC0xMzcwMzc1Nyw1OTA5NDA2NywtOTgzNzA5MCw2MjY4NzM2MSwtMTAyODcyMTAsNjE4MTY2NzksLTY5ODQzODMsNjUzMTE4MzcsLTc4MDk5MTYsNTcwOTAxNTAsLTE2Njg3OTMyLDU4MTc1ODUzLC0zMzE1MTc0LDU2Nzk3NjI3LC05OTM0MDI3LDYzNDI2NzE1LC0xNTQyNTkzNSw2Njc2ODk2NV0=";
+  if (enc) {
+    var route = _d(enc, 4009799);
+    var lls = route.map(function(p) { return [p[1], p[0]]; });
+    L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: .9 }).addTo(map);
+    L.circleMarker(lls[0], { radius: 6, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+    L.circleMarker(lls[lls.length - 1], { radius: 6, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+    map.fitBounds(L.latLngBounds(lls), { padding: [16, 16], animate: false });
+  } else {
+    map.setView([51.49736, -3.207107], 14);
+    L.circleMarker([51.49736, -3.207107], { radius: 8, fillColor: '#4caf50', color: '#fff', weight: 2.5, fillOpacity: 1 }).addTo(map);
+  }
+})();
+</script></div>
+</main>
+<footer>
+  <p style="max-width:800px;margin:0 auto .5rem;">
+    parkrun is a registered trademark of parkrun Limited.
+    This website is independent and is not affiliated with or endorsed by parkrun.
+  </p>
+  &copy; 2026 parkrunner tourist
+</footer>
+
+<div id="stay22-modal">
+  <div class="stay22-inner">
+    <div class="stay22-header">
+      <span id="stay22-modal-title">Find Hotels</span>
+      <button class="stay22-close" onclick="closeStay22()">&times;</button>
+    </div>
+    <iframe id="stay22-iframe" src="" title="Find hotels near parkrun events"></iframe>
+  </div>
+</div>
+<script>
+function openStay22(lat, lon, name) {
+  var date = (function(){
+    var d = new Date(), day = d.getDay(), diff = (5 - day + 7) % 7 || 7;
+    d.setDate(d.getDate() + diff);
+    return d.toISOString().slice(0, 10);
+  })();
+  var url = 'https://www.stay22.com/embed/gm?aid=parkrunnertourist'
+    + '&lat=' + lat + '&lng=' + lon + '&maincolor=4caf50'
+    + '&venue=' + encodeURIComponent(name) + '&checkin=' + date
+    + '&viewmode=listview&listviewexpand=true';
+  document.getElementById('stay22-iframe').src = url;
+  document.getElementById('stay22-modal-title').textContent = 'Hotels near ' + name;
+  document.getElementById('stay22-modal').classList.add('open');
+}
+function closeStay22() {
+  document.getElementById('stay22-modal').classList.remove('open');
+  document.getElementById('stay22-iframe').src = '';
+}
+document.getElementById('stay22-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeStay22();
+});
+</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body></html>
