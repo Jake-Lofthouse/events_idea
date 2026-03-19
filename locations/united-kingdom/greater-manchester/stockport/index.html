@@ -3,21 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>parkrun Events in Stockport — Hotels &amp; Visitor Guides</title>
-<meta name="description" content="All parkrun events in Stockport, Greater Manchester. View course maps, find nearby hotels and plan your parkrun visit." />
+<title>parkrun Events in Stockport — Hotels Near Each Event &amp; Course Maps</title>
+<meta name="description" content="2 parkrun events in Stockport, Greater Manchester. View course maps for every event, find hotels nearby and plan your parkrun visit to Stockport." />
 <meta name="author" content="Jake Lofthouse" />
-<meta name="geo.placename" content="Stockport" />
-<meta name="geo.position" content="53.374268;-2.160702" />
-<meta property="og:title" content="parkrun Events in Stockport — Hotels &amp; Visitor Guides" />
-<meta property="og:description" content="All parkrun events in Stockport, Greater Manchester. View course maps, find nearby hotels and plan your parkrun visit." />
+<meta name="geo.placename" content="Stockport, Greater Manchester" />
+<meta name="geo.position" content="53.3913365;-2.1458235" />
+<meta property="og:title" content="parkrun Events in Stockport — Hotels Near Each Event &amp; Course Maps" />
+<meta property="og:description" content="2 parkrun events in Stockport, Greater Manchester. View course maps for every event, find hotels nearby and plan your parkrun visit to Stockport." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/locations/united-kingdom/greater-manchester/stockport/" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="parkrunner tourist" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="parkrun Events in Stockport — Hotels &amp; Visitor Guides" />
-<meta name="twitter:description" content="All parkrun events in Stockport, Greater Manchester. View course maps, find nearby hotels and plan your parkrun visit." />
+<meta name="twitter:title" content="parkrun Events in Stockport — Hotels Near Each Event &amp; Course Maps" />
+<meta name="twitter:description" content="2 parkrun events in Stockport, Greater Manchester. View course maps for every event, find hotels nearby and plan your parkrun visit to Stockport." />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
 <link rel="canonical" href="https://www.parkrunnertourist.com/locations/united-kingdom/greater-manchester/stockport/" />
+<link rel="sitemap" type="application/xml" href="https://www.parkrunnertourist.com/locations/sitemap.xml" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"parkrunner tourist","item":"https://jake-lofthouse.github.io/Event-Web-Test/"},{"@type":"ListItem","position":2,"name":"Locations","item":"https://www.parkrunnertourist.com/locations/"},{"@type":"ListItem","position":3,"name":"United Kingdom","item":"https://www.parkrunnertourist.com/locations/united-kingdom/"},{"@type":"ListItem","position":4,"name":"Greater Manchester","item":"https://www.parkrunnertourist.com/locations/united-kingdom/greater-manchester/"},{"@type":"ListItem","position":5,"name":"Stockport","item":"https://www.parkrunnertourist.com/locations/united-kingdom/greater-manchester/stockport/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"parkrun Events in Stockport — Hotels Near Each Event & Course Maps","description":"2 parkrun events in Stockport, Greater Manchester. View course maps for every event, find hotels nearby and plan your parkrun visit to Stockport.","url":"https://www.parkrunnertourist.com/locations/united-kingdom/greater-manchester/stockport/","spatialCoverage":{"@type":"Place","name":"Stockport, Greater Manchester","geo":{"@type":"GeoCoordinates","latitude":53.3913365,"longitude":-2.1458235}},"publisher":{"@type":"Organization","name":"parkrunner tourist","url":"https://www.parkrunnertourist.com"}}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -172,30 +176,6 @@ main { padding: 3rem 2rem; max-width: 1400px; margin: 0 auto; }
   font-family: 'Inter', sans-serif;
 }
 .hotel-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
-/* Stay22 modal */
-#stay22-modal {
-  display: none; position: fixed; inset: 0; z-index: 9999;
-  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-  align-items: center; justify-content: center; padding: 1rem;
-}
-#stay22-modal.open { display: flex; }
-.stay22-inner {
-  background: white; border-radius: 1.25rem; width: 100%; max-width: 900px; max-height: 90vh;
-  display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.35);
-}
-.stay22-header {
-  padding: 0.9rem 1.1rem; border-bottom: 1px solid #f0f0f0;
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-}
-.stay22-header span { font-weight: 700; font-size: 0.95rem; }
-.stay22-close {
-  background: rgba(0,0,0,0.07); border: none; border-radius: 50%;
-  width: 28px; height: 28px; cursor: pointer; font-size: 14px;
-  display: flex; align-items: center; justify-content: center; color: #555;
-}
-.stay22-close:hover { background: rgba(0,0,0,0.14); }
-#stay22-iframe { flex: 1; border: none; min-height: 480px; }
 /* Country cards */
 .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
 .country-card {
@@ -232,14 +212,14 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
 </header>
 <div class="breadcrumb"><a href="https://www.parkrunnertourist.com/locations/">All Locations</a><span class="breadcrumb-sep">/</span><a href="https://www.parkrunnertourist.com/locations/united-kingdom/">United Kingdom</a><span class="breadcrumb-sep">/</span><a href="https://www.parkrunnertourist.com/locations/united-kingdom/greater-manchester/">Greater Manchester</a><span class="breadcrumb-sep">/</span><span>Stockport</span></div>
 <main>
-  <h1 class="page-title">Stockport</h1>
-  <p class="page-subtitle">1 parkrun event in Stockport</p>
+  <h1 class="page-title">parkrun Events in Stockport</h1>
+  <p class="page-subtitle">2 parkrun events in Stockport — course maps, hotels and visitor guides</p>
   <div class="hotel-cta">
     <div class="hotel-cta-text">
       <h2>Staying in Stockport?</h2>
       <p>Find hotels and rentals near your parkrun event.</p>
     </div>
-    <button class="hotel-cta-btn" onclick="openStay22(53.374268,-2.160702,'Stockport parkrun')">Find Hotels</button>
+    <button class="hotel-cta-btn" onclick="openStay22(53.3913365,-2.1458235,'Stockport parkrun')">Find Hotels</button>
   </div>
   
   <div class="section-title">Events in Stockport</div>
@@ -254,7 +234,7 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   <div class="card-body">
     <div class="card-name">Bramhall parkrun</div>
     <span class="card-location"><i class="fas fa-map-marker-alt"></i> Stockport</span>
-    <div class="card-badges"><span class="card-badge">5k</span></div>
+    <div class="card-badges"></div>
   </div>
   <a href="https://www.parkrunnertourist.com/explore/B/bramhall" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
 </div>
@@ -272,6 +252,42 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
   
   var route = _d("Wy0xMTQ2Mzg1MSw1MzA3Mjk5NCwtMTE3NjkxNDgsNjM3OTAzNjcsLTYzODQ4NTMsNTYwMDMwODIsLTg2ODU4NjIsNjAwMzYzMzEsLTUwOTQ1NDAsNTQwMjQ0NTgsLTE2MTIzNDkwLDY2OTAzNTI0LC0zNDkxODk2LDU1NDQ5MjE5LC04NDE1NzcsNTUxNTY4NjcsLTU5Njk0ODYsNjIyMzkzMDAsLTM0NjkxMzcsNjIxNjgwNTYsLTI1NzIyODIsNTU0NDI2MjEsLTEzMzM5NzI3LDUwOTE4ODYwLC00ODI3NzAxLDU1NTg0MDUxLC05OTc1ODIzLDU4NTE3NjMwLC0xNDQ1MDU0MCw2NDk4ODY1NSwtNjYwMjQ2MSw1MDk4NTgyMiwtNTI1MDkzNyw1ODI3OTM4NywtNzI4MDkwMyw2MzU5NzU3MywtODcxOTUyMiw1NDU4MDg0NSwtMzEwNzA5MCw1ODc5NTE2NCwtMTU2MzQ1MTYsNjQ2NDc5NzcsLTIzOTc4NzgsNjA4NDcxNDksLTEzMTkyNTI2LDYwNTgxMTA5LC0xNDA4Mzg0Nyw2MjM5MTc2MywtNjYyMDE0Nyw2NjYzOTk4NiwtMTQzMzI0Nyw1NTM3ODUyNCwtNjExODAxMCw2MTQxOTc2NywtMzY5NDMxNiw2NTUzNTk4MCwtMTE3OTQyNjgsNjA0ODc1NTAsLTE2MTE3MDg2LDY1MzM4NTczLC03ODA2OTMzLDUwMzQyNjk2LC01MDI3NTUxLDY1NDgyODQ4LC0yNDI4Mjg2LDY0NTYwNDI4LC0yMjM2NTQ3LDYzOTgxMzc4LC05NTkwNTgsNjYzMjI0NTUsLTc2NzI3ODUsNTA1OTQyMTksLTEyNzY4ODQ1LDUxNTU5ODkxLC0xMDU4NDE4NCw2MDk5NDU3MCwtMjUxNjY0OSw1MjIzOTA2NCwtMzA2MTM3Miw1NDIwMTIyMCwtMjMwOTk2Niw2NjU5ODExMywtMTI2OTQ5Miw2NjUzOTg4MCwtMTI0ODE2ODQsNjY3NTYwMjQsLTY3MzA2NzUsNjU1ODIzNDgsLTExODk0MjksNTcxMzY2ODgsLTg0MDU4NTUsNjIzNjU2MjQsLTE0NDYxMDg3LDY1MDY5NTE3LC0xMDg4MDEyOSw1MjUwMDAxMywtMTU2MDkyMjYsNjcwMzg2NzksLTYwMjUyMDgsNTgxOTIzMDEsLTEzNDY3NDQ5LDUxMjE3NDY4LC0xMDIzOTIyOCw2Njk1ODQyOCwtMTI2MDEwMiw2NjQ2NzM4MCwtMzIyMjA3OSw2NDUyNDE2MywtNTgxNTIzMiw1NjgwNjg5MSwtMTAzNDc2OTMsNjEwMDA3NjAsLTE5MjE3MTEsNjE2NTAxNjksLTE2MjEwMzEwLDUxMDAxNTcwLC01NjgzMDYwLDYwNDM4Nzc1LC0xMDI1Njk4OSw2NTU0NDEzNiwtMTU3NzQxNjUsNTExMDMxMjUsLTEzMDY0MTkwLDYzMzYwMTYwLC0xNDUxNDE4Miw1MTY5MzE4NSwtMTY0NjQ4MzMsNTk3Mzk2NDEsLTgwODExMDUsNjUyNzYzMDgsLTYwNDgwNTksNTM0ODA3MTgsLTEyNzkxNDQ1LDYwNjQyOTgwLC0xMTU4NzkxNCw1ODU4Njk1NSwtNjUyNjkzMSw1ODc3NzMzOSwtNjEyNjM1OCw2NDY0MDg4MSwtNjgwOTE1MSw1NTI5ODY3NCwtNjczNzA2Niw1OTM5ODE4MSwtNTk5Mzk0Nyw2NTY4NTg0MywtMTMyMzM5MTAsNTQ3MDA3MTksLTMwMDkxNTcsNjEwNzIzNzIsLTE0ODEyNTUxLDU2NTA2NzYyLC0xNDA5MjYwMSw1MjI5ODg0NCwtNDkwMzI5Myw2NjExMjc0OSwtODA2OTE1OCw2NjM4NzE2OSwtOTQyNjA3Miw1MDc4NTc4MywtODIxODg2LDY1MjM1NTA0LC0xNTkzOTI2NCw1NjIzMjI3OCwtMzc5OTg5OCw2NDg5MDczNywtMzg2ODk5Myw1ODcxMDMzMSwtMTIzMjQ0MTgsNTkzNTM3MTEsLTExMjgyMjI3LDU4ODg4OTA2LC01NjQ2Mzg1LDYzNDQwNDI0LC0xNDIzNjAwMiw1MzExMTk1NSwtNjY2MjU4MCw2MTYxNzc1OSwtMTI1MjczNiw2NjM4NTM2MCwtNDU5OTE5OCw2NTQ2NDA3NywtODQ1NDg2Nyw1NDcyMTQ5MywtNjI1MzQ5LDU4NjkxNTYxLC0xNDIxMzA2Nyw1OTYwNTI1MiwtNDA3MTE3MCw1NDAxNjM5MSwtNzIwMjM2NCw1NzAwNDc5MCwtMTU4NTYwNDgsNjU5ODkyMjEsLTYzMjU5MDEsNjE3MTI0MjUsLTEyMTc5OTcwLDU3NDg5MTgzLC0xMjM4NTg2Myw1NjEyODM5MywtMTUyNDczNDAsNTkwOTU5NDgsLTI4NTI5NDEsNTcwNjEwODIsLTMzNzkyMjMsNTE5OTU3NDQsLTM2MTU2NDEsNTgzNDE0OTMsLTEzMjk4Nyw1OTQ2NDg3MSwtNTgxNzc0MSw2MjY1MjQxMiwtMTE1MDgyMjIsNjUyMTUwMTksLTEyNDI5NTM3LDU1NDA0MTQxLC0xMzY0Mzg1MCw1NjM3MTI1MSwtNzk1NTgxOSw1NTUwMjExOSwtNzU5ODgzNCw1ODQzNTU0MiwtMTQ1Mjg4MTUsNjA2NTAwODAsLTE1NTE2MzI5LDYwOTgxOTExLC0xMTc1ODc2Miw1NjI4NzcyNywtNDgwMzAyMyw1NDE2MTc1NywtNDU2Nzc1Nyw1NDk3NTAzNiwtNzM4NzcxNiw1OTU3MDIxNSwtMTAyNjEwNTUsNjQ5MDAxMTIsLTEyODU1OCw1OTg5MzcxNiwtMTMxOTYzNDQsNTE1NTMwNjksLTEyNDIyMDQ1LDU0MTY3NDc0LC0xMTA3MzAxNSw2NTc2NjQxMiwtMTEyNjc4MjAsNTMxMDk2OTMsLTIxMDc0NTksNjQzMjUzMDcsLTE2MTk3MDI0LDU2MDkxODY2LC03MjQ2MjkzLDUxNTcwODA0LC0xNDQ3NzkzOSw1MzQyODY1NSwtMjQyNDExMyw1MzAwMzIzMCwtODgyNDIzNCw1Mzc3MDk1NiwtMTE2MDk4MjAsNTQ1ODk2NTAsLTExNzEyMjI0LDY1MzMxMjQ4LC0xMDA0NTAyMyw2NzA5OTQ5NCwtMTAwODk0NTEsNTYyNDYzMDIsLTQ5Njk5MTgsNjUzMjgzNjUsLTkxNDM0NTcsNjM1NDY4NTYsLTEwMjAzNDg4LDU1Mjk5NjUyLC0xNzYzNDc1LDYwMjM0NjYyLC0zODc4MzMsNjI3ODI0NjMsLTQ1NjIzMjYsNjY3NzY4MTAsLTM1MDc1NjQsNjYxNTc3MzcsLTQ1NjA5MzMsNTY3NDc0MzgsLTg3OTk3MzUsNTc3ODA3ODgsLTQ1NzMwOSw2MTc0NzczMCwtOTU1NzI2NSw2Mjk2NzI1N10=", 8525884);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="woodbank parkrun stockport">
+  <div class="card-map-wrap">
+    <div id="cmap-woodbank" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Woodbank parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Stockport</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/W/woodbank" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-woodbank');
+  if (!el) return;
+  var map = L.map('cmap-woodbank', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy0xNjcxOTUzMCw1NjAzOTk2OCwtMTE4MjUzOTEsNjAwMzQ3NjMsLTI5NDk1MTcsNTg2NjExMzYsLTY4Nzk2NTksNTAzOTY3NTksLTE1MTQzOTU1LDYyODg2NzcyLC0xNDI3NDY0Miw1MzA4Mzg0NSwtNTY5MzU4NCw1Nzg0MjU3MCwtMTA2NTAyMjcsNjQ5NTQ5MjcsLTU2ODQ3ODUsNjU5MTE1NzYsLTE0Mjk0MzQ3LDUxNjMxMjQxLC0xNzkyODQxLDYxMzAxNTk1LC02MTA5NjA4LDY2MjQ0NzYwLC0xMDA3MTMxNSw1NzMwNDc5MywtNzI0MTc1LDYyNTI0MzE5LC0xNDU1NTg4NCw2MDYxMDMxMSwtNTIwODUxMyw1NDk2NzM4NSwtMTM3NDQ0LDU3Mjc4ODQ2LC0xMDczNjEzMCw1Nzg4NzMyMCwtNDM1MDM2Niw2NDY1NjQ5MCwtMTIyMzY5OSw1ODAyODgwNCwtMTExMDk2NzQsNTU0NjMwMDIsLTE2NjQwNzM4LDU2MzcxNzcyLC0xMTU3NDIwMCw1NDAxNzQ2OSwtMTQ3ODQ5ODcsNTY5OTMwMDgsLTEwODk0NzIyLDUwNTEyOTYyLC01ODAyMzY0LDY1MDk5MzkwLC05NjcwMTMwLDU0MDk4NjE5LC0xMDM3MDgzMyw1MDg1MTUwOSwtMTQyNjQyMTIsNjA2Mjk1NjEsLTU3NjI0MjUsNjQ1Nzc5NDIsLTU5NjQ1MDUsNTkzODQwMzEsLTEzNjA1MzIxLDYwMzY1MzU4LC0xMDYyMzEzNyw2MzM3Mzc1OCwtNDI2NzY4MSw2MTQxMDg5MCwtMTI0MDg3NDksNTkxNzQ0NzEsLTEwMjgyMzIyLDUyNDgxMTc5LC0yNjk5MDE4LDU3MjgwNjI2LC04NTMzMTU3LDYwNjQxOTA2LC03NTE5NDQxLDYwMjQ2MjQ2LC05NTg2MzYxLDU0MDM0ODI3LC0xNjEwNzc2LDUwODc5ODUzLC0yNzMzMjg0LDU5ODIzNjE1LC0xNjA0MzM4Miw1OTM1NDU4OCwtMjM5MjU0Nyw1MjUzNzIwMiwtMTQ0NTQ2ODUsNTUwNjg0NzYsLTY4Nzc2OTksNjE3OTY2MzQsLTEyODU1NjE2LDY0NzY5MTYwLC0yNDU4Njk5LDUyNzk0MzM4LC0yNTc2ODI3LDY2OTkyODQ4LC01NzYwMDU3LDYzNjQwMDYwLC02ODA1ODQwLDU4NjkzNzE1LC05NDE1ODE4LDU2NjA1ODk4LC03NDYwNDQ4LDU5NDE0MjI2XQ==", 16309824);
   var lls = route.map(function(p) { return [p[1], p[0]]; });
   L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
   L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
@@ -302,35 +318,17 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   data-id="jlofthouse" data-description="Support me on Buy me a coffee!"
   data-message="Support The App" data-color="#40DCA5" data-position="Right"
   data-x_margin="18" data-y_margin="18"></script>
-<div id="stay22-modal">
-  <div class="stay22-inner">
-    <div class="stay22-header">
-      <span id="stay22-title">Find Hotels</span>
-      <button class="stay22-close" onclick="closeStay22()">&times;</button>
-    </div>
-    <iframe id="stay22-iframe" src="" title="Find hotels near parkrun events"></iframe>
-  </div>
-</div>
 <script>
 function openStay22(lat, lon, name) {
   var d = new Date(), day = d.getDay(), diff = (5 - day + 7) % 7 || 7;
   d.setDate(d.getDate() + diff);
   var checkin = d.toISOString().slice(0, 10);
-  document.getElementById('stay22-iframe').src =
-    'https://www.stay22.com/embed/gm?aid=parkrunnertourist'
+  var url = 'https://www.stay22.com/embed/gm?aid=parkrunnertourist'
     + '&lat=' + lat + '&lng=' + lon + '&maincolor=4caf50'
     + '&venue=' + encodeURIComponent(name) + '&checkin=' + checkin
     + '&viewmode=listview&listviewexpand=true';
-  document.getElementById('stay22-title').textContent = 'Hotels near ' + name;
-  document.getElementById('stay22-modal').classList.add('open');
+  window.open(url, '_blank', 'noopener');
 }
-function closeStay22() {
-  document.getElementById('stay22-modal').classList.remove('open');
-  document.getElementById('stay22-iframe').src = '';
-}
-document.getElementById('stay22-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeStay22();
-});
 </script>
 
 </body></html>

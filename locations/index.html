@@ -3,20 +3,24 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Browse parkrun Events by Location — parkrunner tourist</title>
-<meta name="description" content="Find parkrun events near you. Browse by country, region and city. View course maps, find nearby hotels and plan your visit." />
+<title>parkrun Events by Location — Find Hotels &amp; Plan Your Visit | parkrunner tourist</title>
+<meta name="description" content="Browse parkrun events by country, region and city. Find hotels near every parkrun, view course maps, check weather and plan your perfect parkrun weekend." />
 <meta name="author" content="Jake Lofthouse" />
 
-<meta property="og:title" content="Browse parkrun Events by Location — parkrunner tourist" />
-<meta property="og:description" content="Find parkrun events near you. Browse by country, region and city. View course maps, find nearby hotels and plan your visit." />
+<meta property="og:title" content="parkrun Events by Location — Find Hotels &amp; Plan Your Visit | parkrunner tourist" />
+<meta property="og:description" content="Browse parkrun events by country, region and city. Find hotels near every parkrun, view course maps, check weather and plan your perfect parkrun weekend." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/locations/" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="parkrunner tourist" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Browse parkrun Events by Location — parkrunner tourist" />
-<meta name="twitter:description" content="Find parkrun events near you. Browse by country, region and city. View course maps, find nearby hotels and plan your visit." />
+<meta name="twitter:title" content="parkrun Events by Location — Find Hotels &amp; Plan Your Visit | parkrunner tourist" />
+<meta name="twitter:description" content="Browse parkrun events by country, region and city. Find hotels near every parkrun, view course maps, check weather and plan your perfect parkrun weekend." />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
 <link rel="canonical" href="https://www.parkrunnertourist.com/locations/" />
+<link rel="sitemap" type="application/xml" href="https://www.parkrunnertourist.com/locations/sitemap.xml" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"parkrunner tourist","item":"https://jake-lofthouse.github.io/Event-Web-Test/"},{"@type":"ListItem","position":2,"name":"Locations","item":"https://www.parkrunnertourist.com/locations/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"parkrun Events by Location — Find Hotels & Plan Your Visit | parkrunner tourist","description":"Browse parkrun events by country, region and city. Find hotels near every parkrun, view course maps, check weather and plan your perfect parkrun weekend.","url":"https://www.parkrunnertourist.com/locations/","publisher":{"@type":"Organization","name":"parkrunner tourist","url":"https://www.parkrunnertourist.com"}}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -171,30 +175,6 @@ main { padding: 3rem 2rem; max-width: 1400px; margin: 0 auto; }
   font-family: 'Inter', sans-serif;
 }
 .hotel-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
-/* Stay22 modal */
-#stay22-modal {
-  display: none; position: fixed; inset: 0; z-index: 9999;
-  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-  align-items: center; justify-content: center; padding: 1rem;
-}
-#stay22-modal.open { display: flex; }
-.stay22-inner {
-  background: white; border-radius: 1.25rem; width: 100%; max-width: 900px; max-height: 90vh;
-  display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.35);
-}
-.stay22-header {
-  padding: 0.9rem 1.1rem; border-bottom: 1px solid #f0f0f0;
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-}
-.stay22-header span { font-weight: 700; font-size: 0.95rem; }
-.stay22-close {
-  background: rgba(0,0,0,0.07); border: none; border-radius: 50%;
-  width: 28px; height: 28px; cursor: pointer; font-size: 14px;
-  display: flex; align-items: center; justify-content: center; color: #555;
-}
-.stay22-close:hover { background: rgba(0,0,0,0.14); }
-#stay22-iframe { flex: 1; border: none; min-height: 480px; }
 /* Country cards */
 .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
 .country-card {
@@ -233,14 +213,22 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   <h1 class="page-title">Browse by Location</h1>
   <p class="page-subtitle">Find parkrun events near you — browse by country, region and city, then plan your visit with hotels, course maps and weather.</p>
   <div class="stats-bar">
-    <div class="stat"><span class="stat-value">10</span><span class="stat-label">Events worldwide</span></div>
-    <div class="stat"><span class="stat-value">1</span><span class="stat-label">Countries</span></div>
+    <div class="stat"><span class="stat-value">50</span><span class="stat-label">Events worldwide</span></div>
+    <div class="stat"><span class="stat-value">3</span><span class="stat-label">Countries</span></div>
   </div>
   <div class="section-title">Select a country</div>
   <div class="country-grid">
+<a href="https://www.parkrunnertourist.com/locations/australia/" class="country-card">
+  <h3>Australia</h3>
+  <p>2 events &middot; 2 regions</p>
+</a>
+<a href="https://www.parkrunnertourist.com/locations/denmark/" class="country-card">
+  <h3>Denmark</h3>
+  <p>1 event &middot; 1 region</p>
+</a>
 <a href="https://www.parkrunnertourist.com/locations/united-kingdom/" class="country-card">
   <h3>United Kingdom</h3>
-  <p>10 events &middot; 8 regions</p>
+  <p>47 events &middot; 27 regions</p>
 </a></div>
 </main>
 <div class="download-footer">

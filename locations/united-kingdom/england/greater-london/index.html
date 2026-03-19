@@ -3,21 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>parkrun Events in Greater London — Hotels &amp; Visitor Guides</title>
-<meta name="description" content="All parkrun events in Greater London, England. View course maps, find nearby hotels and plan your parkrun visit." />
+<title>parkrun Events in Greater London — Hotels Near Each Event &amp; Course Maps</title>
+<meta name="description" content="13 parkrun events in Greater London, England. View course maps for every event, find hotels nearby and plan your parkrun visit to Greater London." />
 <meta name="author" content="Jake Lofthouse" />
-<meta name="geo.placename" content="Greater London" />
-<meta name="geo.position" content="51.43501066666667;-0.286964" />
-<meta property="og:title" content="parkrun Events in Greater London — Hotels &amp; Visitor Guides" />
-<meta property="og:description" content="All parkrun events in Greater London, England. View course maps, find nearby hotels and plan your parkrun visit." />
+<meta name="geo.placename" content="Greater London, England" />
+<meta name="geo.position" content="51.4686973076923;-0.14513492307692308" />
+<meta property="og:title" content="parkrun Events in Greater London — Hotels Near Each Event &amp; Course Maps" />
+<meta property="og:description" content="13 parkrun events in Greater London, England. View course maps for every event, find hotels nearby and plan your parkrun visit to Greater London." />
 <meta property="og:url" content="https://www.parkrunnertourist.com/locations/united-kingdom/england/greater-london/" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="parkrunner tourist" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="parkrun Events in Greater London — Hotels &amp; Visitor Guides" />
-<meta name="twitter:description" content="All parkrun events in Greater London, England. View course maps, find nearby hotels and plan your parkrun visit." />
+<meta name="twitter:title" content="parkrun Events in Greater London — Hotels Near Each Event &amp; Course Maps" />
+<meta name="twitter:description" content="13 parkrun events in Greater London, England. View course maps for every event, find hotels nearby and plan your parkrun visit to Greater London." />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
 <link rel="canonical" href="https://www.parkrunnertourist.com/locations/united-kingdom/england/greater-london/" />
+<link rel="sitemap" type="application/xml" href="https://www.parkrunnertourist.com/locations/sitemap.xml" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"parkrunner tourist","item":"https://jake-lofthouse.github.io/Event-Web-Test/"},{"@type":"ListItem","position":2,"name":"Locations","item":"https://www.parkrunnertourist.com/locations/"},{"@type":"ListItem","position":3,"name":"United Kingdom","item":"https://www.parkrunnertourist.com/locations/united-kingdom/"},{"@type":"ListItem","position":4,"name":"England","item":"https://www.parkrunnertourist.com/locations/united-kingdom/england/"},{"@type":"ListItem","position":5,"name":"Greater London","item":"https://www.parkrunnertourist.com/locations/united-kingdom/england/greater-london/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"parkrun Events in Greater London — Hotels Near Each Event & Course Maps","description":"13 parkrun events in Greater London, England. View course maps for every event, find hotels nearby and plan your parkrun visit to Greater London.","url":"https://www.parkrunnertourist.com/locations/united-kingdom/england/greater-london/","spatialCoverage":{"@type":"Place","name":"Greater London, England","geo":{"@type":"GeoCoordinates","latitude":51.4686973076923,"longitude":-0.14513492307692308}},"publisher":{"@type":"Organization","name":"parkrunner tourist","url":"https://www.parkrunnertourist.com"}}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -172,30 +176,6 @@ main { padding: 3rem 2rem; max-width: 1400px; margin: 0 auto; }
   font-family: 'Inter', sans-serif;
 }
 .hotel-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
-/* Stay22 modal */
-#stay22-modal {
-  display: none; position: fixed; inset: 0; z-index: 9999;
-  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-  align-items: center; justify-content: center; padding: 1rem;
-}
-#stay22-modal.open { display: flex; }
-.stay22-inner {
-  background: white; border-radius: 1.25rem; width: 100%; max-width: 900px; max-height: 90vh;
-  display: flex; flex-direction: column; overflow: hidden;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.35);
-}
-.stay22-header {
-  padding: 0.9rem 1.1rem; border-bottom: 1px solid #f0f0f0;
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-}
-.stay22-header span { font-weight: 700; font-size: 0.95rem; }
-.stay22-close {
-  background: rgba(0,0,0,0.07); border: none; border-radius: 50%;
-  width: 28px; height: 28px; cursor: pointer; font-size: 14px;
-  display: flex; align-items: center; justify-content: center; color: #555;
-}
-.stay22-close:hover { background: rgba(0,0,0,0.14); }
-#stay22-iframe { flex: 1; border: none; min-height: 480px; }
 /* Country cards */
 .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
 .country-card {
@@ -232,18 +212,162 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
 </header>
 <div class="breadcrumb"><a href="https://www.parkrunnertourist.com/locations/">All Locations</a><span class="breadcrumb-sep">/</span><a href="https://www.parkrunnertourist.com/locations/united-kingdom/">United Kingdom</a><span class="breadcrumb-sep">/</span><a href="https://www.parkrunnertourist.com/locations/united-kingdom/england/">England</a><span class="breadcrumb-sep">/</span><span>Greater London</span></div>
 <main>
-  <h1 class="page-title">Greater London</h1>
-  <p class="page-subtitle">3 parkrun events in Greater London</p>
+  <h1 class="page-title">parkrun Events in Greater London</h1>
+  <p class="page-subtitle">13 parkrun events in Greater London — course maps, hotels and visitor guides</p>
   <div class="hotel-cta">
     <div class="hotel-cta-text">
       <h2>Staying in Greater London?</h2>
       <p>Find hotels and rentals near your parkrun event.</p>
     </div>
-    <button class="hotel-cta-btn" onclick="openStay22(51.43501066666667,-0.286964,'Greater London parkrun')">Find Hotels</button>
+    <button class="hotel-cta-btn" onclick="openStay22(51.4686973076923,-0.14513492307692308,'Greater London parkrun')">Find Hotels</button>
   </div>
-  
+  <div class="search-wrap"><i class="fas fa-search search-icon"></i><input id="evt-search" class="search-input" type="text" placeholder="Search events in Greater London..." /></div>
   <div class="section-title">Events in Greater London</div>
-  <div class="event-grid"><div class="event-card" data-search="bushy parkrun greater london">
+  <div class="event-grid"><div class="event-card" data-search="avery hill parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-averyhill" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Avery Hill parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/A/averyhill" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-averyhill');
+  if (!el) return;
+  var map = L.map('cmap-averyhill', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("WzEwMjY0ODUxLDUyNTEyMzgxLDI0MDMzMjYsNTU4ODgzMDgsMTEyNDk3Miw2Mjk4NDg1OCwxNDc1ODM5LDU3NDY0NTczLDExNzA0NzA4LDUxODQyNjcxLDE0NjMyNDMyLDUxNzY3MDA0LDcyNTc5Niw1MzU5NTIzNSwxMzE0OTU3MCw1NzY3NjcwNCwxNjIwNjE0Niw2MzkyMDkwMSw2MTI0NDI4LDUyNjM5OTUzLDMyNzQ4MDEsNTQ1NTU4ODMsMTQ4MTAyNTgsNjEzMTAzOTIsMTY0OTU0NTIsNTE2NDI1NzQsNDAzNzQ0Myw2MDc4OTk4MywxMjYxNzYwLDU3NzUwMDM0LDM5MTU0Myw2Mzk3MTk3OSwxNTI5MjI0MCw1NjMxODA1OCwxMzYzNzgzNSw2NTk0MzYwMCwxMTEyNTIyLDUyMzA2NzcwLDEzNjU3MDY3LDU0MDc2NTU2LDE2NjM2MTQ3LDU5OTk2MDIxLDEwNDAwODI4LDUyMTg3ODE2LDE0OTg2OTkwLDU4MDI2MTkzLDU1NTUzNjAsNTcxMjA1NDksNjM1NTU2LDUxNjcwNjAzLDE0NzExMjA5LDU3OTk0NzI1LDE2NDQxMDIsNTQyMDU5NDgsOTkyMTE0NSw1OTQxNzAwMSwxNTY1MTYyMCw1NDQyMTM5NiwzMzk1MDIsNTUyNjAzOTksOTAwNDU2MCw1ODY4MDYwNSw1ODM1MTcsNTg0MjAyMDAsMjc5MzYzNyw2NjE1NzY2MywyNjYzNDQzLDU1NDYwNjI1LDE1MzMzNDEwLDUxNTMyNTc4LDE5NDc5MDMsNTEwNTI5ODksNDgyNDg3NCw2NTkxNzQ1OSwxMDkxNzE1MCw2MDc2NTIxNyw0MjY4NzAyLDY1OTM5Njc4LDExNDc2NzkyLDY0MjcwMDQxLDY4MDY0MTAsNjY5NTIxMjUsODc4OTA4OCw1MzgxODMzMCw2OTM4MjQxLDUzMTM5MDcyLDk0ODM4NTAsNjY5MzUzNzIsMTIyMjgxMjksNTEwNDM1NDVd", 11366337);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="bedfont lakes parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-bedfont" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Bedfont Lakes parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/B/bedfont" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-bedfont');
+  if (!el) return;
+  var map = L.map('cmap-bedfont', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy0xNjMzODM2OCw1MDc5MzA1OCwtMTM1MjQ5ODYsNTY3MTM4MTYsLTM1NzUwMzQsNTMyNjU3NDQsLTEwMjI5NTY4LDY1MTY3NDIxLC01MDQyNTgwLDU2MDQzNDM1LC0xNTczNzA2Niw2MjgyMDU0OSwtNjMyOTg5Nyw2MTMyMjQyMSwtMjAxNjQ3LDYxMDc2NTQ5LC0xMzg5ODExOSw1MzIwMzQ2NiwtMjAxOTQwOCw2MDU2ODcyOSwtMTI3MDcxMDYsNjM3NDM4NzcsLTgyNzIzNjAsNTIwOTAwMTksLTYyMTMwNzUsNTc3MzI4NDYsLTg3NTg4MjcsNTM0MTQ3MjQsLTExMzc4NzE2LDY2ODA3NTU0LC0xNTk1NzM2MSw2NDg3MzY3NywtNjk3MDY3Myw2NjYwOTQ2OCwtODUyMTYzMyw1NTQ1NjQ5NiwtNzk1NDUzNiw1NDAwNzMyNSwtMTIwMjIxODksNTY4OTkxODIsLTE1NzMzODY3LDU2MjMwNDM2LC0xNDQ5Nzk1Niw1Nzk0MjIzMywtNDM0MzQ4Miw1NTMyMTI3NiwtOTQ1NDM5Nyw1OTY2MDY0OCwtMTIwMTgwODQsNjQwNzI3OTQsLTM4NTMzOTMsNTI0NDQ0MDMsLTUzODQxMyw1NDc3NTM0NiwtMTI4OTQzNDUsNjA1MTQwMjEsLTExMzgzNTAxLDY0NTcxNzM3LC0xMzM0OTMwMiw2MDIyMzk0MiwtODM5MTM3OSw1NTM3NzE3OCwtMjA5NTk0LDYxOTkwMzk3LC0xMjU5NTcyMCw2MjMxMzE3MiwtMTEyODM3NDEsNjA1MTA4NTksLTcyOTcxMjYsNjQ2OTg3NzMsLTYzOTUzMTksNjY1NDMyMDksLTM5NjQ2NjksNjM4MzE3OTUsLTY0NDgxMzMsNTYzNzAxNTAsLTEwMjk1OCw1NzMxMTI5NSwtMTA5NDMyODAsNjA1NjMxMDAsLTE1NTMzNzgsNjEzNzY0MTksLTc5MjIzMDUsNTI5OTA5NzksLTEyNzE3MTM2LDU1ODk3NzYzLC0xMDAyMTk2MSw1Nzc1MTIxNiwtMTE0NzYzOTMsNjQ0MDQ1NDMsLTE1MzE5NDg2LDYxOTQ0NTExLC0xMDIyODY5Miw2MDMxNDM0NywtMjkxMjAzLDU1MjczMjk3LC0zMTk3OTI0LDU1MDUxOTk1LC0xMDc3MzE4Myw1NTYzNjM1MywtOTY0NTY2MSw2MjY3NDk0NSwtMTA4MTY5OTAsNTA1ODIwNTYsLTM4OTM2MDgsNTE4MjI0MzUsLTE2Nzc2OTIyLDYyODI2MjM2LC01MjgzNzc2LDU5MzAyMDk3LC03OTc1MzAsNTU5MTY0ODgsLTE4Mzg3MTYsNTQwMjU2NzksLTQ0MTAwNDksNjY4MDU3MjQsLTk5NDI2NjcsNTI4MjQwMDksLTE1OTcxNTcxLDU0ODE5NTUzLC04MTkzMjUzLDU1NTAyMzkzLC01NjUxODM0LDYzNjg3NzcxLC04OTE0NzI2LDY1NjQwMzY0LC0xMzc3NDgzMCw2NDI0ODM0NSwtMTUwNjY0MzEsNTE5MjY5ODUsLTEzNzc2Njk3LDY0Mjg1ODc1LC0xMTE4ODcwNyw1NDc0NDM0MCwtNDczNTE3NCw2MTg1OTM4NiwtMzA3MjE2OCw2NDkwODUyOCwtNDYwOTI5LDYzMDE2NTc1LC0xNDY3MDY4Miw1MzI5NDE0OSwtMTIyODU1MjMsNTg4NDE5OTUsLTE1OTg2MTkxLDUwOTI0OTc4LC0xNjYwMjk2OCw1ODg4OTEzNSwtMTkyMTAzMyw2MTAxOTc2NywtMTEwMzc0OTQsNTQyMDg3OTQsLTUxMTgzOTIsNTkyNTA3MzAsLTYyMzA3NjksNTczMzU5NTksLTkxMDY0OCw1Mjg3MzMxNiwtNjY4MjM4NCw2MjE3MzQwMiwtMTU5NDkwNjMsNjE2OTk4NTYsLTExNDU4MjI0LDU1NTMxMDEwLC01NDAzMTAyLDU2MTE1NzU5LC01NzU0MDk0LDYxMDM3OTY2LC0yNDE3NzcxLDUzMjgyMTg1LC0xNDg4Njc4OCw2NTk4MzcxMywtNDA3ODQ3Miw2NTIzNjEyMiwtMTA5NDUzMjIsNTI5NDYzMDYsLTEzNjI5NTQwLDU5MDI0MTU4LC0xMTczODgsNTY5MDQwNTgsLTcwNDE0Niw1NTcwOTU0MCwtMTE5MjMzODMsNjI4NzAwNzIsLTQxNjkwMTEsNTc1NTM4MzFd", 1549413);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="bexley parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-bexley" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Bexley parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/B/bexley" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-bexley');
+  if (!el) return;
+  var map = L.map('cmap-bexley', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("WzM0NTA2NTEsNTI4MDg5OTYsMTMwODk2OTksNTk1MTY2NjYsNTQ5NDkzMSw2MTI5MjgzMiwxNDUzNjcwOSw1NDM2MTE2MCwyOTQyNDcxLDY0MDAzMzcyLDY0MjQ1NjksNTc5OTg1MTQsMTU1MzEzNDcsNjIyNTExNTYsMTM3NTA5MzksNTQ0MDUzNjAsNzQxMzYzNyw2MDMyNzU5OCwzNDUxNTM1LDU0MjQ1ODMyLDExNzAzNzY3LDYwMzA4MTI4LDUyMjA4OTUsNjY5MzM4MzYsNzQ1MDQxNSw2NTk0MjY0MCwxMjY4NDQ3Nyw1ODUwOTc5Nyw0NjE0OTcsNTEzNzUxMjgsMTA0NjkwNDksNjM5ODQ0NzQsMTAzOTcyMDMsNjQzNTcyMTgsMjkzNTM5MSw1MTg3OTA3Niw5MjE1ODAzLDU5MDM5Njc2LDE1NDYxOTgzLDU5NzUwNDU4LDE2MDA1MTMxLDUzMTI1MjAwLDEzMzYyNDA1LDU5NjY4ODQyLDExNTc2NDQxLDUwMzYxMTE4LDEyNTk5MjI5LDYwMzk2ODQyLDc0MDgzODMsNjY4MDA0NDgsODgxMjU2MSw1MjkyODI1MCwyMTU5NjYxLDU0MDE4ODI0LDEwMDYwMjQ1LDUwNzg4MjY4LDkzMTM5MDEsNTA2OTQzMTAsODA2NjgzOSw1OTY0NTQ4OCw1MTk1NTQxLDU4MjE0NTA2LDQ1NDQzNzcsNjU1NDM1NzIsMTQwODA1NDUsNTI0OTg1NjIsNjExMjY2NSw2NTk3NjYxNCwxNTYwMDczMiw2MzAzMTY0Nyw4NDE3MDc5LDU4NDY2MDA2LDUxODA3OTUsNTgxNjc1MzAsNjkzNjM3LDU0NzUzNTU2LDgzNTE3NDEsNTQ3MTk2NDgsNzI0NDYxMSw2NDU3MjEzNF0=", 10229652);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="bromley parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-bromley" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Bromley parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/B/bromley" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-bromley');
+  if (!el) return;
+  var map = L.map('cmap-bromley', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("WzEwMDIxNDcxLDU4OTUwNzg0LDEyNTUwNTU0LDYzNDc4NzA5LDE1NzYxNjk4LDU1MTA1NDE3LDEwMzQ3NzUsNTA5NTIzMjcsMTYyMDI2LDUwMzQ5ODM0LDE0NTY4ODY2LDUyNzQxMzcwLDg4NzcwMTAsNTY1MDMwMTIsMTUxMDk0ODksNjAyMTg5MjUsMjQwMDU0Niw1MjE0MjA4Miw4OTg4NDE3LDU1NzM5MTc0LDE1NjM2NTY1LDU1MjU1MzI2LDE1NTY1NTY5LDU2MDMwOTYwLDI3NzgyODMsNTUzMzgzMDMsNjgzNDcwMiw1MjUzNDY5OCw1NDIwNzI5LDU2NjQwNzUzLDE4ODk0MDIsNjEwMzY1NzcsNjE5OTcxNiw2MjcyMTM5NSwxNDk2NDk4OSw1MzgwNjkzMCw0Mzc1NjgyLDU4ODc5MTYxLDczMzYxNzQsNTUxOTQ4NjgsMTE3OTY1MjIsNjU4MjE0NjcsMTEyNDMwNjEsNjExNDU1MDksMzIzNjQ1NCw1NTE2MzIzOCw2NzQ4MzIwLDU3NDI3NTM5LDQxODkyNzksNTExNzEzODUsMzIyNDM0Miw1ODUyNTQyOSwxNjA2NTIyMiw1NjgwODM4OCw4NzYxMDY3LDYwODA4NDQxLDEyMTc2MDY0LDUyNzg0NjkxLDI3NTMyMjYsNTY0MDE3MzQsNDkwNzcxMSw1MTMwMDk3MywxMzk2MTI2OCw2MTc1Nzg5NywxNjc0ODcwNyw1NTU4ODgxMCwxMTc1Mjc2LDU2MDgwMDc0LDUyMTI0MTMsNjA5NTExODMsNjQxMjkzNyw1ODA0MjkxMyw5NjUxMTk3LDYwNTQ0MDAxLDEwNzkzNTgwLDY0MzE2MjEyLDU4ODA0Myw1MDY4OTY3NCwxMjE5NTAwOCw1OTE3NDQwNywxNjE2MDgzLDUzMTkyNTU4LDY3MDU1MjIsNTM1NjQ3ODEsMTQzNTQ4NzcsNTU4OTI1ODMsNzU3MTM4Myw1OTI0MjY1NiwxNDI2NTQ5MCw2NDMyMDYxOCwxODEzMTU3LDU0MjU0NDc4LDEyODgwNDksNjMwMzUzODQsMTA4OTAwNDksNTc4MjMwMDZd", 5850702);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="bushy parkrun greater london">
   <div class="card-map-wrap">
     <div id="cmap-bushy" class="card-map-inner"></div>
     <div class="card-map-badges">
@@ -254,7 +378,7 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   <div class="card-body">
     <div class="card-name">Bushy parkrun</div>
     <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
-    <div class="card-badges"><span class="card-badge">5k</span></div>
+    <div class="card-badges"></div>
   </div>
   <a href="https://www.parkrunnertourist.com/explore/B/bushy" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
 </div>
@@ -279,6 +403,186 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
   
 })();</script>
+<div class="event-card" data-search="finsbury parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-finsbury" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Finsbury parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/F/finsbury" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-finsbury');
+  if (!el) return;
+  var map = L.map('cmap-finsbury', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy00ODI1NDIxLDU5MzU3MzM5LC0xNTQ0MDI5NSw1MDU0NTIzNSwtMTI1Nzg4MjUsNTA3Mzk1MzQsLTEzMjQ4MzE5LDUwNjYzNDUxLC03ODcxODA4LDYzMzcxNTQxLC00MzE0ODk5LDY1NTExOTc4LC0xNTg2ODU0LDU4OTYwNDc0LC02MDI4MDYyLDY1NDEzOTU4LC0xNDUwOTUxMyw2MDYxMjg4OSwtMTA4MzgyNjIsNjU2MDQ2NTksLTY2NTcyMjQsNjA1NTI1NzUsLTg4MDQ0NTIsNTk1MTQ1NzgsLTExODU2MDgzLDY1MDYwOTIzLC0xNTI4MjU4MCw1NjkyMTI5OCwtODYzODc2NSw1NTM0MDc4NiwtMTQwMzU1Miw2MTA1MjExMSwtMTEyNjc4NTgsNTMzNjY0NDMsLTE0NjczNDc3LDY2NTk3Mzg3LC0xNjcyOTEwMSw2NDY3MDAzNCwtNDQ3MDY5LDUzNDA0NjcwLC00NjIyNjc0LDUzMjYxNDczLC0xNDYwMjI4Myw1ODc1MTA0MCwtODcwNDYzMiw1NDY2MjE5OCwtMjc4NjAxOSw1NTYwODA5MSwtODEwMTI4MSw2MzUyNTg0NiwtNDY0MzUxMSw2MzU0MDg5NiwtNjY5ODI1Myw2MzI5MzAxNywtOTIyNTgyMiw1MzM5NzI2NSwtMTUyNjc5OSw2MDc4NjY0MiwtMTYyNTE4MjEsNjYzMjQ3NjAsLTE3Nzk0MzcsNTIzOTM2MDcsLTExNjQ1Niw1OTEyNzY0NSwtNTYzMzE4OSw2NjI0NDgzOCwtMTM3MTM3MDYsNTE5Mjc2ODIsLTExOTM3NjYzLDY1NTM2OTQzLC0xMDE5NzkyMSw1NDQ1MDY1NiwtNTIxNzIzMCw2NTQyMjAxMSwtNDEzMjY2Niw1NDY5MjAzOCwtODAwNTM1MCw1NzM2MzgzMSwtMzQ5MTY0Miw2MzM4MjcwNSwtODYwNDE0Myw2NTg5NzEzOSwtMTExNjEzNDcsNjU0OTM2NDYsLTQ2MDkzMjMsNjE0OTc4NzEsLTE1NjY0MzU5LDYzNjg4NjE3LC01NTIwNzU4LDY0NjI2MTE1LC02MDI3NjYsNjcwMjk3NzUsLTIxNTM3NjEsNjE0MDMwODdd", 6284370);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="grovelands parkrun, enfield greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-grovelands" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Grovelands parkrun, Enfield</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/G/grovelands" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-grovelands');
+  if (!el) return;
+  var map = L.map('cmap-grovelands', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy0xNTAzNTA3NCw1OTMyMjM0MywtNjMxNzgzMiw1MDgwMDA3OSwtODUwMDM3OCw1MzI4MTk2MSwtNjYyNDk4MCw2MTQ1ODc0MywtMTI4MzQxMzAsNTE5MTkxMTEsLTMzMTIyNjQsNjUyMzU3NDUsLTM1NTUxOTIsNTA1Njc4OTMsLTIzNTQ3MTYsNjE3NzM0ODAsLTgxMjAxMTYsNjIwMzcwMDEsLTk4NTA3MzEsNjAxNTIyNzgsLTkwMTAzMTAsNTk2NTI2ODEsLTgzMjIxMTMsNjU0OTY1NjEsLTU4OTYyMjAsNjUwODMwNjUsLTE2NjEyNDU1LDUwOTczMDY4LC0xMTA3MDg5Niw1NzkxOTk3MiwtNjUzMzk3Niw2MzM0MTk1MiwtMTcwNzQ4NCw1NzE4MDgyMSwtNjU0ODkxMCw1NzEwNjY2MywtODU4ODczMCw2NTQ5NzkwOSwtODY4NzUzOCw1OTM2NDc2MywtNzk1MjAyMyw1MTAwMDgzNCwtMTQ0OTEwNzgsNTc4MzYxMDUsLTMzNDI1NDQsNTk3NjAwNzcsLTE2MTQ0NjgyLDY0MTQ0NDY5LC05OTYxNDQ4LDU4ODg0MDkzLC0xMzU0MzQyLDUyNjMyNjEzLC05MTIyNzQwLDYxMzQzMTQzLC0xMDExNDA2MCw2MDgxNjgxMSwtOTU0MTIxMCw1MjAzOTgyNSwtMTMxODc5MTQsNTI3NDc5MDcsLTk1MjE5NTAsNTU0OTcwMTld", 12077927);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="hackney marshes parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-hackneymarshes" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Hackney Marshes parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/H/hackneymarshes" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-hackneymarshes');
+  if (!el) return;
+  var map = L.map('cmap-hackneymarshes', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy0xMzQ2NDU5OCw1NTA2NzgwNCwtODk4NTYzNiw2NTY5OTQwNiwtOTI4OTYzMiw1MzM5ODAyMiwtMTI1MzI2NzYsNjcwMzE5MjgsLTEwMDA2OTAzLDU0NzczMDc0LC0yMjMyNTU4LDU4NDkzNTE4LC05ODQ3MzgyLDUyNzE4NjA5LC0xNDgzMDQ0NSw2NDU5Njk3NCwtNjc2NjU4OSw2NTgyNDU5MiwtMTA3Mzg1MjMsNjEyMDI3MTgsLTExMzEwOTc5LDY2NDcwODc4LC0xMDcxNjU5NSw1MzQ5Mjk0MCwtODk4MDEzMSw1NTc5NjM0NCwtMTgxMTk3Myw1NjE5MjU1MCwtMTA4MjA0MDcsNjE3MTkwMjAsLTE0OTk4Njc5LDUwNzUyMzU2LC03NjIzNDE5LDY0OTkyNzgyLC02MDM5MjM5LDU5MDgxMDU0LC0xMTk3NDU4NSw1NDU0NDUzNCwtODk2MDAxNyw2NTM5NjQ1OCwtNDIyOTQzMSw2MjIzNjU2MywtODE1MzE3Myw1NzQwOTI1NSwtMTY1Mzg3MTcsNjQxMjk4MjcsLTE2MjYxNTQ2LDYzMDAzMzcyLC0yOTM4NTc5LDYyNDAyNDc5LC01NTY5MjE5LDY0NDMyMTgwLC0xNjAwMDM4MCw1MzAyNDg0NCwtMTA0NzU2NDMsNjYzOTk4MTEsLTE1ODAyNTEsNTE3MDA5OTQsLTI5Nzc4MSw2NDAyODc5MiwtMjQ4NTE3LDYwNjA1Nzg2LC03MTcwNzE5LDUzOTk0ODM4LC02MDg5MjcsNjE3ODc1ODAsLTcwOTM0NjUsNjI3NzI0NTAsLTE1NzE2Nzc3LDU4ODA5MDcwLC01Nzc5OTEzLDYxMDczNTQ2LC0xMTA4MTk3Nyw1MzkyNDI2MCwtMTE4NDMxNDEsNTMxNDU4NzgsLTY1MzM0NDUsNjE4MTE1NTQsLTE0MDg3MjIzLDU4MTUyOTY2LC0xMjkwNzA2OSw1ODAyNTkxNiwtMTI5OTE3NDcsNTE2MDcxMjgsLTczMTI0ODEsNTg4ODEwNDIsLTY1OTU3ODMsNTQ3MTE0ODgsLTEzMzgwOTAxLDUxODQyNDI2LC0xMzU3NDk3NSw1MzU2Mzk4NCwtNDQ5NzExLDUzODgwMzIwLC0yMjA3MzcsNTI0OTQxMDIsLTU2MTAzNTcsNTQ3NTk0OTgsLTEyNzQ1NTU3LDYyNjM5NjMyLC04MzM4NzE3LDYyMjM2MzkwLC0xMTkwNzA3NSw1MTU3Nzg1OCwtMTAwOTczODUsNjUxOTgyMzIsLTEzOTQzMDI1LDUwMzUzMDc2LC0xMzUwNDk3LDYzMjYyMDU4LC0zMDk3NDksNTgzNzA5NzQsLTE2MTYxNTA5LDU1MzYwNzU0LC05NzkxMSw2Mjk4NTU4MiwtNjczOTExMSw2MDcyODkwNiwtODE0MjcxOSw1NTY4OTE5NiwtNzEzMTExNSw1ODM1Nzc4NCwtODc3MTQ5Myw2MzAxOTc4MiwtMTYyMzcyNDcsNTQ0NDEzNTYsLTI5NDE1MzEsNTM5MDUyODQsLTIxNTAwNDcsNjA5MjAyODIsLTY1NTg2OTksNjcxMDQ2ODYsLTExNDQwNjA5LDUyODI0MTE2LC0yNjg5NzY1LDYzMTU5Njg2LC0xNDQ0NTg5OCw1Mjg2NTI1MywtMTQ5MzAyODYsNTY4NzM5MzQsLTU3NjU0ODMsNjExNDI0MzgsLTc1MjIwNCw2NDA4NDQ5NiwtOTE1MjY2OCw2MTI4MDg2OCwtODczNjIwLDYxOTkyNzAyLC0yMTgxMzE3LDYzNDAxNDU2LC03MTg1MzgwLDYyNTUyNTIyLC0xMjcwOTU3OCw1NDkwMTI4MV0=", 1662430);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="harrow parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-harrow" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Harrow parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/H/harrow" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-harrow');
+  if (!el) return;
+  var map = L.map('cmap-harrow', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy03Mjg3NDQwLDU4ODM0ODkwLC0yNDAxNTc1LDYxOTU5NDkzLC03MzIzMzA1LDY0MjQ5NTkyLC0xNjE3NjI0NCw2NDEzMzMyMSwtNzY3MDEzMCw2Mzg3MTM3NCwtODU1ODM1Miw2MDk1Mzk4OSwtMzE3NDAxOCw2NDU2NzU0NywtNjQxMzE2NCw1Njk3ODU4NSwtMTM4Mjc4MjQsNTIzNzYzNjQsLTk0NTU5NjMsNTUwNjgyMjIsLTY4MjA1MzIsNTI2NzYyNzgsLTU4MjUzMTUsNTA1MDgzNDgsLTEzODc4MDU1LDU5MDI0MjI4LC0zNDk0NjI5LDUwNjE5NDI2LC0xNDA0ODQ5OCw1Njk4ODE3NiwtMTQzMTU2NzMsNTUwNTk3MjIsLTU0NDI0MTQsNTEyNjg0MjAsLTE0ODczNzksNTExNTc4MzQsLTIwMzk0NDUsNTcyMzEzNDgsLTE2NDQ5NzE2LDUxMTM0Njc0LC03NDIzMTAwLDYzNzY4MzcxLC00OTM3NTg2LDY1MTkxMDgyLC03Mjk0MjgzLDY1ODE1NzM0LC02NzAzNDI5LDYyNzI0ODkyLC01MDAxNTIsNTMyMjkwMjMsLTEzMDQ1OTk3LDYzMTE4MzA4LC0xNDM2MTQ5NSw1NDUwNDk3NCwtMTM1NzUwODksNTUwNzQyODQsLTE1ODE4Niw1NjI3NTI0MiwtMTA3Mjk5OTcsNTU4MDQ4NTcsLTI0MTQ1NCw1MjM0MjQ3OSwtODQ5NTc3MSw2NTg1OTU4OCwtNDE2NTU2Nyw1NDExMzY2NSwtMjEyMzYyLDYwNzI3MjcyLC02NDQ4MDQ3LDUwNTgyODc1LC0xNTg4NzMxNSw1Njg4OTY2OSwtOTM1NTc0NSw2MDgyNjgzOV0=", 11449227);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
+<div class="event-card" data-search="lloyd junior parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-lloydjuniors" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Lloyd junior parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"><span class="card-badge junior">Junior parkrun</span></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/L/lloyd-juniors" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-lloydjuniors');
+  if (!el) return;
+  var map = L.map('cmap-lloydjuniors', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy02MTk2NDc3LDY2NjE3OTI2LC0xNjY2ODE3Nyw1MTI3ODY0OCwtMTU2MjI2ODIsNTMxMTU1MjUsLTEyMTQ4MTY5LDYyODAxOTg4LC0xNTkyOTE0OCw1Njk2ODY0NSwtOTk2MzAxMiw2MTA0NjU5OCwtNjg1ODk0OSw2MzIwNDI5NSwtODg0MTM5Miw1NTgzNzA2OSwtMTY1NTg3MDcsNTQ2OTQ4MzIsLTEzODAyNjY2LDY2MDkxOTM1LC0xMzY5MTE1NSw2MjUxMzg1MywtMjY2MTYxMSw1MjA1NzE1NywtOTk2NTczNiw2MDYyOTkyOCwtMTMwMTQ5NjUsNjYzOTMwMjgsLTE1MjQ0MjA2LDU4MDE5MDcxLC0xNTg1ODY3Miw2NDkzNjk2MSwtMTM3MzE1ODUsNjA2NjA0MDEsLTEwNTI3NjUzLDYxNzMxMTgzLC0xMTAwMDY1OSw1NjQ5MjA4NiwtODU4NDA1OCw2MzY3NjQ0MiwtMjI4MDQ4Niw1OTM0MDQwOV0=", 15254367);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#40e0d0', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#40e0d0', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
 <div class="event-card" data-search="richmond parkrun greater london">
   <div class="card-map-wrap">
     <div id="cmap-richmond" class="card-map-inner"></div>
@@ -290,7 +594,7 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   <div class="card-body">
     <div class="card-name">Richmond parkrun</div>
     <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
-    <div class="card-badges"><span class="card-badge">5k</span></div>
+    <div class="card-badges"></div>
   </div>
   <a href="https://www.parkrunnertourist.com/explore/R/richmond" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
 </div>
@@ -315,6 +619,42 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
   
 })();</script>
+<div class="event-card" data-search="roundshaw downs parkrun greater london">
+  <div class="card-map-wrap">
+    <div id="cmap-roundshaw" class="card-map-inner"></div>
+    <div class="card-map-badges">
+      <span class="card-map-badge start">&#9679; Start</span>
+      <span class="card-map-badge finish">&#9679; Finish</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-name">Roundshaw Downs parkrun</div>
+    <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
+    <div class="card-badges"></div>
+  </div>
+  <a href="https://www.parkrunnertourist.com/explore/R/roundshaw" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  function _d(b,s){const f=JSON.parse(atob(b));const r=[];let v=s>>>0;for(let i=0;i<f.length;i+=2){v=(Math.imul(v,1664525)+1013904223)>>>0;const lng=(f[i]^(v&0xFFFFFF))/1e6;v=(Math.imul(v,1664525)+1013904223)>>>0;const lat=(f[i+1]^(v&0xFFFFFF))/1e6;r.push([lng,lat]);}return r;}
+  var el = document.getElementById('cmap-roundshaw');
+  if (!el) return;
+  var map = L.map('cmap-roundshaw', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, boxZoom: false, keyboard: false,
+    tap: false, touchZoom: false, attributionControl: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+  
+  var route = _d("Wy0yMTI5MTY2LDY1ODkxMjgyLC0xNDA1NzgwOCw2MjUwMDUyNiwtMTM2NTY1OTUsNjY0Mjg5MTIsLTI4OTE2Nyw2NjA4ODczNiwtNTM2MjYxMiw1OTM1OTk2MSwtMTM4MjgyMDksNTIyMjE1OTUsLTQ3MTA0ODksNjY5MDA2MTQsLTExMjc5MzcxLDUzMTM4MjIzLC0xNjgyMzkyLDYyMDk4MTE1LC00ODkwNzQwLDU3OTU3NDQ2LC05MjY3NDgxLDYxOTg1OTYzLC0xNTQ1MTA2OSw2NTg5OTU5NCwtMTE0MDE4ODksNjI5MjQ5NTEsLTE0MDQ2Mzk1LDU1ODI2MzY2LC0xNTI2Mjg4Niw2MDc1NzA1NSwtMzMzNjcyOCw1MTU3ODEzMywtODM4OTQ2Miw1OTczNDAzOCwtMTU5NTUzNjEsNjI1MjQwNTksLTI0NjE1OTgsNTYzODQ4NDgsLTI2MTg0NzYsNTg3MjU4OTBd", 14613544);
+  var lls = route.map(function(p) { return [p[1], p[0]]; });
+  L.polyline(lls, { color: '#4caf50', weight: 3.5, opacity: 0.9, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+  L.circleMarker(lls[0], { radius: 7, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  L.circleMarker(lls[lls.length - 1], { radius: 7, fillColor: '#dc3545', color: '#fff', weight: 2, fillOpacity: 1 }).addTo(map);
+  map.fitBounds(L.latLngBounds(lls), { padding: [20, 20], animate: false });
+  
+})();</script>
 <div class="event-card" data-search="wimbledon common parkrun greater london">
   <div class="card-map-wrap">
     <div id="cmap-wimbledon" class="card-map-inner"></div>
@@ -326,7 +666,7 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   <div class="card-body">
     <div class="card-name">Wimbledon Common parkrun</div>
     <span class="card-location"><i class="fas fa-map-marker-alt"></i> Greater London</span>
-    <div class="card-badges"><span class="card-badge">5k</span></div>
+    <div class="card-badges"></div>
   </div>
   <a href="https://www.parkrunnertourist.com/explore/W/wimbledon" class="card-cta" target="_blank">View Guide &amp; Hotels</a>
 </div>
@@ -374,35 +714,28 @@ footer { text-align: center; padding: 2rem; background: #f8fafc; color: #64748b;
   data-id="jlofthouse" data-description="Support me on Buy me a coffee!"
   data-message="Support The App" data-color="#40DCA5" data-position="Right"
   data-x_margin="18" data-y_margin="18"></script>
-<div id="stay22-modal">
-  <div class="stay22-inner">
-    <div class="stay22-header">
-      <span id="stay22-title">Find Hotels</span>
-      <button class="stay22-close" onclick="closeStay22()">&times;</button>
-    </div>
-    <iframe id="stay22-iframe" src="" title="Find hotels near parkrun events"></iframe>
-  </div>
-</div>
 <script>
 function openStay22(lat, lon, name) {
   var d = new Date(), day = d.getDay(), diff = (5 - day + 7) % 7 || 7;
   d.setDate(d.getDate() + diff);
   var checkin = d.toISOString().slice(0, 10);
-  document.getElementById('stay22-iframe').src =
-    'https://www.stay22.com/embed/gm?aid=parkrunnertourist'
+  var url = 'https://www.stay22.com/embed/gm?aid=parkrunnertourist'
     + '&lat=' + lat + '&lng=' + lon + '&maincolor=4caf50'
     + '&venue=' + encodeURIComponent(name) + '&checkin=' + checkin
     + '&viewmode=listview&listviewexpand=true';
-  document.getElementById('stay22-title').textContent = 'Hotels near ' + name;
-  document.getElementById('stay22-modal').classList.add('open');
+  window.open(url, '_blank', 'noopener');
 }
-function closeStay22() {
-  document.getElementById('stay22-modal').classList.remove('open');
-  document.getElementById('stay22-iframe').src = '';
-}
-document.getElementById('stay22-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeStay22();
-});
 </script>
-
+<script>
+(function() {
+  var inp = document.getElementById('evt-search');
+  if (!inp) return;
+  inp.addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.event-card').forEach(function(el) {
+      el.style.display = (!q || (el.dataset.search || el.textContent).toLowerCase().includes(q)) ? '' : 'none';
+    });
+  });
+})();
+</script>
 </body></html>
