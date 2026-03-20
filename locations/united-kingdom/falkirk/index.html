@@ -3,25 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>parkrun Events in Falkirk, United Kingdom — Hotels, Course Maps &amp; Visitor Guides</title>
-<meta name="description" content="All 2 parkrun events in Falkirk. View course maps, compare hotels near each event, check the weather and plan your perfect parkrun weekend in Falkirk." />
+<title>parkrun Events in Falkirk, United Kingdom — Hotels &amp; Course Maps</title>
+<meta name="description" content="2 parkrun events in Falkirk. View course maps, find nearby hotels and plan your parkrun visit to Falkirk." />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="Falkirk, United Kingdom" />
 <meta name="geo.position" content="56.002069;-3.762254" />
-<meta property="og:title" content="parkrun Events in Falkirk, United Kingdom — Hotels, Course Maps &amp; Visitor Guides" />
-<meta property="og:description" content="All 2 parkrun events in Falkirk. View course maps, compare hotels near each event, check the weather and plan your perfect parkrun weekend in Falkirk." />
+<meta property="og:title" content="parkrun Events in Falkirk, United Kingdom — Hotels &amp; Course Maps" />
+<meta property="og:description" content="2 parkrun events in Falkirk. View course maps, find nearby hotels and plan your parkrun visit to Falkirk." />
 <meta property="og:url" content="https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/falkirk/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="parkrunner tourist" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="parkrun Events in Falkirk, United Kingdom — Hotels, Course Maps &amp; Visitor Guides" />
-<meta name="twitter:description" content="All 2 parkrun events in Falkirk. View course maps, compare hotels near each event, check the weather and plan your perfect parkrun weekend in Falkirk." />
+<meta name="twitter:title" content="parkrun Events in Falkirk, United Kingdom — Hotels &amp; Course Maps" />
+<meta name="twitter:description" content="2 parkrun events in Falkirk. View course maps, find nearby hotels and plan your parkrun visit to Falkirk." />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
 <link rel="canonical" href="https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/falkirk/" />
 <link rel="sitemap" type="application/xml" href="https://jake-lofthouse.github.io/Event-Web-Test/locations/sitemap.xml" />
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"parkrunner tourist","item":"https://www.parkrunnertourist.com"},{"@type":"ListItem","position":2,"name":"Locations","item":"https://jake-lofthouse.github.io/Event-Web-Test/locations/"},{"@type":"ListItem","position":3,"name":"United Kingdom","item":"https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/"},{"@type":"ListItem","position":4,"name":"Falkirk","item":"https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/falkirk/"}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"parkrun Events in Falkirk, United Kingdom — Hotels, Course Maps & Visitor Guides","description":"All 2 parkrun events in Falkirk. View course maps, compare hotels near each event, check the weather and plan your perfect parkrun weekend in Falkirk.","url":"https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/falkirk/","spatialCoverage":{"@type":"Place","name":"Falkirk, United Kingdom","geo":{"@type":"GeoCoordinates","latitude":56.002069,"longitude":-3.762254}},"publisher":{"@type":"Organization","name":"parkrunner tourist","url":"https://www.parkrunnertourist.com"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"parkrun Events in Falkirk, United Kingdom — Hotels & Course Maps","description":"2 parkrun events in Falkirk. View course maps, find nearby hotels and plan your parkrun visit to Falkirk.","url":"https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/falkirk/","spatialCoverage":{"@type":"Place","name":"Falkirk, United Kingdom","geo":{"@type":"GeoCoordinates","latitude":56.002069,"longitude":-3.762254}},"publisher":{"@type":"Organization","name":"parkrunner tourist","url":"https://www.parkrunnertourist.com"}}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -232,18 +232,16 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
     <p class="hero-sub">2 parkrun events in Falkirk</p>
   </div>
   <div class="stat-strip">
-    <div class="stat-strip-item"><span class="stat-strip-value">1</span><span class="stat-strip-label">parkrun events</span></div>
+    <div class="stat-strip-item"><span class="stat-strip-value">1</span><span class="stat-strip-label">5k events</span></div>
     <div class="stat-strip-item"><span class="stat-strip-value">1</span><span class="stat-strip-label">Junior events</span></div>
-    
   </div>
   <div class="hotel-cta">
     <div class="hotel-cta-text">
-      <h2>Need accommodation in Falkirk?</h2>
-      <p>Compare hotels and rentals near any Falkirk parkrun event.</p>
+      <h2>Staying in Falkirk?</h2>
+      <p>Find hotels and rentals near your parkrun event.</p>
     </div>
     <button class="hotel-cta-btn" onclick="openStay22(56.002069,-3.762254,'Falkirk parkrun')">Find Hotels</button>
   </div>
-  
   
   <div class="filter-bar" id="event-filter-bar">
   <span class="filter-label">Show:</span>
@@ -322,10 +320,16 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   }
 
   window.setFilter = applyFilter;
-  applyFilter(getInitialFilter());
+
+  // Wait for DOM to be ready so event cards exist before we filter them
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { applyFilter(getInitialFilter()); });
+  } else {
+    applyFilter(getInitialFilter());
+  }
 })();
 </script>
-  <div class="section-heading">All events in Falkirk</div>
+  <div class="section-heading">Events in Falkirk</div>
   <div class="event-grid"><div class="event-card" data-search="falkirk parkrun falkirk" data-junior="false">
   <div class="card-map-wrap">
     <div id="cmap-falkirk" class="card-map-inner"></div>

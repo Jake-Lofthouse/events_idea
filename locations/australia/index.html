@@ -4,24 +4,24 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>parkrun Events in Australia — Hotels, Course Maps &amp; Visitor Guides</title>
-<meta name="description" content="Find all 60 parkrun events across Australia. Browse by region, view course maps, find hotels near each event and plan your parkrun trip." />
+<meta name="description" content="Find all 60 parkrun events across Australia. Browse by town and city, view course maps, find hotels near each event and plan your parkrun trip." />
 <meta name="author" content="Jake Lofthouse" />
 <meta name="geo.placename" content="Australia" />
-<meta name="geo.position" content="-30.896453666666666;145.6747999166667" />
+<meta name="geo.position" content="-30.896453666666662;145.67479991666661" />
 <meta property="og:title" content="parkrun Events in Australia — Hotels, Course Maps &amp; Visitor Guides" />
-<meta property="og:description" content="Find all 60 parkrun events across Australia. Browse by region, view course maps, find hotels near each event and plan your parkrun trip." />
+<meta property="og:description" content="Find all 60 parkrun events across Australia. Browse by town and city, view course maps, find hotels near each event and plan your parkrun trip." />
 <meta property="og:url" content="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="parkrunner tourist" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="parkrun Events in Australia — Hotels, Course Maps &amp; Visitor Guides" />
-<meta name="twitter:description" content="Find all 60 parkrun events across Australia. Browse by region, view course maps, find hotels near each event and plan your parkrun trip." />
+<meta name="twitter:description" content="Find all 60 parkrun events across Australia. Browse by town and city, view course maps, find hotels near each event and plan your parkrun trip." />
 <meta name="robots" content="index, follow" />
 <meta name="language" content="en" />
 <link rel="canonical" href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/" />
 <link rel="sitemap" type="application/xml" href="https://jake-lofthouse.github.io/Event-Web-Test/locations/sitemap.xml" />
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"parkrunner tourist","item":"https://www.parkrunnertourist.com"},{"@type":"ListItem","position":2,"name":"Locations","item":"https://jake-lofthouse.github.io/Event-Web-Test/locations/"},{"@type":"ListItem","position":3,"name":"Australia","item":"https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/"}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"parkrun Events in Australia — Hotels, Course Maps & Visitor Guides","description":"Find all 60 parkrun events across Australia. Browse by region, view course maps, find hotels near each event and plan your parkrun trip.","url":"https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/","spatialCoverage":{"@type":"Place","name":"Australia","geo":{"@type":"GeoCoordinates","latitude":-30.896453666666666,"longitude":145.6747999166667}},"publisher":{"@type":"Organization","name":"parkrunner tourist","url":"https://www.parkrunnertourist.com"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"parkrun Events in Australia — Hotels, Course Maps & Visitor Guides","description":"Find all 60 parkrun events across Australia. Browse by town and city, view course maps, find hotels near each event and plan your parkrun trip.","url":"https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/","spatialCoverage":{"@type":"Place","name":"Australia","geo":{"@type":"GeoCoordinates","latitude":-30.896453666666662,"longitude":145.67479991666661}},"publisher":{"@type":"Organization","name":"parkrunner tourist","url":"https://www.parkrunnertourist.com"}}</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -229,53 +229,185 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   <div class="hero">
     <div class="hero-eyebrow">🇦🇺 Australia</div>
     <h1 class="hero-title">parkrun Events in Australia</h1>
-    <p class="hero-sub">60 parkrun events across 8 regions</p>
+    <p class="hero-sub">60 parkrun events across 41 towns &amp; cities</p>
   </div>
   <div class="stat-strip">
-    <div class="stat-strip-item"><span class="stat-strip-value">60</span><span class="stat-strip-label">parkrun events</span></div>
+    <div class="stat-strip-item"><span class="stat-strip-value">60</span><span class="stat-strip-label">5k events</span></div>
     
-    <div class="stat-strip-item"><span class="stat-strip-value">8</span><span class="stat-strip-label">Regions</span></div>
+    <div class="stat-strip-item"><span class="stat-strip-value">41</span><span class="stat-strip-label">Towns &amp; cities</span></div>
   </div>
   <div class="hotel-cta">
     <div class="hotel-cta-text">
       <h2>Need accommodation in Australia?</h2>
       <p>Compare hotels and rentals near any parkrun event.</p>
     </div>
-    <button class="hotel-cta-btn" onclick="openStay22(-30.896453666666666,145.6747999166667,'Australia parkrun')">Find Hotels</button>
+    <button class="hotel-cta-btn" onclick="openStay22(-30.896453666666662,145.67479991666661,'Australia parkrun')">Find Hotels</button>
   </div>
-  <div class="search-wrap"><i class="fas fa-search search-icon"></i><input id="loc-search" class="search-input" type="text" placeholder="Search regions in Australia..." /></div>
-  <div class="section-heading">Regions</div>
+  <div class="search-wrap"><i class="fas fa-search search-icon"></i><input id="loc-search" class="search-input" type="text" placeholder="Search towns &amp; cities in Australia..." /></div>
+  <div class="section-heading">Towns &amp; Cities</div>
   <div class="tile-grid">
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/queensland/" class="tile" data-search="queensland">
-  <span class="tile-name">Queensland</span>
-  <span class="tile-count">24</span>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/new-south-wales/" class="tile" data-search="new south wales">
-  <span class="tile-name">New South Wales</span>
-  <span class="tile-count">13</span>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/western-australia/" class="tile" data-search="western australia">
-  <span class="tile-name">Western Australia</span>
-  <span class="tile-count">7</span>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/victoria/" class="tile" data-search="victoria">
-  <span class="tile-name">Victoria</span>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/brisbane/" class="tile" data-search="brisbane">
+  <span class="tile-name">Brisbane</span>
   <span class="tile-count">6</span>
 </a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/tasmania/" class="tile" data-search="tasmania">
-  <span class="tile-name">Tasmania</span>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/perth/" class="tile" data-search="perth">
+  <span class="tile-name">Perth</span>
+  <span class="tile-count">5</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/gold-coast/" class="tile" data-search="gold coast">
+  <span class="tile-name">Gold Coast</span>
   <span class="tile-count">4</span>
 </a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/australian-capital-territory/" class="tile" data-search="australian capital territory">
-  <span class="tile-name">Australian Capital Territory</span>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/sydney/" class="tile" data-search="sydney">
+  <span class="tile-name">Sydney</span>
   <span class="tile-count">3</span>
 </a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/south-australia/" class="tile" data-search="south australia">
-  <span class="tile-name">South Australia</span>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/melbourne/" class="tile" data-search="melbourne">
+  <span class="tile-name">Melbourne</span>
+  <span class="tile-count">3</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/moreton-bay/" class="tile" data-search="moreton bay">
+  <span class="tile-name">Moreton Bay</span>
   <span class="tile-count">2</span>
 </a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/northern-territory/" class="tile" data-search="northern territory">
-  <span class="tile-name">Northern Territory</span>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/townsville/" class="tile" data-search="townsville">
+  <span class="tile-name">Townsville</span>
+  <span class="tile-count">2</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/wollongong/" class="tile" data-search="wollongong">
+  <span class="tile-name">Wollongong</span>
+  <span class="tile-count">2</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/newcastle/" class="tile" data-search="newcastle">
+  <span class="tile-name">Newcastle</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/belconnen/" class="tile" data-search="belconnen">
+  <span class="tile-name">Belconnen</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/greater-geelong/" class="tile" data-search="greater geelong">
+  <span class="tile-name">Greater Geelong</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/tweed/" class="tile" data-search="tweed">
+  <span class="tile-name">Tweed</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/sunshine-coast/" class="tile" data-search="sunshine coast">
+  <span class="tile-name">Sunshine Coast</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/hobart/" class="tile" data-search="hobart">
+  <span class="tile-name">Hobart</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/adelaide/" class="tile" data-search="adelaide">
+  <span class="tile-name">Adelaide</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/launceston/" class="tile" data-search="launceston">
+  <span class="tile-name">Launceston</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/darwin/" class="tile" data-search="darwin">
+  <span class="tile-name">Darwin</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/lake-macquarie/" class="tile" data-search="lake macquarie">
+  <span class="tile-name">Lake Macquarie</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/port-stephens/" class="tile" data-search="port stephens">
+  <span class="tile-name">Port Stephens</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/greater-shepparton/" class="tile" data-search="greater shepparton">
+  <span class="tile-name">Greater Shepparton</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/toowoomba/" class="tile" data-search="toowoomba">
+  <span class="tile-name">Toowoomba</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/warrnambool/" class="tile" data-search="warrnambool">
+  <span class="tile-name">Warrnambool</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/noosa/" class="tile" data-search="noosa">
+  <span class="tile-name">Noosa</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/tuggeranong-administrative-district/" class="tile" data-search="tuggeranong administrative district">
+  <span class="tile-name">Tuggeranong Administrative District</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/bunbury/" class="tile" data-search="bunbury">
+  <span class="tile-name">Bunbury</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/logan/" class="tile" data-search="logan">
+  <span class="tile-name">Logan</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/mount-barker/" class="tile" data-search="mount barker">
+  <span class="tile-name">Mount Barker</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/ipswich/" class="tile" data-search="ipswich">
+  <span class="tile-name">Ipswich</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/eurobodalla/" class="tile" data-search="eurobodalla">
+  <span class="tile-name">Eurobodalla</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/gungahlin/" class="tile" data-search="gungahlin">
+  <span class="tile-name">Gungahlin</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/tamworth/" class="tile" data-search="tamworth">
+  <span class="tile-name">Tamworth</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/whitsunday/" class="tile" data-search="whitsunday">
+  <span class="tile-name">Whitsunday</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/waratah-wynyard/" class="tile" data-search="waratah-wynyard">
+  <span class="tile-name">Waratah-Wynyard</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/kalgoorlie-boulder/" class="tile" data-search="kalgoorlie-boulder">
+  <span class="tile-name">Kalgoorlie-Boulder</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/lockyer-valley/" class="tile" data-search="lockyer valley">
+  <span class="tile-name">Lockyer Valley</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/cairns/" class="tile" data-search="cairns">
+  <span class="tile-name">Cairns</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/devonport/" class="tile" data-search="devonport">
+  <span class="tile-name">Devonport</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/redland-city/" class="tile" data-search="redland city">
+  <span class="tile-name">Redland City</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/gladstone/" class="tile" data-search="gladstone">
+  <span class="tile-name">Gladstone</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/cessnock/" class="tile" data-search="cessnock">
+  <span class="tile-name">Cessnock</span>
+  <span class="tile-count">1</span>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/inverell/" class="tile" data-search="inverell">
+  <span class="tile-name">Inverell</span>
   <span class="tile-count">1</span>
 </a></div>
 </main>
@@ -365,7 +497,6 @@ document.getElementById('stay22-modal').addEventListener('click', function(e) {
 })();
 </script>
 <script>
-// Propagate current filter preference to region tile links
 (function() {
   try {
     var params = new URLSearchParams(window.location.search);
