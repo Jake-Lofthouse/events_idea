@@ -1,8 +1,6 @@
 name: Generate Events
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       run_html:
