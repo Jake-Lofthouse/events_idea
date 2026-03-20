@@ -130,6 +130,10 @@ function fetchJson(url, headers = {}) {
       let data = '';
       res.on('data', c => data += c);
       res.on('end', () => {
+        if (res.statusCode !== 200) {
+          reject(new Error(`HTTP ${res.statusCode} from ${url}`));
+          return;
+        }
         try { resolve(JSON.parse(data)); }
         catch (e) { reject(new Error(`JSON parse error for ${url}: ${e.message}`)); }
       });
@@ -242,35 +246,42 @@ async function geocodeAllEvents(events, cache) {
   for (const ev of events) {
     if (ev.lat === 0 && ev.lon === 0) continue;
     const k = cacheKey(ev.lat, ev.lon);
-    // cacheHit returns false for missing, failed, and empty-object stale entries
+    // cacheHit returns false for missing, CACHE_FAILED, and legacy empty-object entries
     if (cacheHit(cache, k) && !seen.has(k)) continue;
     if (!seen.has(k)) { seen.add(k); missing.push({ lat: ev.lat, lon: ev.lon, k }); }
   }
   if (!missing.length) { console.log('Geo cache: all coordinates resolved, skipping Nominatim.'); return; }
 
-  // Parallel batches of 5, 300 ms between batches.
-  // Nominatim allows reasonable automated use with a proper User-Agent.
-  // Set BATCH_SIZE=1 if you see 429 errors.
-  const BATCH_SIZE  = 5;
-  const BATCH_DELAY = 300;
+  // Nominatim policy: strictly 1 request per second, descriptive User-Agent.
+  // We go sequential with a 1100 ms gap to stay well within the limit.
+  // On a 429 or 503 we back off for 5 s and retry once before marking as failed.
+  const DELAY_MS   = 1100;
+  const BACKOFF_MS = 5000;
 
-  const secs = Math.ceil((missing.length / BATCH_SIZE) * BATCH_DELAY / 1000);
-  console.log(`Geo cache: ${missing.length} coordinates to resolve in batches of ${BATCH_SIZE} (~${secs}s)...`);
+  const secs = Math.ceil(missing.length * DELAY_MS / 1000);
+  console.log(`Geo cache: ${missing.length} coordinates to resolve (~${secs}s at 1 req/s)...`);
 
-  for (let i = 0; i < missing.length; i += BATCH_SIZE) {
-    const batch = missing.slice(i, i + BATCH_SIZE);
-    await Promise.all(batch.map(async ({ lat, lon, k }) => {
-      const result = await nominatimReverse(lat, lon);
-      cache[k] = result || CACHE_FAILED;
-    }));
+  for (let i = 0; i < missing.length; i++) {
+    const { lat, lon, k } = missing[i];
 
-    const done = Math.min(i + BATCH_SIZE, missing.length);
-    if (done % 100 === 0 || done === missing.length) {
-      console.log(`  Geocoded ${done}/${missing.length}...`);
+    let result = await nominatimReverse(lat, lon);
+
+    // If we got null back it means a non-200 or network error — back off and retry once
+    if (result === null) {
+      console.log(`  Backing off ${BACKOFF_MS}ms before retry...`);
+      await sleep(BACKOFF_MS);
+      result = await nominatimReverse(lat, lon);
+    }
+
+    cache[k] = result || CACHE_FAILED;
+
+    if ((i + 1) % 50 === 0 || i === missing.length - 1) {
+      console.log(`  Geocoded ${i + 1}/${missing.length}...`);
       saveCache(cache);
     }
 
-    if (i + BATCH_SIZE < missing.length) await sleep(BATCH_DELAY);
+    // Always wait 1100 ms between requests
+    if (i < missing.length - 1) await sleep(DELAY_MS);
   }
 
   saveCache(cache);
