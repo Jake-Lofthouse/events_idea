@@ -40,9 +40,6 @@ const GEO_CACHE_FILE     = path.join(__dirname, '../geo-cache.json');
 const EVENT_LIMIT        = parseInt(process.env.EVENT_LIMIT || '0', 10);
 const SEARCH_THRESHOLD   = 8;
 
-// Nominatim: descriptive UA required by their policy; rate limiting handled in geocodeAllEvents
-const NOMINATIM_UA = 'parkrunnertourist.com location-page-builder (jake@parkrunnertourist.com)';
-
 // Exact colours from generate-events.js
 const ACCENT    = '#4caf50';
 const DARK      = '#2e7d32';
@@ -88,29 +85,50 @@ const COUNTRY_META = {
 };
 
 // ---------------------------------------------------------------------------
-// Nominatim address field priority per country code
+// Address field priority per country code.
+// These map to the normalised fields produced by reverseGeocode() above.
 // ---------------------------------------------------------------------------
 const ADDRESS_FIELDS = {
+  // UK — county (admin level 6) as region, city/town as city
   '97': { regionFields: ['county', 'state_district', 'state'],       cityFields: ['city', 'town', 'village', 'suburb'] },
+  // Australia — state as region, suburb/city as city
   '3':  { regionFields: ['state'],                                    cityFields: ['city', 'suburb', 'town', 'village'] },
+  // USA — state as region
   '98': { regionFields: ['state'],                                    cityFields: ['city', 'town', 'village', 'county'] },
-  '14': { regionFields: ['state', 'province'],                        cityFields: ['city', 'town', 'village', 'municipality'] },
+  // Canada
+  '14': { regionFields: ['state', 'province'],                        cityFields: ['city', 'town', 'village'] },
+  // Germany
   '32': { regionFields: ['state'],                                    cityFields: ['city', 'town', 'village', 'suburb'] },
+  // Ireland
   '42': { regionFields: ['county', 'state'],                          cityFields: ['city', 'town', 'village', 'suburb'] },
+  // New Zealand
   '65': { regionFields: ['state', 'region'],                          cityFields: ['city', 'town', 'suburb', 'village'] },
+  // South Africa
   '85': { regionFields: ['state', 'province'],                        cityFields: ['city', 'town', 'suburb', 'village'] },
+  // Poland
   '74': { regionFields: ['state'],                                    cityFields: ['city', 'town', 'village'] },
+  // Sweden
   '88': { regionFields: ['county', 'state'],                          cityFields: ['city', 'town', 'village', 'suburb'] },
+  // Denmark
   '23': { regionFields: ['state', 'county', 'region'],                cityFields: ['city', 'town', 'village'] },
-  '30': { regionFields: ['state', 'region'],                          cityFields: ['city', 'town', 'village', 'municipality'] },
-  '67': { regionFields: ['state', 'county'],                          cityFields: ['city', 'town', 'village', 'municipality'] },
-  '64': { regionFields: ['state', 'province'],                        cityFields: ['city', 'town', 'village', 'suburb', 'municipality'] },
+  // Finland
+  '30': { regionFields: ['state', 'region'],                          cityFields: ['city', 'town', 'village'] },
+  // Norway
+  '67': { regionFields: ['state', 'county'],                          cityFields: ['city', 'town', 'village'] },
+  // Netherlands
+  '64': { regionFields: ['state', 'province'],                        cityFields: ['city', 'town', 'village', 'suburb'] },
+  // Italy
   '44': { regionFields: ['state', 'county'],                          cityFields: ['city', 'town', 'village', 'suburb'] },
+  // Austria
   '4':  { regionFields: ['state'],                                    cityFields: ['city', 'town', 'village', 'suburb'] },
+  // Japan
   '46': { regionFields: ['state', 'province', 'county'],              cityFields: ['city', 'town', 'village', 'suburb'] },
-  '54': { regionFields: ['state', 'county'],                          cityFields: ['city', 'town', 'village', 'municipality'] },
+  // Lithuania
+  '54': { regionFields: ['state', 'county'],                          cityFields: ['city', 'town', 'village'] },
+  // Malaysia
   '57': { regionFields: ['state'],                                    cityFields: ['city', 'town', 'suburb', 'village'] },
-  '82': { regionFields: ['country'],                                  cityFields: ['suburb', 'quarter', 'neighbourhood'] },
+  // Singapore — city-state
+  '82': { regionFields: ['country'],                                  cityFields: ['suburb', 'city', 'town'] },
 };
 const DEFAULT_ADDRESS_FIELDS = {
   regionFields: ['state', 'county', 'state_district', 'region', 'province'],
@@ -122,7 +140,7 @@ function getAddressFields(countryCode) {
 }
 
 // ---------------------------------------------------------------------------
-// HTTP / Nominatim helpers
+// Generic HTTP JSON fetch (used for events JSON, course maps, and geocoding)
 // ---------------------------------------------------------------------------
 function fetchJson(url, headers = {}) {
   return new Promise((resolve, reject) => {
@@ -141,14 +159,44 @@ function fetchJson(url, headers = {}) {
   });
 }
 
-async function nominatimReverse(lat, lon) {
-  // zoom=14 gives neighbourhood-level detail — enough to get city/town reliably
-  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1&zoom=14`;
+// ---------------------------------------------------------------------------
+// Reverse geocoding — BigDataCloud (free, no API key, allows fast parallel use)
+// Returns a normalised address object with the same field names we use downstream.
+// Docs: https://www.bigdatacloud.com/free-api/free-reverse-geocode-to-city-api
+// ---------------------------------------------------------------------------
+async function reverseGeocode(lat, lon) {
+  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
   try {
-    const data = await fetchJson(url, { 'User-Agent': NOMINATIM_UA });
-    return (data && data.address) ? data.address : null;
+    const data = await fetchJson(url);
+    if (!data || !data.countryCode) return null;
+
+    // Normalise into the same shape our address field logic expects
+    return {
+      city:                  data.city || data.locality || null,
+      town:                  data.locality || null,
+      village:               data.localityInfo && data.localityInfo.administrative
+                               ? (data.localityInfo.administrative.find(a => a.adminLevel === 8) || {}).name || null
+                               : null,
+      suburb:                data.locality || null,
+      county:                data.localityInfo && data.localityInfo.administrative
+                               ? (data.localityInfo.administrative.find(a => a.adminLevel === 6) || {}).name || null
+                               : null,
+      state_district:        data.localityInfo && data.localityInfo.administrative
+                               ? (data.localityInfo.administrative.find(a => a.adminLevel === 5) || {}).name || null
+                               : null,
+      state:                 data.principalSubdivision || null,
+      province:              data.principalSubdivision || null,
+      region:                data.principalSubdivision || null,
+      country:               data.countryName || null,
+      country_code:          data.countryCode || null,
+      // Extra BDC fields for richer UK county resolution
+      _bdc_admin1:           data.principalSubdivision || null,
+      _bdc_admin2:           data.localityInfo && data.localityInfo.administrative
+                               ? (data.localityInfo.administrative.find(a => a.adminLevel === 6) || {}).name || null
+                               : null,
+    };
   } catch (e) {
-    console.warn(`  Nominatim error (${lat},${lon}): ${e.message}`);
+    console.warn(`  Geocode error (${lat},${lon}): ${e.message}`);
     return null;
   }
 }
@@ -209,8 +257,24 @@ function cacheKey(lat, lon) {
 
 function loadCache() {
   try {
-    if (fs.existsSync(GEO_CACHE_FILE))
-      return JSON.parse(fs.readFileSync(GEO_CACHE_FILE, 'utf-8'));
+    if (fs.existsSync(GEO_CACHE_FILE)) {
+      const raw = JSON.parse(fs.readFileSync(GEO_CACHE_FILE, 'utf-8'));
+      // Auto-repair: remove legacy empty-object entries and CACHE_FAILED markers
+      // so they get freshly resolved on this run.
+      let purged = 0;
+      for (const k of Object.keys(raw)) {
+        const v = raw[k];
+        if (!v || v === '__failed__' || (typeof v === 'object' && Object.keys(v).length === 0)) {
+          delete raw[k];
+          purged++;
+        }
+      }
+      if (purged > 0) {
+        console.log(`Geo cache: purged ${purged} stale entries (will be re-resolved).`);
+        saveCache(raw);
+      }
+      return raw;
+    }
   } catch (e) { console.warn('Could not load geo cache, starting fresh:', e.message); }
   return {};
 }
@@ -246,42 +310,33 @@ async function geocodeAllEvents(events, cache) {
   for (const ev of events) {
     if (ev.lat === 0 && ev.lon === 0) continue;
     const k = cacheKey(ev.lat, ev.lon);
-    // cacheHit returns false for missing, CACHE_FAILED, and legacy empty-object entries
     if (cacheHit(cache, k) && !seen.has(k)) continue;
     if (!seen.has(k)) { seen.add(k); missing.push({ lat: ev.lat, lon: ev.lon, k }); }
   }
-  if (!missing.length) { console.log('Geo cache: all coordinates resolved, skipping Nominatim.'); return; }
+  if (!missing.length) { console.log('Geo cache: all coordinates resolved, skipping geocoding.'); return; }
 
-  // Nominatim policy: strictly 1 request per second, descriptive User-Agent.
-  // We go sequential with a 1100 ms gap to stay well within the limit.
-  // On a 429 or 503 we back off for 5 s and retry once before marking as failed.
-  const DELAY_MS   = 1100;
-  const BACKOFF_MS = 5000;
+  // BigDataCloud allows fast concurrent use — 10 in parallel, 100ms between batches.
+  // 408 coordinates = ~5 seconds instead of ~7 minutes with Nominatim.
+  const BATCH_SIZE  = 10;
+  const BATCH_DELAY = 100;
 
-  const secs = Math.ceil(missing.length * DELAY_MS / 1000);
-  console.log(`Geo cache: ${missing.length} coordinates to resolve (~${secs}s at 1 req/s)...`);
+  const secs = Math.ceil((missing.length / BATCH_SIZE) * BATCH_DELAY / 1000);
+  console.log(`Geo cache: ${missing.length} coordinates to resolve (~${secs}s in batches of ${BATCH_SIZE})...`);
 
-  for (let i = 0; i < missing.length; i++) {
-    const { lat, lon, k } = missing[i];
+  for (let i = 0; i < missing.length; i += BATCH_SIZE) {
+    const batch = missing.slice(i, i + BATCH_SIZE);
+    await Promise.all(batch.map(async ({ lat, lon, k }) => {
+      const result = await reverseGeocode(lat, lon);
+      cache[k] = result || CACHE_FAILED;
+    }));
 
-    let result = await nominatimReverse(lat, lon);
-
-    // If we got null back it means a non-200 or network error — back off and retry once
-    if (result === null) {
-      console.log(`  Backing off ${BACKOFF_MS}ms before retry...`);
-      await sleep(BACKOFF_MS);
-      result = await nominatimReverse(lat, lon);
-    }
-
-    cache[k] = result || CACHE_FAILED;
-
-    if ((i + 1) % 50 === 0 || i === missing.length - 1) {
-      console.log(`  Geocoded ${i + 1}/${missing.length}...`);
+    const done = Math.min(i + BATCH_SIZE, missing.length);
+    if (done % 100 === 0 || done === missing.length) {
+      console.log(`  Geocoded ${done}/${missing.length}...`);
       saveCache(cache);
     }
 
-    // Always wait 1100 ms between requests
-    if (i < missing.length - 1) await sleep(DELAY_MS);
+    if (i + BATCH_SIZE < missing.length) await sleep(BATCH_DELAY);
   }
 
   saveCache(cache);
