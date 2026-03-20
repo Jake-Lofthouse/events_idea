@@ -879,7 +879,13 @@ function filterScript(hasJunior, hasStandard, cityTileLinks) {
   }
 
   window.setFilter = applyFilter;
-  applyFilter(getInitialFilter());
+
+  // Wait for DOM to be ready so event cards exist before we filter them
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { applyFilter(getInitialFilter()); });
+  } else {
+    applyFilter(getInitialFilter());
+  }
 })();
 </script>`;
 }
@@ -948,9 +954,9 @@ function eventCardHtml(ev) {
 
 function generateWorldIndex(countries) {
   const sorted = Object.entries(countries).sort((a, b) => a[0].localeCompare(b[0]));
-  const totalEvents  = sorted.reduce((s, [, d]) => s + d.totalEvents, 0);
+  const totalEvents    = sorted.reduce((s, [, d]) => s + d.totalEvents, 0);
   const totalCountries = sorted.length;
-  const totalRegions   = sorted.reduce((s, [, d]) => s + d.regions.length, 0);
+  const totalCities    = sorted.reduce((s, [, d]) => s + d.cities.length, 0);
 
   const cards = sorted.map(([cSlug, d]) => {
     const flag = isoToFlag(d.iso2 || '');
@@ -959,7 +965,7 @@ function generateWorldIndex(countries) {
   <div class="country-card-flag">${flag}</div>
   <div class="country-card-body">
     <h3>${d.name}</h3>
-    <p>${d.totalEvents.toLocaleString()} event${d.totalEvents !== 1 ? 's' : ''} &middot; ${d.regions.length} region${d.regions.length !== 1 ? 's' : ''}</p>
+    <p>${d.totalEvents.toLocaleString()} event${d.totalEvents !== 1 ? 's' : ''} &middot; ${d.cities.length} town${d.cities.length !== 1 ? 's' : ''} &amp; cities</p>
   </div>
   <i class="fas fa-chevron-right country-card-arrow"></i>
 </a>`;
@@ -967,7 +973,7 @@ function generateWorldIndex(countries) {
 
   return `${htmlHead({
     title: 'parkrun Events by Location — Find Hotels &amp; Plan Your Visit | parkrunner tourist',
-    description: 'Browse parkrun events by country, region and city. Find hotels near every parkrun, view course maps, check weather and plan your perfect parkrun weekend.',
+    description: 'Browse parkrun events by country and city. Find hotels near every parkrun, view course maps, check weather and plan your perfect parkrun weekend.',
     canonicalUrl: `${BASE_LOCATIONS_URL}/`,
     breadcrumbItems: [],
   })}
@@ -978,12 +984,12 @@ ${htmlHeader()}
   <div class="hero">
     <div class="hero-eyebrow">parkrunner tourist</div>
     <h1 class="hero-title">Browse by Location</h1>
-    <p class="hero-sub">Find parkrun events near you — browse by country, region and city, then plan your visit with hotels, course maps and weather.</p>
+    <p class="hero-sub">Find parkrun events near you — browse by country and town, then plan your visit with hotels, course maps and weather.</p>
   </div>
   <div class="stat-strip">
     <div class="stat-strip-item"><span class="stat-strip-value">${totalEvents.toLocaleString()}</span><span class="stat-strip-label">Events worldwide</span></div>
     <div class="stat-strip-item"><span class="stat-strip-value">${totalCountries}</span><span class="stat-strip-label">Countries</span></div>
-    <div class="stat-strip-item"><span class="stat-strip-value">${totalRegions}</span><span class="stat-strip-label">Regions</span></div>
+    <div class="stat-strip-item"><span class="stat-strip-value">${totalCities}</span><span class="stat-strip-label">Towns &amp; cities</span></div>
   </div>
   <div class="section-heading">Select a country</div>
   <div class="country-grid">${cards}</div>
@@ -993,24 +999,25 @@ ${htmlFooter()}
 }
 
 function generateCountryPage(countrySlug, countryData) {
-  const { name, regions, totalEvents, iso2 } = countryData;
-  const c = centroid(regions.flatMap(r => r.events));
-  const showSearch = regions.length >= SEARCH_THRESHOLD;
-  const flag = isoToFlag(iso2 || '');
-  const juniorCount  = regions.flatMap(r => r.events).filter(e => e.isJunior).length;
+  const { name, cities, totalEvents, iso2 } = countryData;
+  const allEvents    = cities.flatMap(c => c.events);
+  const c            = centroid(allEvents);
+  const showSearch   = cities.length >= SEARCH_THRESHOLD;
+  const flag         = isoToFlag(iso2 || '');
+  const juniorCount  = allEvents.filter(e => e.isJunior).length;
   const standardCount = totalEvents - juniorCount;
 
-  const tiles = regions
+  const tiles = cities
     .sort((a, b) => b.events.length - a.events.length)
-    .map(r => `
-<a href="${BASE_LOCATIONS_URL}/${countrySlug}/${r.slug}/" class="tile" data-search="${r.name.toLowerCase()}">
-  <span class="tile-name">${r.name}</span>
-  <span class="tile-count">${r.events.length}</span>
+    .map(city => `
+<a href="${BASE_LOCATIONS_URL}/${countrySlug}/${city.slug}/" class="tile" data-search="${city.name.toLowerCase()}">
+  <span class="tile-name">${city.name}</span>
+  <span class="tile-count">${city.events.length}</span>
 </a>`).join('');
 
   return `${htmlHead({
     title: `parkrun Events in ${name} — Hotels, Course Maps &amp; Visitor Guides`,
-    description: `Find all ${totalEvents} parkrun events across ${name}. Browse by region, view course maps, find hotels near each event and plan your parkrun trip.`,
+    description: `Find all ${totalEvents} parkrun events across ${name}. Browse by town and city, view course maps, find hotels near each event and plan your parkrun trip.`,
     canonicalUrl: `${BASE_LOCATIONS_URL}/${countrySlug}/`,
     lat: c.lat, lon: c.lon, locationName: name,
     breadcrumbItems: [{ name, url: `${BASE_LOCATIONS_URL}/${countrySlug}/` }],
@@ -1023,12 +1030,12 @@ ${breadcrumb([{ label: name }])}
   <div class="hero">
     <div class="hero-eyebrow">${flag} ${name}</div>
     <h1 class="hero-title">parkrun Events in ${name}</h1>
-    <p class="hero-sub">${totalEvents} parkrun event${totalEvents !== 1 ? 's' : ''} across ${regions.length} region${regions.length !== 1 ? 's' : ''}</p>
+    <p class="hero-sub">${totalEvents} parkrun event${totalEvents !== 1 ? 's' : ''} across ${cities.length} town${cities.length !== 1 ? 's' : ''} &amp; cities</p>
   </div>
   <div class="stat-strip">
-    <div class="stat-strip-item"><span class="stat-strip-value">${standardCount.toLocaleString()}</span><span class="stat-strip-label">parkrun events</span></div>
+    <div class="stat-strip-item"><span class="stat-strip-value">${standardCount.toLocaleString()}</span><span class="stat-strip-label">5k events</span></div>
     ${juniorCount > 0 ? `<div class="stat-strip-item"><span class="stat-strip-value">${juniorCount}</span><span class="stat-strip-label">Junior events</span></div>` : ''}
-    <div class="stat-strip-item"><span class="stat-strip-value">${regions.length}</span><span class="stat-strip-label">Regions</span></div>
+    <div class="stat-strip-item"><span class="stat-strip-value">${cities.length}</span><span class="stat-strip-label">Towns &amp; cities</span></div>
   </div>
   <div class="hotel-cta">
     <div class="hotel-cta-text">
@@ -1037,15 +1044,14 @@ ${breadcrumb([{ label: name }])}
     </div>
     <button class="hotel-cta-btn" onclick="openStay22(${c.lat},${c.lon},'${name.replace(/'/g, "\\'")} parkrun')">Find Hotels</button>
   </div>
-  ${showSearch ? `<div class="search-wrap"><i class="fas fa-search search-icon"></i><input id="loc-search" class="search-input" type="text" placeholder="Search regions in ${name}..." /></div>` : ''}
-  <div class="section-heading">Regions</div>
+  ${showSearch ? `<div class="search-wrap"><i class="fas fa-search search-icon"></i><input id="loc-search" class="search-input" type="text" placeholder="Search towns &amp; cities in ${name}..." /></div>` : ''}
+  <div class="section-heading">Towns &amp; Cities</div>
   <div class="tile-grid">${tiles}</div>
 </main>
 ${htmlFooter()}
 ${stay22Modal()}
 ${showSearch ? searchScript('loc-search', 'tile') : ''}
 <script>
-// Propagate current filter preference to region tile links
 (function() {
   try {
     var params = new URLSearchParams(window.location.search);
@@ -1065,37 +1071,27 @@ ${showSearch ? searchScript('loc-search', 'tile') : ''}
 </body></html>`;
 }
 
-function generateRegionPage(countrySlug, countryName, regionSlug, regionData) {
-  const { name, cities, events } = regionData;
-  const c = centroid(events);
-  const showSearch = events.length >= SEARCH_THRESHOLD;
-  const hasCities = Object.keys(cities).length > 1;
-
+// City page — shows all events in a town/city directly (no region middle tier)
+// URL: /locations/[country-slug]/[city-slug]/
+function generateCityPage(countrySlug, countryName, citySlug, cityData) {
+  const { name: cityName, events } = cityData;
+  const c             = centroid(events);
+  const showSearch    = events.length >= SEARCH_THRESHOLD;
   const juniorCount   = events.filter(e => e.isJunior).length;
   const standardCount = events.length - juniorCount;
-
-  const cityTiles = Object.entries(cities)
-    .sort((a, b) => b[1].length - a[1].length)
-    .map(([cSlug, evs]) => {
-      const cityName = evs[0].city || cSlug;
-      return `<a href="${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/${cSlug}/" class="tile" data-search="${cityName.toLowerCase()}">
-  <span class="tile-name">${cityName}</span>
-  <span class="tile-count">${evs.length}</span>
-</a>`;
-    }).join('');
 
   const cards = events
     .sort((a, b) => a.longName.localeCompare(b.longName))
     .map(ev => eventCardHtml(ev)).join('\n');
 
   return `${htmlHead({
-    title: `parkrun Events in ${name}, ${countryName} — Hotels, Course Maps &amp; Visitor Guides`,
-    description: `All ${events.length} parkrun events in ${name}. View course maps, compare hotels near each event, check the weather and plan your perfect parkrun weekend in ${name}.`,
-    canonicalUrl: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/`,
-    lat: c.lat, lon: c.lon, locationName: `${name}, ${countryName}`,
+    title: `parkrun Events in ${cityName}, ${countryName} — Hotels &amp; Course Maps`,
+    description: `${events.length} parkrun event${events.length !== 1 ? 's' : ''} in ${cityName}. View course maps, find nearby hotels and plan your parkrun visit to ${cityName}.`,
+    canonicalUrl: `${BASE_LOCATIONS_URL}/${countrySlug}/${citySlug}/`,
+    lat: c.lat, lon: c.lon, locationName: `${cityName}, ${countryName}`,
     breadcrumbItems: [
       { name: countryName, url: `${BASE_LOCATIONS_URL}/${countrySlug}/` },
-      { name,              url: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/` },
+      { name: cityName,    url: `${BASE_LOCATIONS_URL}/${countrySlug}/${citySlug}/` },
     ],
   })}
 <body>
@@ -1103,76 +1099,16 @@ ${sharedStyles()}
 ${htmlHeader()}
 ${breadcrumb([
     { label: countryName, href: `${BASE_LOCATIONS_URL}/${countrySlug}/` },
-    { label: name },
-  ])}
-<main>
-  <div class="hero">
-    <div class="hero-eyebrow">${countryName}</div>
-    <h1 class="hero-title">parkrun Events in ${name}</h1>
-    <p class="hero-sub">${events.length} parkrun event${events.length !== 1 ? 's' : ''} in ${name}</p>
-  </div>
-  <div class="stat-strip">
-    <div class="stat-strip-item"><span class="stat-strip-value">${standardCount.toLocaleString()}</span><span class="stat-strip-label">parkrun events</span></div>
-    ${juniorCount > 0 ? `<div class="stat-strip-item"><span class="stat-strip-value">${juniorCount}</span><span class="stat-strip-label">Junior events</span></div>` : ''}
-    ${hasCities ? `<div class="stat-strip-item"><span class="stat-strip-value">${Object.keys(cities).length}</span><span class="stat-strip-label">Cities</span></div>` : ''}
-  </div>
-  <div class="hotel-cta">
-    <div class="hotel-cta-text">
-      <h2>Need accommodation in ${name}?</h2>
-      <p>Compare hotels and rentals near any ${name} parkrun event.</p>
-    </div>
-    <button class="hotel-cta-btn" onclick="openStay22(${c.lat},${c.lon},'${name.replace(/'/g, "\\'")} parkrun')">Find Hotels</button>
-  </div>
-  ${hasCities ? `<div class="section-heading">Browse by city</div><div class="tile-grid">${cityTiles}</div>` : ''}
-  ${showSearch ? `<div class="search-wrap"><i class="fas fa-search search-icon"></i><input id="evt-search" class="search-input" type="text" placeholder="Search events in ${name}..." /></div>` : ''}
-  ${filterScript(juniorCount > 0, standardCount > 0, true)}
-  <div class="section-heading">All events in ${name}</div>
-  <div class="event-grid">${cards}</div>
-</main>
-${htmlFooter()}
-${stay22Modal()}
-${showSearch ? searchScript('evt-search', 'event-card') : ''}
-</body></html>`;
-}
-
-function generateCityPage(countrySlug, countryName, regionSlug, regionName, citySlug, cityEvents) {
-  const cityName      = cityEvents[0].city || citySlug;
-  const c             = centroid(cityEvents);
-  const showSearch    = cityEvents.length >= SEARCH_THRESHOLD;
-  const juniorCount   = cityEvents.filter(e => e.isJunior).length;
-  const standardCount = cityEvents.length - juniorCount;
-
-  const cards = cityEvents
-    .sort((a, b) => a.longName.localeCompare(b.longName))
-    .map(ev => eventCardHtml(ev)).join('\n');
-
-  return `${htmlHead({
-    title: `parkrun Events in ${cityName} — Hotels Near Each Event &amp; Course Maps`,
-    description: `${cityEvents.length} parkrun event${cityEvents.length !== 1 ? 's' : ''} in ${cityName}, ${regionName}. View course maps for every event, find hotels nearby and plan your parkrun visit to ${cityName}.`,
-    canonicalUrl: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/${citySlug}/`,
-    lat: c.lat, lon: c.lon, locationName: `${cityName}, ${regionName}`,
-    breadcrumbItems: [
-      { name: countryName, url: `${BASE_LOCATIONS_URL}/${countrySlug}/` },
-      { name: regionName,  url: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/` },
-      { name: cityName,    url: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/${citySlug}/` },
-    ],
-  })}
-<body>
-${sharedStyles()}
-${htmlHeader()}
-${breadcrumb([
-    { label: countryName, href: `${BASE_LOCATIONS_URL}/${countrySlug}/` },
-    { label: regionName,  href: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/` },
     { label: cityName },
   ])}
 <main>
   <div class="hero">
-    <div class="hero-eyebrow">${regionName}, ${countryName}</div>
+    <div class="hero-eyebrow">${countryName}</div>
     <h1 class="hero-title">parkrun Events in ${cityName}</h1>
-    <p class="hero-sub">${cityEvents.length} parkrun event${cityEvents.length !== 1 ? 's' : ''} in ${cityName}</p>
+    <p class="hero-sub">${events.length} parkrun event${events.length !== 1 ? 's' : ''} in ${cityName}</p>
   </div>
   <div class="stat-strip">
-    <div class="stat-strip-item"><span class="stat-strip-value">${standardCount.toLocaleString()}</span><span class="stat-strip-label">parkrun events</span></div>
+    <div class="stat-strip-item"><span class="stat-strip-value">${standardCount.toLocaleString()}</span><span class="stat-strip-label">5k events</span></div>
     ${juniorCount > 0 ? `<div class="stat-strip-item"><span class="stat-strip-value">${juniorCount}</span><span class="stat-strip-label">Junior events</span></div>` : ''}
   </div>
   <div class="hotel-cta">
@@ -1203,19 +1139,12 @@ function generateSitemap(hierarchy) {
   const today = new Date().toISOString().slice(0, 10);
   const urls = [];
 
-  // World index
   urls.push({ loc: `${BASE_LOCATIONS_URL}/`, priority: '1.0' });
 
   for (const [countrySlug, countryData] of Object.entries(hierarchy)) {
     urls.push({ loc: `${BASE_LOCATIONS_URL}/${countrySlug}/`, priority: '0.9' });
-
-    for (const [regionSlug, regionData] of Object.entries(countryData.regions)) {
-      urls.push({ loc: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/`, priority: '0.8' });
-
-      for (const [citySlug] of Object.entries(regionData.cities)) {
-        if (citySlug === regionSlug) continue;
-        urls.push({ loc: `${BASE_LOCATIONS_URL}/${countrySlug}/${regionSlug}/${citySlug}/`, priority: '0.7' });
-      }
+    for (const [citySlug] of Object.entries(countryData.cities)) {
+      urls.push({ loc: `${BASE_LOCATIONS_URL}/${countrySlug}/${citySlug}/`, priority: '0.8' });
     }
   }
 
@@ -1291,34 +1220,32 @@ async function main() {
     return { ...ev, isJunior, city, region, route };
   });
 
-  // Build 3-tier hierarchy
+  // Build 2-tier hierarchy: country → town/city
+  // URL structure: /locations/[country-slug]/[city-slug]/
   const hierarchy = {};
   for (const ev of enriched) {
-    const meta        = COUNTRY_META[ev.countryCode] || { name: 'Unknown' };
+    const meta        = COUNTRY_META[ev.countryCode] || { name: 'Unknown', iso2: '' };
     const countrySlug = slugify(meta.name);
-    const regionName  = ev.region || meta.name;
-    const regionSlug  = slugify(regionName);
-    const cityName    = ev.city || regionName;
+    const cityName    = ev.city || meta.name;
     const citySlug    = slugify(cityName);
 
-    if (!hierarchy[countrySlug]) hierarchy[countrySlug] = { name: meta.name, iso2: meta.iso2 || '', regions: {}, totalEvents: 0 };
+    if (!hierarchy[countrySlug]) {
+      hierarchy[countrySlug] = { name: meta.name, iso2: meta.iso2 || '', cities: {}, totalEvents: 0 };
+    }
     hierarchy[countrySlug].totalEvents++;
 
-    const regions = hierarchy[countrySlug].regions;
-    if (!regions[regionSlug]) regions[regionSlug] = { name: regionName, slug: regionSlug, cities: {}, events: [] };
-    regions[regionSlug].events.push(ev);
-
-    const cities = regions[regionSlug].cities;
-    if (!cities[citySlug]) cities[citySlug] = [];
-    cities[citySlug].push(ev);
+    const cities = hierarchy[countrySlug].cities;
+    if (!cities[citySlug]) cities[citySlug] = { name: cityName, slug: citySlug, events: [] };
+    cities[citySlug].events.push(ev);
   }
 
-  // Write all HTML files (each page is index.html inside a slug-named folder)
+  // Write all HTML files
   ensure(OUTPUT_DIR);
 
   const countryList = Object.fromEntries(
     Object.entries(hierarchy).map(([cs, cd]) => [cs, {
-      name: cd.name, iso2: cd.iso2, totalEvents: cd.totalEvents, regions: Object.values(cd.regions),
+      name: cd.name, iso2: cd.iso2, totalEvents: cd.totalEvents,
+      cities: Object.values(cd.cities),
     }])
   );
 
@@ -1332,38 +1259,23 @@ async function main() {
 
     fs.writeFileSync(
       path.join(countryDir, 'index.html'),
-      generateCountryPage(countrySlug, { ...countryData, iso2: countryData.iso2, regions: Object.values(countryData.regions) }),
+      generateCountryPage(countrySlug, { ...countryData, cities: Object.values(countryData.cities) }),
       'utf-8'
     );
     console.log(`Generated: locations/${countrySlug}/`);
     pageCount++;
 
-    for (const [regionSlug, regionData] of Object.entries(countryData.regions)) {
-      const regionDir = path.join(countryDir, regionSlug);
-      ensure(regionDir);
-
+    for (const [citySlug, cityData] of Object.entries(countryData.cities)) {
+      if (!cityData.events.length) continue;
+      const cityDir = path.join(countryDir, citySlug);
+      ensure(cityDir);
       fs.writeFileSync(
-        path.join(regionDir, 'index.html'),
-        generateRegionPage(countrySlug, countryData.name, regionSlug, regionData),
+        path.join(cityDir, 'index.html'),
+        generateCityPage(countrySlug, countryData.name, citySlug, cityData),
         'utf-8'
       );
-      console.log(`Generated: locations/${countrySlug}/${regionSlug}/`);
+      console.log(`Generated: locations/${countrySlug}/${citySlug}/`);
       pageCount++;
-
-      for (const [citySlug, cityEvents] of Object.entries(regionData.cities)) {
-        // Skip if city slug same as region slug (avoids duplicate single-city regions)
-        if (citySlug === regionSlug || !cityEvents.length) continue;
-
-        const cityDir = path.join(regionDir, citySlug);
-        ensure(cityDir);
-        fs.writeFileSync(
-          path.join(cityDir, 'index.html'),
-          generateCityPage(countrySlug, countryData.name, regionSlug, regionData.name, citySlug, cityEvents),
-          'utf-8'
-        );
-        console.log(`Generated: locations/${countrySlug}/${regionSlug}/${citySlug}/`);
-        pageCount++;
-      }
     }
   }
 
