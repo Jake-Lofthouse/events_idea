@@ -91,7 +91,11 @@ main { padding: 2.5rem 2rem 5rem; max-width: 1300px; margin: 0 auto; }
   border-right: 1px solid #dde5d8;
 }
 .stat-strip-item:last-child { border-right: none; }
-.stat-strip-value { font-size: 1.5rem; font-weight: 800; color: #2e7d32; line-height: 1; }
+.stat-strip-value {
+  font-size: 1.5rem; font-weight: 800; color: #2e7d32; line-height: 1;
+  font-variant-numeric: tabular-nums; font-family: 'Courier New', 'Lucida Console', monospace;
+  letter-spacing: -0.5px;
+}
 .stat-strip-label { font-size: 0.72rem; color: #7a8f72; margin-top: 0.2rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
 /* section headings */
 .section-heading {
@@ -236,6 +240,14 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   </div>
   <div class="section-heading">Select a country</div>
   <div class="country-grid">
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/" class="country-card">
+  <div class="country-card-flag">🇬🇧</div>
+  <div class="country-card-body">
+    <h3>United Kingdom</h3>
+    <p>1,370 events &middot; 592 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
 <a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/australia/" class="country-card">
   <div class="country-card-flag">🇦🇺</div>
   <div class="country-card-body">
@@ -244,43 +256,11 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   </div>
   <i class="fas fa-chevron-right country-card-arrow"></i>
 </a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/austria/" class="country-card">
-  <div class="country-card-flag">🇦🇹</div>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/south-africa/" class="country-card">
+  <div class="country-card-flag">🇿🇦</div>
   <div class="country-card-body">
-    <h3>Austria</h3>
-    <p>6 events &middot; 6 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/canada/" class="country-card">
-  <div class="country-card-flag">🇨🇦</div>
-  <div class="country-card-body">
-    <h3>Canada</h3>
-    <p>60 events &middot; 50 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/denmark/" class="country-card">
-  <div class="country-card-flag">🇩🇰</div>
-  <div class="country-card-body">
-    <h3>Denmark</h3>
-    <p>12 events &middot; 9 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/finland/" class="country-card">
-  <div class="country-card-flag">🇫🇮</div>
-  <div class="country-card-body">
-    <h3>Finland</h3>
-    <p>9 events &middot; 9 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/germany/" class="country-card">
-  <div class="country-card-flag">🇩🇪</div>
-  <div class="country-card-body">
-    <h3>Germany</h3>
-    <p>72 events &middot; 68 towns &amp; cities</p>
+    <h3>South Africa</h3>
+    <p>228 events &middot; 103 towns &amp; cities</p>
   </div>
   <i class="fas fa-chevron-right country-card-arrow"></i>
 </a>
@@ -292,11 +272,43 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   </div>
   <i class="fas fa-chevron-right country-card-arrow"></i>
 </a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/italy/" class="country-card">
-  <div class="country-card-flag">🇮🇹</div>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/poland/" class="country-card">
+  <div class="country-card-flag">🇵🇱</div>
   <div class="country-card-body">
-    <h3>Italy</h3>
-    <p>15 events &middot; 11 towns &amp; cities</p>
+    <h3>Poland</h3>
+    <p>107 events &middot; 95 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/united-states/" class="country-card">
+  <div class="country-card-flag">🇺🇸</div>
+  <div class="country-card-body">
+    <h3>United States</h3>
+    <p>98 events &middot; 81 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/germany/" class="country-card">
+  <div class="country-card-flag">🇩🇪</div>
+  <div class="country-card-body">
+    <h3>Germany</h3>
+    <p>72 events &middot; 68 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/new-zealand/" class="country-card">
+  <div class="country-card-flag">🇳🇿</div>
+  <div class="country-card-body">
+    <h3>New Zealand</h3>
+    <p>69 events &middot; 45 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/canada/" class="country-card">
+  <div class="country-card-flag">🇨🇦</div>
+  <div class="country-card-body">
+    <h3>Canada</h3>
+    <p>60 events &middot; 50 towns &amp; cities</p>
   </div>
   <i class="fas fa-chevron-right country-card-arrow"></i>
 </a>
@@ -305,6 +317,70 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   <div class="country-card-body">
     <h3>Japan</h3>
     <p>50 events &middot; 41 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/netherlands/" class="country-card">
+  <div class="country-card-flag">🇳🇱</div>
+  <div class="country-card-body">
+    <h3>Netherlands</h3>
+    <p>27 events &middot; 27 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/italy/" class="country-card">
+  <div class="country-card-flag">🇮🇹</div>
+  <div class="country-card-body">
+    <h3>Italy</h3>
+    <p>15 events &middot; 11 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/sweden/" class="country-card">
+  <div class="country-card-flag">🇸🇪</div>
+  <div class="country-card-body">
+    <h3>Sweden</h3>
+    <p>14 events &middot; 12 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/denmark/" class="country-card">
+  <div class="country-card-flag">🇩🇰</div>
+  <div class="country-card-body">
+    <h3>Denmark</h3>
+    <p>12 events &middot; 9 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/norway/" class="country-card">
+  <div class="country-card-flag">🇳🇴</div>
+  <div class="country-card-body">
+    <h3>Norway</h3>
+    <p>12 events &middot; 11 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/finland/" class="country-card">
+  <div class="country-card-flag">🇫🇮</div>
+  <div class="country-card-body">
+    <h3>Finland</h3>
+    <p>9 events &middot; 9 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/austria/" class="country-card">
+  <div class="country-card-flag">🇦🇹</div>
+  <div class="country-card-body">
+    <h3>Austria</h3>
+    <p>6 events &middot; 6 towns &amp; cities</p>
+  </div>
+  <i class="fas fa-chevron-right country-card-arrow"></i>
+</a>
+<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/singapore/" class="country-card">
+  <div class="country-card-flag">🇸🇬</div>
+  <div class="country-card-body">
+    <h3>Singapore</h3>
+    <p>5 events &middot; 5 towns &amp; cities</p>
   </div>
   <i class="fas fa-chevron-right country-card-arrow"></i>
 </a>
@@ -321,78 +397,6 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   <div class="country-card-body">
     <h3>Malaysia</h3>
     <p>1 event &middot; 1 town &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/netherlands/" class="country-card">
-  <div class="country-card-flag">🇳🇱</div>
-  <div class="country-card-body">
-    <h3>Netherlands</h3>
-    <p>27 events &middot; 27 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/new-zealand/" class="country-card">
-  <div class="country-card-flag">🇳🇿</div>
-  <div class="country-card-body">
-    <h3>New Zealand</h3>
-    <p>69 events &middot; 45 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/norway/" class="country-card">
-  <div class="country-card-flag">🇳🇴</div>
-  <div class="country-card-body">
-    <h3>Norway</h3>
-    <p>12 events &middot; 11 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/poland/" class="country-card">
-  <div class="country-card-flag">🇵🇱</div>
-  <div class="country-card-body">
-    <h3>Poland</h3>
-    <p>107 events &middot; 95 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/singapore/" class="country-card">
-  <div class="country-card-flag">🇸🇬</div>
-  <div class="country-card-body">
-    <h3>Singapore</h3>
-    <p>5 events &middot; 5 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/south-africa/" class="country-card">
-  <div class="country-card-flag">🇿🇦</div>
-  <div class="country-card-body">
-    <h3>South Africa</h3>
-    <p>228 events &middot; 103 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/sweden/" class="country-card">
-  <div class="country-card-flag">🇸🇪</div>
-  <div class="country-card-body">
-    <h3>Sweden</h3>
-    <p>14 events &middot; 12 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/united-kingdom/" class="country-card">
-  <div class="country-card-flag">🇬🇧</div>
-  <div class="country-card-body">
-    <h3>United Kingdom</h3>
-    <p>1,370 events &middot; 592 towns &amp; cities</p>
-  </div>
-  <i class="fas fa-chevron-right country-card-arrow"></i>
-</a>
-<a href="https://jake-lofthouse.github.io/Event-Web-Test/locations/united-states/" class="country-card">
-  <div class="country-card-flag">🇺🇸</div>
-  <div class="country-card-body">
-    <h3>United States</h3>
-    <p>98 events &middot; 81 towns &amp; cities</p>
   </div>
   <i class="fas fa-chevron-right country-card-arrow"></i>
 </a></div>
@@ -419,4 +423,57 @@ footer { text-align: center; padding: 2rem; background: #f6f8f3; color: #64748b;
   data-id="jlofthouse" data-description="Support me on Buy me a coffee!"
   data-message="" data-color="#40DCA5" data-position="Right"
   data-x_margin="18" data-y_margin="18"></script>
+<script>
+// Count-up animation for .stat-strip-value elements.
+// Triggers when the stat strip scrolls into view. Each digit ticks up
+// independently like an old terminal display, starting slightly offset
+// from each other for a typewriter feel.
+(function() {
+  var strip = document.querySelector('.stat-strip');
+  if (!strip) return;
+
+  var items = strip.querySelectorAll('.stat-strip-value');
+  if (!items.length) return;
+
+  // Store raw numeric targets (strip commas/non-digits)
+  var targets = Array.prototype.map.call(items, function(el) {
+    return parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+  });
+  // Hide the real values; we'll animate to them
+  Array.prototype.forEach.call(items, function(el) { el.textContent = '0'; });
+
+  function animateItem(el, target, delay) {
+    setTimeout(function() {
+      var duration = Math.min(1200, Math.max(400, target * 0.8));
+      var start = null;
+      function tick(ts) {
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        // Ease out: decelerate toward the end
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.round(eased * target);
+        el.textContent = current.toLocaleString();
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target.toLocaleString();
+      }
+      requestAnimationFrame(tick);
+    }, delay);
+  }
+
+  function runAnimation() {
+    targets.forEach(function(target, i) {
+      animateItem(items[i], target, i * 120);
+    });
+  }
+
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { runAnimation(); obs.disconnect(); }
+    }, { threshold: 0.3 });
+    obs.observe(strip);
+  } else {
+    runAnimation();
+  }
+})();
+</script>
 </body></html>
