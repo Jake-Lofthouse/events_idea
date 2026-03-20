@@ -196,9 +196,28 @@ function extractFromAddress(address, countryCode) {
   return { city: city || null, region: region || null };
 }
 
-// Cache stores raw Nominatim address objects.
+// ---------------------------------------------------------------------------
+// Geo cache — keyed by lat/lon rounded to 4 decimal places (~11 m grid)
+// ---------------------------------------------------------------------------
+function cacheKey(lat, lon) {
+  return `${Math.round(lat * 1e4) / 1e4},${Math.round(lon * 1e4) / 1e4}`;
+}
+
+function loadCache() {
+  try {
+    if (fs.existsSync(GEO_CACHE_FILE))
+      return JSON.parse(fs.readFileSync(GEO_CACHE_FILE, 'utf-8'));
+  } catch (e) { console.warn('Could not load geo cache, starting fresh:', e.message); }
+  return {};
+}
+
+function saveCache(cache) {
+  try { fs.writeFileSync(GEO_CACHE_FILE, JSON.stringify(cache, null, 2), 'utf-8'); }
+  catch (e) { console.warn('Could not save geo cache:', e.message); }
+}
+
 // Failed lookups are stored as the string '__failed__' so they are retried
-// on the next run (unlike {} which is truthy and prevents retries).
+// on the next run (unlike {} which is truthy and would prevent retries).
 const CACHE_FAILED = '__failed__';
 
 function cacheHit(cache, k) {
