@@ -632,8 +632,7 @@ main { padding: 2.5rem 2rem 5rem; max-width: 1300px; margin: 0 auto; }
 .stat-strip-item:last-child { border-right: none; }
 .stat-strip-value {
   font-size: 1.5rem; font-weight: 800; color: #2e7d32; line-height: 1;
-  font-variant-numeric: tabular-nums; font-family: 'Courier New', 'Lucida Console', monospace;
-  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
 }
 .stat-strip-label { font-size: 0.72rem; color: #7a8f72; margin-top: 0.2rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
 /* section headings */
@@ -1102,13 +1101,6 @@ ${breadcrumb([{ label: name }])}
     <div class="stat-strip-item"><span class="stat-strip-value">${standardCount.toLocaleString()}</span><span class="stat-strip-label">5k events</span></div>
     ${juniorCount > 0 ? `<div class="stat-strip-item"><span class="stat-strip-value">${juniorCount}</span><span class="stat-strip-label">Junior events</span></div>` : ''}
     <div class="stat-strip-item"><span class="stat-strip-value">${cities.length}</span><span class="stat-strip-label">Towns &amp; cities</span></div>
-  </div>
-  <div class="hotel-cta">
-    <div class="hotel-cta-text">
-      <h2>Need accommodation in ${name}?</h2>
-      <p>Compare hotels and rentals near any parkrun event.</p>
-    </div>
-    <button class="hotel-cta-btn" onclick="openStay22(${c.lat},${c.lon},'${name.replace(/'/g, "\\'")} parkrun')">Find Hotels</button>
   </div>
   ${showSearch ? `<div class="search-wrap"><i class="fas fa-search search-icon"></i><input id="loc-search" class="search-input" type="text" placeholder="Search towns &amp; cities in ${name}..." /></div>` : ''}
   <div class="section-heading">Towns &amp; Cities</div>
