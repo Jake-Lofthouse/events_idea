@@ -1200,10 +1200,10 @@ function generateSitemap(hierarchy) {
   const today = new Date().toISOString().slice(0, 10);
   const urls = [];
 
-  urls.push({ loc: `${BASE_LOCATIONS_URL}/`, priority: '1.0' });
+  urls.push({ loc: `${BASE_LOCATIONS_URL}/`, priority: '0.9' });
 
   for (const [countrySlug, countryData] of Object.entries(hierarchy)) {
-    urls.push({ loc: `${BASE_LOCATIONS_URL}/${countrySlug}/`, priority: '0.9' });
+    urls.push({ loc: `${BASE_LOCATIONS_URL}/${countrySlug}/`, priority: '0.8' });
     for (const [citySlug] of Object.entries(countryData.cities)) {
       urls.push({ loc: `${BASE_LOCATIONS_URL}/${countrySlug}/${citySlug}/`, priority: '0.8' });
     }
